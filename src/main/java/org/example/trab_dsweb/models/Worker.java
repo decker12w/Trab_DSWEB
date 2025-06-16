@@ -41,4 +41,12 @@ public class Worker {
     @Column(nullable = false)
     private LocalDate birthDate;
 
+    public Worker(String email, String cpf, String password, String name, Gender gender, LocalDate birthDate) {
+        this.email = email;
+        this.cpf = cpf;
+        this.password = password;
+        this.name = name;
+        this.gender = gender;
+        this.birthDate = birthDate;
+    }
 }
