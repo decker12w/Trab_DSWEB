@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreateWorkerRequestDTO(
-        UUID id,
         String email,
         String password,
         String cpf,

@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface WorkerRepository extends JpaRepository<Worker, UUID> {
     Optional<Worker> findWorkerByCpf(String cpf);
     Optional<Worker> findWorkerByEmail(String email);
+
+
 }

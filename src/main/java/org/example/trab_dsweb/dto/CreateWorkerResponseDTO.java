@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreateWorkerResponseDTO(
+        UUID id,
         String email,
         String cpf,
         String name,
