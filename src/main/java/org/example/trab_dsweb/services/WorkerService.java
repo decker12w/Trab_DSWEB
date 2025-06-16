@@ -6,6 +6,8 @@ import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class WorkerService {
 
@@ -42,4 +44,4 @@ public class WorkerService {
                 savedWorker.getBirthDate()
         );
     }
-}
+
