@@ -1,7 +1,12 @@
 package org.example.trab_dsweb.services;
 
+import org.example.trab_dsweb.dto.CreateWorkerRequestDTO;
+import org.example.trab_dsweb.dto.CreateWorkerResponseDTO;
+import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class WorkerService {
@@ -12,23 +17,11 @@ public class WorkerService {
         this.workerRepository = workerRepository;
     }
 
-//    public createWorker(Worker worker) {
-//        return workerRepository.save(worker);
-//    }
-//
-//    public updateWorker(Worker worker) {
-//        return workerRepository.save(worker);
-//    }
-//
-//    public void deleteWorker(UUID id) {
-//        workerRepository.deleteById(id);
-//    }
-//
-//    public Worker finsWorkerById(UUID id) {
-//        return workerRepository.findById(id).orElse(null);
-//    }
-//
-//    public List<Worker> getAllWorkers() {
-//        return workerRepository.findAll();
-//    }
+    public CreateWorkerResponseDTO create(CreateWorkerRequestDTO worker) {
+        OptionalworkerRepository.findWorkerByCpf(worker.cpf()).orElseThrow(new IllegalCallerException(
+                "Já existe um trabalhador cadastrado com o CPF: " + worker.cpf()
+        ));
+    }
+
+
 }
