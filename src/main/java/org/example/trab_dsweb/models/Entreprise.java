@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trab_dsweb.enums.Gender;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "entreprise")

@@ -18,7 +18,7 @@ import java.util.UUID;
 @Setter
 public class Worker {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
 
