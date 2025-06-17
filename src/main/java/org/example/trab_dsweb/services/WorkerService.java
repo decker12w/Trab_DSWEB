@@ -18,17 +18,12 @@ public class WorkerService {
 
     private final WorkerRepository workerRepository;
 
-    public CreateWorkerResponseDTO createWorker(CreateWorkerRequestDTO data) {
+    public CreateWorkerResponseDTO create(CreateWorkerRequestDTO data) {
+        workerRepository.findWorkerByCpf(data.cpf())
+                .orElseThrow(() -> new IllegalArgumentException("Worker with this CPF already exists"));
 
-        Optional<Worker> existingWorkerByCpf = workerRepository.findWorkerByCpf(data.cpf());
-        if (existingWorkerByCpf.isPresent()) {
-            throw new IllegalArgumentException("Worker with this CPF already exists");
-        }
-
-        Optional<Worker> existingWorkerByEmail = workerRepository.findWorkerByEmail(data.email());
-        if (existingWorkerByEmail.isPresent()) {
-            throw new IllegalArgumentException("Worker with this email already exists");
-        }
+        workerRepository.findWorkerByEmail(data.email())
+                .orElseThrow(() -> new IllegalArgumentException("Worker with this email already exists"));
 
         Worker newWorker = new Worker(
                 data.email(),
