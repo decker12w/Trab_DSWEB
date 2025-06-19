@@ -22,4 +22,12 @@ public class JobApplication {
 
     // TODO - IMAGEM OU LOCAL OU DE STORAGE
     private String curriculum;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id", nullable = false)
+    private Job job;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "worker_id", nullable = false)
+    private Worker worker;
 }

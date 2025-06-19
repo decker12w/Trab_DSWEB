@@ -54,6 +54,4 @@ public class JobService {
                 .map(GetJobResponseDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }
-
-
 }
