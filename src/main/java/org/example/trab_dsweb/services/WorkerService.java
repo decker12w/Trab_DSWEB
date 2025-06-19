@@ -5,11 +5,12 @@ import org.example.trab_dsweb.dto.CreateWorkerRequestDTO;
 import org.example.trab_dsweb.dto.CreateWorkerResponseDTO;
 import org.example.trab_dsweb.dto.GetWorkerResponseDTO;
 import org.example.trab_dsweb.dto.UpdateWorkerRequestDTO;
+import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
+import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,21 +19,22 @@ public class WorkerService {
 
     private final WorkerRepository workerRepository;
 
-    public CreateWorkerResponseDTO create(CreateWorkerRequestDTO data) {
-        workerRepository.findWorkerByCpf(data.cpf())
-                .orElseThrow(() -> new IllegalArgumentException("Worker with this CPF already exists"));
+    public CreateWorkerResponseDTO createWorker(CreateWorkerRequestDTO data) {
+        if (workerRepository.findWorkerByCpf(data.cpf()).isPresent()) {
+            throw new ConflictException("Worker with this CPF already exists");
+        }
 
-        workerRepository.findWorkerByEmail(data.email())
-                .orElseThrow(() -> new IllegalArgumentException("Worker with this email already exists"));
+        if (workerRepository.findWorkerByEmail(data.email()).isPresent()) {
+            throw new ConflictException("Worker with this email already exists");
+        }
 
-        Worker newWorker = new Worker(
-                data.email(),
-                data.password(),
-                data.cpf(),
-                data.name(),
-                data.gender(),
-                data.birthDate()
-        );
+        Worker newWorker = new Worker();
+        newWorker.setEmail(data.email());
+        newWorker.setPassword(data.password());
+        newWorker.setCpf(data.cpf());
+        newWorker.setName(data.name());
+        newWorker.setGender(data.gender());
+        newWorker.setBirthDate(data.birthDate());
 
         Worker savedWorker = workerRepository.save(newWorker);
 
@@ -48,7 +50,7 @@ public class WorkerService {
 
     public GetWorkerResponseDTO getWorkerById(UUID id) {
         Worker worker = workerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Worker not found"));
+                .orElseThrow(() -> new NotFoundException("Worker not found"));
 
         return new GetWorkerResponseDTO(
                 worker.getId(),
@@ -62,25 +64,37 @@ public class WorkerService {
 
     public void deleteWorkerById(UUID id) {
         if (!workerRepository.existsById(id)) {
-            throw new IllegalArgumentException("Worker not found");
+            throw new NotFoundException("Worker not found");
         }
         workerRepository.deleteById(id);
     }
 
     public GetWorkerResponseDTO updateWorkerById(UUID id, UpdateWorkerRequestDTO data) {
         Worker existingWorker = workerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Worker not found"));
+                .orElseThrow(() -> new NotFoundException("Worker not found"));
 
-        // Only update fields if they are provided in the DTO
+        if (data.cpf() != null && !data.cpf().isEmpty()) {
+            workerRepository.findWorkerByCpf(data.cpf()).ifPresent(worker -> {
+                if (!worker.getId().equals(id)) {
+                    throw new ConflictException("Worker with this CPF already exists");
+                }
+            });
+            existingWorker.setCpf(data.cpf());
+        }
+
         if (data.email() != null && !data.email().isEmpty()) {
+            workerRepository.findWorkerByEmail(data.email()).ifPresent(worker -> {
+                if (!worker.getId().equals(id)) {
+                    throw new ConflictException("Worker with this email already exists");
+                }
+            });
             existingWorker.setEmail(data.email());
         }
+
         if (data.password() != null && !data.password().isEmpty()) {
             existingWorker.setPassword(data.password());
         }
-        if (data.cpf() != null && !data.cpf().isEmpty()) {
-            existingWorker.setCpf(data.cpf());
-        }
+
         if (data.name() != null && !data.name().isEmpty()) {
             existingWorker.setName(data.name());
         }

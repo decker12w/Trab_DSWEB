@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trab_dsweb.enums.Gender;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "entreprise")
@@ -16,12 +17,9 @@ import java.time.LocalDate;
 @Setter
 public class Entreprise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
-
-    @Column(nullable = false)
-    private boolean admin;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -30,15 +28,12 @@ public class Entreprise {
     private String password;
 
     @Column(nullable = false, unique = true)
-    private String cpf;
+    private String cnpj;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private Gender gender;
-
-    @Column(nullable = false)
-    private LocalDate birthDate;
+    private String description;
 
 }

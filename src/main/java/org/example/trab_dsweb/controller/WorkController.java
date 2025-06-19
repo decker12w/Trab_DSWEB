@@ -22,7 +22,7 @@ public class WorkController {
         return ResponseEntity.ok(workerService.getWorkerById(id));
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<CreateWorkerResponseDTO> createWorker(@RequestBody CreateWorkerRequestDTO data) {
         CreateWorkerResponseDTO createdWorker = workerService.createWorker(data);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
