@@ -1,9 +1,10 @@
 package org.example.trab_dsweb.dto;
 
-public record GetEnterpriseDTO(
+public record UpdateEnterpriseDTO(
         String email,
         String password,
-        String cnpj,
+        String CNPJ,
+        String name,
         String description,
         String city
 ){

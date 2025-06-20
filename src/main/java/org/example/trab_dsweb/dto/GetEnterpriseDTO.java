@@ -1,15 +1,11 @@
 package org.example.trab_dsweb.dto;
 
-import org.example.trab_dsweb.enums.Gender;
-
-import java.time.LocalDate;
-import java.util.UUID;
-
-public record GetWorkerResponseDTO (
-        UUID id,
+public record GetEnterpriseDTO(
         String email,
-        String cpf,
+        String password,
+        String CNPJ,
         String name,
-        Gender gender,
-        LocalDate birthDate){
+        String description,
+        String city
+){
 }
