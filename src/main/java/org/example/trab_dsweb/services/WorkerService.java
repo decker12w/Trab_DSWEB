@@ -55,9 +55,8 @@ public class WorkerService {
 
             Worker savedWorker = workerRepository.save(newWorker);
 
-            @@ -47,67 +42,4 @@ public CreateWorkerResponseDTO createWorker(CreateWorkerRequestDTO data) {
+            public CreateWorkerResponseDTO createWorker(CreateWorkerRequestDTO data) {
                 savedWorker.getBirthDate()
-        );
             }
 
             public GetWorkerResponseDTO getWorkerById(UUID id) {

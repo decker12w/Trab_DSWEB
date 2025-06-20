@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID> {
+public interface EnterpriseRepository extends CrudRepository<Enterprise, UUID> {
     Optional<Enterprise> findEnterpriseByCNPJ(String CNPJ);
     Optional<Enterprise> findEnterpriseByEmail(String email);
-
-
-}
+    }

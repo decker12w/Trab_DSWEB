@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public record GetWorkerResponseDTO (
         UUID id,
-                                   String email,
-                                   String cpf,
-                                   String name,
-                                   Gender gender,
-                                   LocalDate birthDate){
+        String email,
+        String cpf,
+        String name,
+        Gender gender,
+        LocalDate birthDate){
 }
