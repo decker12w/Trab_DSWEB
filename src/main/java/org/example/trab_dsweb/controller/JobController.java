@@ -1,8 +1,8 @@
 package org.example.trab_dsweb.controller;
 
 import lombok.AllArgsConstructor;
-import org.example.trab_dsweb.dto.CreateJobRequestDTO;
-import org.example.trab_dsweb.dto.GetJobResponseDTO;
+import org.example.trab_dsweb.dto.CreateJobDTO;
+import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.services.JobService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,8 @@ public class JobController {
     private final JobService jobService;
 
     @PostMapping
-    public ResponseEntity<GetJobResponseDTO> createJob(@RequestBody CreateJobRequestDTO data) {
-        GetJobResponseDTO response = jobService.createJob(data);
+    public ResponseEntity<ReturnJobDTO> createJob(@RequestBody CreateJobDTO data) {
+        ReturnJobDTO response = jobService.createJob(data);
         return ResponseEntity
                 .created(ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("/{id}")
@@ -30,14 +30,14 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetJobResponseDTO>> findAllActiveJobsByCity(@RequestParam String city) {
-        List<GetJobResponseDTO> jobs = jobService.findAllActiveJobsByCity(city);
+    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobsByCity(@RequestParam String city) {
+        List<ReturnJobDTO> jobs = jobService.findAllActiveJobsByCity(city);
         return ResponseEntity.ok(jobs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<GetJobResponseDTO>> getJobById(@PathVariable("id") UUID id) {
-        List<GetJobResponseDTO> job = jobService.findAllJobsByEnterpriseId(id);
+    public ResponseEntity<List<ReturnJobDTO>> getJobById(@PathVariable("id") UUID id) {
+        List<ReturnJobDTO> job = jobService.findAllJobsByEnterpriseId(id);
         return ResponseEntity.ok(job);
     }
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record CreateJobRequestDTO(
+public record CreateJobDTO(
         String description,
         String CNPJ,
         JobType jobType,

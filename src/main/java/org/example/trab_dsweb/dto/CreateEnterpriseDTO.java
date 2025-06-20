@@ -1,11 +1,10 @@
 package org.example.trab_dsweb.dto;
 
-public record GetEnterpriseDTO(
+public record CreateEnterpriseDTO(
         String email,
         String password,
-        String CNPJ,
+        String cnpj,
         String name,
         String description,
         String city
-){
-}
+) {}
