@@ -1,5 +1,6 @@
 package org.example.trab_dsweb.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
@@ -19,7 +20,7 @@ public class JobController {
     private final JobService jobService;
 
     @PostMapping
-    public ResponseEntity<ReturnJobDTO> createJob(@RequestBody CreateJobDTO data) {
+    public ResponseEntity<ReturnJobDTO> createJob(@RequestBody @Valid CreateJobDTO data) {
         ReturnJobDTO response = jobService.createJob(data);
         return ResponseEntity
                 .created(ServletUriComponentsBuilder.fromCurrentRequest()
