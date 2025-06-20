@@ -1,7 +1,7 @@
 package org.example.trab_dsweb.services;
 
-import org.example.trab_dsweb.dto.CreateEnterpriseRequestDTO;
-import org.example.trab_dsweb.dto.CreateEnterpriseResponseDTO;
+import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
+import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
 import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.springframework.stereotype.Service;
@@ -15,21 +15,26 @@ public class EnterpriseService {
         this.enterpriseRepository = enterpriseRepository;
     }
 
-    public CreateEnterpriseResponseDTO createEnterprise(CreateEnterpriseRequestDTO data){
+    public ReturnEnterpriseDTO createEnterprise(CreateEnterpriseDTO data){
 
         enterpriseRepository.findEnterpriseByEmail(data.email())
                 .orElseThrow(() -> new IllegalArgumentException("Enterprise with this email already exists"));
 
-        enterpriseRepository.findEnterpriseByCNPJ(data.CNPJ())
+        enterpriseRepository.findEnterpriseByCnpj(data.cnpj())
                 .orElseThrow(() -> new IllegalArgumentException("Enterprise with this CNPJ already exists"));
 
-        Enterprise newEnterprise = new Enterprise(
-                data.email();
-                data.password();
-                data.CNPJ();
-                data.name();
-                data.description();
-                data.city();
-        )
+        Enterprise newEnterprise = new Enterprise();
+                newEnterprise.setName(data.name());
+                newEnterprise.setEmail(data.email());
+                newEnterprise.setCnpj(data.cnpj());
+
+                return new ReturnEnterpriseDTO(
+                        enterpriseRepository.save(newEnterprise).getId(),
+                        newEnterprise.getEmail(),
+                        newEnterprise.getCnpj(),
+                        newEnterprise.getName(),
+                        newEnterprise.getDescription(),
+                        newEnterprise.getCity()
+                );
     }
 }

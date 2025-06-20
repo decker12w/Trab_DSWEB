@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.trab_dsweb.enums.Gender;
-import java.time.LocalDate;
+
 import java.util.UUID;
 
 @Entity
@@ -28,7 +27,7 @@ public class Enterprise {
     private String password;
 
     @Column(nullable = false, unique = true)
-    private String CNPJ;
+    private String cnpj; // Changed to lowercase
 
     @Column(nullable = false)
     private String name;
@@ -39,10 +38,10 @@ public class Enterprise {
     @Column(nullable = false)
     private String city;
 
-    public Enterprise(String email, String password, String CNPJ, String name, String description, String city) {
+    public Enterprise(String email, String password, String cnpj, String name, String description, String city) {
         this.email = email;
         this.password = password;
-        this.CNPJ = CNPJ;
+        this.cnpj = cnpj;
         this.name = name;
         this.description = description;
         this.city = city;

@@ -35,7 +35,7 @@ public class Job {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id", nullable = false)
-    private Entreprise entreprise;
+    private Enterprise entreprise;
 
     @Column(nullable = false)
     private LocalDateTime applicationDeadline;
