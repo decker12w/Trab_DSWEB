@@ -1,11 +1,12 @@
 package org.example.trab_dsweb.dto;
 
-public record GetEnterpriseDTO(
+import java.util.UUID;
+
+public record ReturnEnterpriseDTO(
+        UUID id,
         String email,
-        String password,
-        String CNPJ,
+        String cnpj,
         String name,
         String description,
         String city
-){
-}
+        ) {}

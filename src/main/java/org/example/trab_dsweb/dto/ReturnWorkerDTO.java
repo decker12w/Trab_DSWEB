@@ -5,7 +5,7 @@ import org.example.trab_dsweb.enums.Gender;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record GetWorkerResponseDTO (
+public record ReturnWorkerDTO(
         UUID id,
         String email,
         String cpf,

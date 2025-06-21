@@ -7,26 +7,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record GetJobResponseDTO(
+public record ReturnJobDTO(
         UUID id,
         String description,
         String CNPJ,
         JobType jobType,
-        EnterpriseInJobResponseDTO enterprise,
+        ReturnEnterpriseInJobDTO enterprise,
         LocalDateTime applicationDeadline,
         boolean jobActive,
         Double remuneration,
         List<String> skills,
         String city
 ) {
-    public static GetJobResponseDTO mapJobToDTO(Job job) {
-        EnterpriseInJobResponseDTO enterpriseDTO = new EnterpriseInJobResponseDTO(
+    public static ReturnJobDTO mapJobToDTO(Job job) {
+        ReturnEnterpriseInJobDTO enterpriseDTO = new ReturnEnterpriseInJobDTO(
                 job.getEntreprise().getId(),
                 job.getEntreprise().getName(),
                 job.getEntreprise().getCnpj()
         );
 
-        return new GetJobResponseDTO(
+        return new ReturnJobDTO(
                 job.getId(),
                 job.getDescription(),
                 job.getCNPJ(),
