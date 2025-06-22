@@ -2,11 +2,11 @@ package org.example.trab_dsweb.dto;
 
 import java.util.UUID;
 
-public record CreateEnterpriseResponseDTO(
+public record ReturnEnterpriseDTO(
         UUID id,
-        String name,
         String email,
         String cnpj,
-        String description
-) {}
-
+        String name,
+        String description,
+        String city
+        ) {}

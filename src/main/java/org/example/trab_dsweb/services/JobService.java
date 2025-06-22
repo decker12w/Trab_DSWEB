@@ -1,12 +1,12 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
-import org.example.trab_dsweb.dto.CreateJobRequestDTO;
-import org.example.trab_dsweb.dto.GetJobResponseDTO;
+import org.example.trab_dsweb.dto.CreateJobDTO;
+import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
-import org.example.trab_dsweb.models.Entreprise;
+import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.models.Job;
-import org.example.trab_dsweb.repositories.EntrepriseRepository;
+import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.example.trab_dsweb.repositories.JobRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JobService {
     private JobRepository jobRepository;
-    private EntrepriseRepository entrepriseRepository;
+    private EnterpriseRepository enterpriseRepository;
 
-    public GetJobResponseDTO createJob(CreateJobRequestDTO createJobRequestDTO) {
+    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO) {
         Job job = new Job();
         job.setDescription(createJobRequestDTO.description());
         job.setJobType(createJobRequestDTO.jobType());
@@ -32,26 +32,26 @@ public class JobService {
         job.setRemuneration(createJobRequestDTO.remuneration());
         job.setCity(createJobRequestDTO.city());
 
-        Entreprise entreprise = entrepriseRepository.findById(createJobRequestDTO.enterpriseId())
+        Enterprise entreprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
                 .orElseThrow(() -> new NotFoundException("Entreprise not found with ID: " + createJobRequestDTO.enterpriseId()));
 
         job.setEntreprise(entreprise);
         Job savedJob = jobRepository.save(job);
 
-        return GetJobResponseDTO.mapJobToDTO(savedJob);
+        return ReturnJobDTO.mapJobToDTO(savedJob);
     }
 
     @Transactional(readOnly = true)
-    public List<GetJobResponseDTO> findAllActiveJobsByCity(String city) {
+    public List<ReturnJobDTO> findAllActiveJobsByCity(String city) {
         return jobRepository.findByJobActiveTrueAndCity(city).stream()
-                .map(GetJobResponseDTO::mapJobToDTO)
+                .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<GetJobResponseDTO> findAllJobsByEnterpriseId(UUID id) {
+    public List<ReturnJobDTO> findAllJobsByEnterpriseId(UUID id) {
         return jobRepository.findAllByEntrepriseId(id).stream()
-                .map(GetJobResponseDTO::mapJobToDTO)
+                .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }
 }

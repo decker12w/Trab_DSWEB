@@ -1,5 +1,6 @@
 package org.example.trab_dsweb.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.*;
 import org.example.trab_dsweb.services.WorkerService;
@@ -18,24 +19,24 @@ public class WorkController {
     private final WorkerService workerService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetWorkerResponseDTO> getWorkerById(@PathVariable("id") UUID id) {
+    public ResponseEntity<ReturnWorkerDTO> getWorkerById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(workerService.getWorkerById(id));
     }
 
     @PostMapping()
-    public ResponseEntity<CreateWorkerResponseDTO> createWorker(@RequestBody CreateWorkerRequestDTO data) {
-        CreateWorkerResponseDTO createdWorker = workerService.createWorker(data);
+    public ResponseEntity<ReturnWorkerDTO> createWorker(@RequestBody @Valid CreateWorkerDTO data) {
+        ReturnWorkerDTO createdWorker = workerService.createWorker(data);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(createdWorker.id()).toUri();
         return ResponseEntity.created(uri).body(createdWorker);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetWorkerResponseDTO> updateWorker(
+    public ResponseEntity<ReturnWorkerDTO> updateWorker(
             @PathVariable("id") UUID id,
-            @RequestBody UpdateWorkerRequestDTO data) {
+            @RequestBody @Valid CreateWorkerDTO data) {
 
-        GetWorkerResponseDTO updatedWorker = workerService.updateWorkerById(id, data);
+        ReturnWorkerDTO updatedWorker = workerService.updateWorkerById(id, data);
         return ResponseEntity.ok(updatedWorker);
     }
 

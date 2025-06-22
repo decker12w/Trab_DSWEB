@@ -1,10 +1,8 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
-import org.example.trab_dsweb.dto.CreateWorkerRequestDTO;
-import org.example.trab_dsweb.dto.CreateWorkerResponseDTO;
-import org.example.trab_dsweb.dto.GetWorkerResponseDTO;
-import org.example.trab_dsweb.dto.UpdateWorkerRequestDTO;
+import org.example.trab_dsweb.dto.CreateWorkerDTO;
+import org.example.trab_dsweb.dto.ReturnWorkerDTO;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Worker;
@@ -19,7 +17,7 @@ public class WorkerService {
 
     private final WorkerRepository workerRepository;
 
-    public CreateWorkerResponseDTO createWorker(CreateWorkerRequestDTO data) {
+    public ReturnWorkerDTO createWorker(CreateWorkerDTO data) {
         if (workerRepository.findWorkerByCpf(data.cpf()).isPresent()) {
             throw new ConflictException("Worker with this CPF already exists");
         }
@@ -38,7 +36,7 @@ public class WorkerService {
 
         Worker savedWorker = workerRepository.save(newWorker);
 
-        return new CreateWorkerResponseDTO(
+        return new ReturnWorkerDTO(
                 savedWorker.getId(),
                 savedWorker.getEmail(),
                 savedWorker.getCpf(),
@@ -48,11 +46,11 @@ public class WorkerService {
         );
     }
 
-    public GetWorkerResponseDTO getWorkerById(UUID id) {
+    public ReturnWorkerDTO getWorkerById(UUID id) {
         Worker worker = workerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Worker not found"));
 
-        return new GetWorkerResponseDTO(
+        return new ReturnWorkerDTO(
                 worker.getId(),
                 worker.getEmail(),
                 worker.getCpf(),
@@ -69,7 +67,7 @@ public class WorkerService {
         workerRepository.deleteById(id);
     }
 
-    public GetWorkerResponseDTO updateWorkerById(UUID id, UpdateWorkerRequestDTO data) {
+    public ReturnWorkerDTO updateWorkerById(UUID id, CreateWorkerDTO data) {
         Worker existingWorker = workerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Worker not found"));
 
@@ -101,7 +99,7 @@ public class WorkerService {
 
         Worker updatedWorker = workerRepository.save(existingWorker);
 
-        return new GetWorkerResponseDTO(
+        return new ReturnWorkerDTO(
                 updatedWorker.getId(),
                 updatedWorker.getEmail(),
                 updatedWorker.getCpf(),

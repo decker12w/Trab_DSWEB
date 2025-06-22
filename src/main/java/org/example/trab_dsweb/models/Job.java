@@ -53,7 +53,7 @@ public class Job {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id", nullable = false)
-    private Entreprise entreprise;
+    private Enterprise enterprise;
 
     @OneToMany(mappedBy = "job")
     private Set<JobApplication> jobApplications;
