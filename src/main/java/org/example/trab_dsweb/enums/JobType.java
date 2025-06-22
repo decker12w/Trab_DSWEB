@@ -1,6 +1,6 @@
 package org.example.trab_dsweb.enums;
 
 public enum JobType {
-    INTERSHIP,
+    INTERNSHIP,
     FULL_TIME,
 }

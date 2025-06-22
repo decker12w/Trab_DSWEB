@@ -16,7 +16,6 @@ import java.util.UUID;
 @RequestMapping("/job")
 @AllArgsConstructor
 public class JobController {
-
     private final JobService jobService;
 
     @PostMapping

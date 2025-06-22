@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID> {
-    Optional<Enterprise> findEnterpriseByCnpj(String cnpj); // Corrigido para "cnpj"
+    Optional<Enterprise> findEnterpriseByCnpj(String cnpj);
     Optional<Enterprise> findEnterpriseByEmail(String email);
 }

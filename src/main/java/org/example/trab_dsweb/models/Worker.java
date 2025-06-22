@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trab_dsweb.enums.Gender;
-import java.time.LocalDate;
-import java.util.UUID;
 
+import java.time.LocalDate;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "workers")
@@ -23,30 +24,24 @@ public class Worker {
     private UUID id;
 
     @Column(nullable = false, unique = true)
+    private String cpf;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String cpf;
-
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
-    @Column(nullable = false)
-    private LocalDate birthDate;
-
-    public Worker(String email, String cpf, String password, String name, Gender gender, LocalDate birthDate) {
-        this.email = email;
-        this.cpf = cpf;
-        this.password = password;
-        this.name = name;
-        this.gender = gender;
-        this.birthDate = birthDate;
-    }
+    @OneToMany(mappedBy = "worker")
+    private Set<JobApplication> jobApplications;
 }
