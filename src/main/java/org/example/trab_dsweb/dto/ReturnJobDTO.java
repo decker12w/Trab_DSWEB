@@ -21,9 +21,9 @@ public record ReturnJobDTO(
 ) {
     public static ReturnJobDTO mapJobToDTO(Job job) {
         ReturnEnterpriseInJobDTO enterpriseDTO = new ReturnEnterpriseInJobDTO(
-                job.getEntreprise().getId(),
-                job.getEntreprise().getName(),
-                job.getEntreprise().getCnpj()
+                job.getEnterprise().getId(),
+                job.getEnterprise().getName(),
+                job.getEnterprise().getCnpj()
         );
 
         return new ReturnJobDTO(
