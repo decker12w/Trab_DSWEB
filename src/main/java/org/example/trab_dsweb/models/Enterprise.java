@@ -21,13 +21,13 @@ public class Enterprise {
     private UUID id;
 
     @Column(nullable = false, unique = true)
+    private String cnpj;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false, unique = true)
-    private String cnpj; // Changed to lowercase
 
     @Column(nullable = false)
     private String name;
@@ -37,13 +37,4 @@ public class Enterprise {
 
     @Column(nullable = false)
     private String city;
-
-    public Enterprise(String email, String password, String cnpj, String name, String description, String city) {
-        this.email = email;
-        this.password = password;
-        this.cnpj = cnpj;
-        this.name = name;
-        this.description = description;
-        this.city = city;
-    }
 }

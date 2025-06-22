@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public record ReturnWorkerDTO(
         UUID id,
-                                   String email,
-                                   String cpf,
-                                   String name,
-                                   Gender gender,
-                                   LocalDate birthDate){
+        String email,
+        String cpf,
+        String name,
+        Gender gender,
+        LocalDate birthDate){
 }
