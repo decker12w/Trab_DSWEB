@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@layer base {
+    html {
+        font-family: 'Inter', sans-serif;
+    }
+}
+
+@layer utilities {
+    .font-inter {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .text-brand-purple {
+        color: #6059E7;
+    }
+
+    .bg-brand-dark-purple {
+        background-color: #4F45E6;
+    }
+
+    .hover\:bg-brand-dark-purple-hover:hover {
+        background-color: #4038b8;
+    }
+
+    .text-text-primary {
+        color: #333333;
+    }
+
+    .text-text-heading {
+        color: #2E3344;
+    }
+
+    .text-text-subheading {
+        color: #727886;
+    }
+
+    .text-white {
+        color: #ffffff;
+    }
+
+    .bg-white {
+        background-color: #ffffff;
+    }
+}

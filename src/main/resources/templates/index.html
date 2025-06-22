@@ -37,14 +37,15 @@
     <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10">
         <div th:each="job : ${jobs}">
             <div th:replace="~{fragments/job-card :: job-card(
-                jobTitle=${job.title},
-                companyName=${job.company},
-                location=${job.location},
-                salary=${job.salary},
-                deadline=${job.deadline}
-            )}">
+            jobTitle=${job.description},
+            companyName=${job.enterprise.name()},
+            location=${job.city},
+            salary=${#numbers.formatCurrency(job.remuneration)},
+            deadline=${#temporals.format(job.applicationDeadline, 'dd/MM/yyyy')}
+        )}">
             </div>
         </div>
+    </div>
 
 
 

@@ -1,42 +1,59 @@
 package org.example.trab_dsweb.services;
 
+import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
+import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
+import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
+@AllArgsConstructor // Adicionando a injeção de dependência que faltava
 public class EnterpriseService {
 
     private final EnterpriseRepository enterpriseRepository;
 
-    public EnterpriseService(EnterpriseRepository enterpriseRepository) {
-        this.enterpriseRepository = enterpriseRepository;
-    }
-
     //CREATE
     public ReturnEnterpriseDTO createEnterprise(CreateEnterpriseDTO data){
 
+        // FORMA CORRETA DA VERIFICAÇÃO:
+        // Se um Optional com este e-mail estiver presente, lance uma exceção.
         enterpriseRepository.findEnterpriseByEmail(data.email())
-                .orElseThrow(() -> new IllegalArgumentException("Enterprise with this email already exists"));
+                .ifPresent(enterprise -> {
+                    throw new ConflictException("Enterprise with this email already exists");
+                });
 
+        // O mesmo para o CNPJ
         enterpriseRepository.findEnterpriseByCnpj(data.cnpj())
-                .orElseThrow(() -> new IllegalArgumentException("Enterprise with this CNPJ already exists"));
+                .ifPresent(enterprise -> {
+                    throw new ConflictException("Enterprise with this CNPJ already exists");
+                });
 
         Enterprise newEnterprise = new Enterprise();
-                newEnterprise.setName(data.name());
-                newEnterprise.setEmail(data.email());
-                newEnterprise.setCnpj(data.cnpj());
+        newEnterprise.setName(data.name());
+        newEnterprise.setEmail(data.email());
+        newEnterprise.setCnpj(data.cnpj());
+        // Adicionando os campos que faltavam no seu DTO
+        newEnterprise.setPassword(data.password());
+        newEnterprise.setDescription(data.description());
+        newEnterprise.setCity(data.city());
 
-                return new ReturnEnterpriseDTO(
-                        enterpriseRepository.save(newEnterprise).getId(),
-                        newEnterprise.getEmail(),
-                        newEnterprise.getCnpj(),
-                        newEnterprise.getName(),
-                        newEnterprise.getDescription(),
-                        newEnterprise.getCity()
-                );
+
+        Enterprise savedEnterprise = enterpriseRepository.save(newEnterprise);
+
+        // O DTO de retorno já tem todos os campos da entidade.
+        return new ReturnEnterpriseDTO(
+                savedEnterprise.getId(),
+                savedEnterprise.getEmail(),
+                savedEnterprise.getCnpj(),
+                savedEnterprise.getName(),
+                savedEnterprise.getDescription(),
+                savedEnterprise.getCity()
+        );
     }
 
     //READ
@@ -62,7 +79,7 @@ public class EnterpriseService {
         enterpriseRepository.deleteById(id);
     }
 
-    //UPDATE
+    //UPDATE (lógica de verificação já estava correta aqui)
     public ReturnEnterpriseDTO updateEnterpriseById(UUID id, CreateEnterpriseDTO data) {
         Enterprise existingEnterprise = enterpriseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Enterprise not found"));

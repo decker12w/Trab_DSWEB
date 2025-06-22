@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/job")
+@RequestMapping("/api/job")
 @AllArgsConstructor
 public class JobController {
+
     private final JobService jobService;
+
 
     @PostMapping
     public ResponseEntity<ReturnJobDTO> createJob(@RequestBody @Valid CreateJobDTO data) {
@@ -30,14 +32,15 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobsByCity(@RequestParam String city) {
-        List<ReturnJobDTO> jobs = jobService.findAllActiveJobsByCity(city);
+    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobs() {
+        List<ReturnJobDTO> jobs = jobService.finAllActiveJobs();
         return ResponseEntity.ok(jobs);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobs() {
-        List<ReturnJobDTO> jobs = jobService.finAllActiveJobs();
+
+    @GetMapping("/by-city")
+    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobsByCity(@RequestParam String city) {
+        List<ReturnJobDTO> jobs = jobService.findAllActiveJobsByCity(city);
         return ResponseEntity.ok(jobs);
     }
 

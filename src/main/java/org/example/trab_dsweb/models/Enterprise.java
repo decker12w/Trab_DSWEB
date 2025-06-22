@@ -9,14 +9,14 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "enterprise")
+@Table(name = "enterprises")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class Enterprise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
 
