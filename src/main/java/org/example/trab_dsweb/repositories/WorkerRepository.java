@@ -9,6 +9,4 @@ import java.util.UUID;
 public interface WorkerRepository extends CrudRepository<Worker, UUID> {
     Optional<Worker> findWorkerByCpf(String cpf);
     Optional<Worker> findWorkerByEmail(String email);
-
-
 }

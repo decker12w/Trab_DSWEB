@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/output.css}" rel="stylesheet">
+    <title>Home</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header-component}"></div>
+
+<main>
+    <div class="flex flex-col items-center gap-10">
+        <div class="flex flex-col items-center justify-center mt-[141px] gap-4">
+            <h1 class="text-[4rem] text-text-heading font-semibold font-inter">
+                Encontre sua Próxima Oportunidade
+            </h1>
+            <h2 class="text-[2rem] text-text-subheading font-inter">
+                Milhares de vagas de estágio e emprego esperam por você.
+            </h2>
+        </div>
+        <div class="w-full max-w-[647px]">
+            <div class="relative w-full h-[80px]">
+                <input
+                        class="w-full h-full pl-6 pr-[14px] py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple font-inter text-[20px]"
+                        placeholder="Filtre por cidade"
+                />
+                <button
+                        class="absolute top-1/2 -translate-y-1/2 right-2 text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
+                >
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10">
+        <div th:each="job : ${jobs}">
+            <div th:replace="~{fragments/job-card :: job-card(
+                jobTitle=${job.title},
+                companyName=${job.company},
+                location=${job.location},
+                salary=${job.salary},
+                deadline=${job.deadline}
+            )}">
+            </div>
+        </div>
+
+
+
+    </div>
+</main>
+</body>
+</html>

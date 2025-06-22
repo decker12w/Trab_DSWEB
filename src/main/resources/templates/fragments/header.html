@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
+
+<header th:fragment="header-component" class="px-[166px] py-[28px] flex justify-between items-center bg-white">
+    <div class="justify-center text-brand-purple text-4xl font-semibold font-inter">MiranhaJob</div>
+    <nav>
+        <ul class="flex gap-6 items-center">
+            <li class="px-6 py-3">
+                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/jobs}">Vagas</a>
+            </li>
+            <li class="px-6 py-3">
+                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/jobs/create}">PT-BR</a>
+            </li>
+            <li>
+                <button class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter">Sair</button>
+            </li>
+        </ul>
+    </nav>
+</header>
 
 </body>
 </html>

@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface JobRepository extends CrudRepository<Job, UUID> {
     List<Job> findByJobActiveTrueAndCity(String city);
-    List<Job> findAllByEntrepriseId(UUID entreprise_id);
+    List<Job> findAllByEnterpriseId(UUID enterpriseId);
+    List<Job> findAllActiveTrue();
 }

@@ -16,7 +16,6 @@ import java.util.UUID;
 @RequestMapping("/job")
 @AllArgsConstructor
 public class JobController {
-
     private final JobService jobService;
 
     @PostMapping
@@ -33,6 +32,12 @@ public class JobController {
     @GetMapping
     public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobsByCity(@RequestParam String city) {
         List<ReturnJobDTO> jobs = jobService.findAllActiveJobsByCity(city);
+        return ResponseEntity.ok(jobs);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobs() {
+        List<ReturnJobDTO> jobs = jobService.finAllActiveJobs();
         return ResponseEntity.ok(jobs);
     }
 

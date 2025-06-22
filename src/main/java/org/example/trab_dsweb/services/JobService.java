@@ -32,13 +32,18 @@ public class JobService {
         job.setRemuneration(createJobRequestDTO.remuneration());
         job.setCity(createJobRequestDTO.city());
 
-        Enterprise entreprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
-                .orElseThrow(() -> new NotFoundException("Entreprise not found with ID: " + createJobRequestDTO.enterpriseId()));
+        Enterprise enterprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
+                .orElseThrow(() -> new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId()));
 
-        job.setEntreprise(entreprise);
+        job.setEnterprise(enterprise);
         Job savedJob = jobRepository.save(job);
 
         return ReturnJobDTO.mapJobToDTO(savedJob);
+    }
+    public List<ReturnJobDTO> finAllActiveJobs(){
+        return jobRepository.findAllActiveTrue().stream()
+                .map(ReturnJobDTO::mapJobToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -50,10 +55,8 @@ public class JobService {
 
     @Transactional(readOnly = true)
     public List<ReturnJobDTO> findAllJobsByEnterpriseId(UUID id) {
-        return jobRepository.findAllByEntrepriseId(id).stream()
+        return jobRepository.findAllByEnterpriseId(id).stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }
-
-
 }
