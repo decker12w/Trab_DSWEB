@@ -7,6 +7,8 @@ import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.services.JobApplicationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -38,17 +40,20 @@ public class JobApplicationController {
         return "redirect:/api/job-application/job/" + id;
     }
 
-    @GetMapping("/worker/{id}")
-    public String findAllJobApplicationsByWorkerId(@PathVariable("id") UUID id, ModelMap model) {
-        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerId(id);
+    @GetMapping("/worker")
+    public String findAllJobApplicationsByWorker(ModelMap model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerEmail(email);
         model.addAttribute("jobApplications", jobApplications);
-        return "worker/job-application/list";
+        return "worker/job-applications";
     }
 
     @GetMapping("/job/{id}")
     public String findAllJobApplicationsByJobId(@PathVariable("id") UUID id, ModelMap model) {
         List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByJobId(id);
         model.addAttribute("jobApplications", jobApplications);
-        return "job/job-application/list";
+        return "job/job-applications";
     }
 }
