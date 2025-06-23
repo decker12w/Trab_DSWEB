@@ -30,8 +30,9 @@ public class JobController {
     @GetMapping("/register")
     public String showRegisterJobForm(Model model) {
         if (!model.containsAttribute("jobData")) {
-            model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null, null, null));
+            model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null, null));
         }
+
 
         model.addAttribute("formAction", "/api/jobs/register");
         addJobTypeOptionsToModel(model);
@@ -47,6 +48,7 @@ public class JobController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.jobData", bindingResult);
             redirectAttributes.addFlashAttribute("jobData", jobData);
+
             return "redirect:/api/jobs/register";
         }
 
@@ -54,14 +56,15 @@ public class JobController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
 
-            jobService.createJob(jobData);
+            jobService.createJob(jobData, email);
 
             redirectAttributes.addFlashAttribute("successMessage", "Vaga criada com sucesso!");
-            return "redirect:/dashboard/enterprise";
+            return "redirect:/api/enterprise/dashboard";
         } catch (Exception e) {
             System.out.println("Error creating job: " + e.getMessage());
             redirectAttributes.addFlashAttribute("jobData", jobData);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
             return "redirect:/api/jobs/register";
         }
     }

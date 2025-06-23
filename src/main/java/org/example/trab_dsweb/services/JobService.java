@@ -23,7 +23,7 @@ public class JobService {
     private JobRepository jobRepository;
     private EnterpriseRepository enterpriseRepository;
 
-    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO) {
+    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO, String enterpriseEmail) {
         Job job = new Job();
         job.setDescription(createJobRequestDTO.description());
         job.setTitle(createJobRequestDTO.title());
@@ -35,10 +35,10 @@ public class JobService {
         job.setRemuneration(createJobRequestDTO.remuneration());
         job.setCity(createJobRequestDTO.city());
 
-        Enterprise enterprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
+        Enterprise enterprise = enterpriseRepository.findByEmail(enterpriseEmail)
                 .orElseThrow(() -> {
-                    log.error("Enterprise not found with ID={}", createJobRequestDTO.enterpriseId());
-                    return new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId());
+                    log.error("Empresa não encontrada com o e-mail: {}", enterpriseEmail);
+                    return new NotFoundException("Empresa não encontrada com o e-mail: " + enterpriseEmail);
                 });
 
         job.setEnterprise(enterprise);
