@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/output.css}" rel="stylesheet">
     <title>Home</title>
 </head>
+
 <body>
 
 <div th:replace="~{fragments/header :: header-component}"></div>
@@ -21,35 +23,234 @@
             </h2>
         </div>
         <div class="w-full max-w-[647px]">
-            <div class="relative w-full h-[80px]">
+            <form action="/" method="GET" class="relative w-full h-[80px]">
                 <input
+                        name="city"
+                        th:value="${param.city}"
                         class="w-full h-full pl-6 pr-[14px] py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple font-inter text-[20px]"
                         placeholder="Filtre por cidade"
                 />
                 <button
+                        type="submit"
                         class="absolute top-1/2 -translate-y-1/2 right-2 text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
                 >
                     Buscar
                 </button>
-            </div>
+            </form>
         </div>
     </div>
+
     <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10">
         <div th:each="job : ${jobs}">
             <div th:replace="~{fragments/job-card :: job-card(
-            jobTitle=${job.description},
-            companyName=${job.enterprise.name()},
-            location=${job.city},
-            salary=${#numbers.formatCurrency(job.remuneration)},
-            deadline=${#temporals.format(job.applicationDeadline, 'dd/MM/yyyy')}
-        )}">
-            </div>
+                    jobTitle=${job.description},
+                    companyName=${job.enterprise.name()},
+                    location=${job.city},
+                    salary=${job.remuneration},
+                    jobType=${job.jobType},
+                    deadline=${job.applicationDeadline},
+                    jobDescription=${job.description},
+                    jobId=${job.id},
+                    jobSkills=${job.getSkillsAsString()}
+                )}"></div>
         </div>
     </div>
-
-
-
-    </div>
 </main>
+
+<dialog id="job_details_modal" class="pt-[60px] pb-[28px] pl-[32px] pr-[20px] bg-white rounded-lg shadow-xl w-full max-w-[1222px] absolute inset-0 m-auto">
+    <button onclick="job_details_modal.close()" class="absolute top-4 right-5 text-2xl font-bold text-gray-500 hover:text-gray-800 size-6 cursor-pointer">&times;</button>
+    <div class="flex justify-between">
+        <div class="flex flex-col gap-10">
+            <div class="flex flex-col gap-3 ">
+                <h3 id="modal_job_title" class="font-bold text-[40px] text-text-heading">Título da vaga</h3>
+                <p id="modal_company_location" class="text-[24px] font-inter text-[#888D97]">
+                    Empresa - Cidade
+                </p>
+            </div>
+            <div class="flex flex-col gap-3 ">
+                <h3 class="text-[32px] font-inter text-[#3E4053]">Descrição da Vaga</h3>
+                <h4 id="modal_job_description" class="text-[20px] text-[#828493] max-w-prose">Descrição...</h4>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <h3 class="text-[32px] font-inter text-[#3E4053]">Habilidades Necessárias</h3>
+                <div id="modal_skills_list" class="flex flex-wrap gap-2">
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-[#E1E1E1] px-6 pb-6 pt-3 flex flex-col justify-between items-start rounded-xl gap-[125px]">
+            <div class="flex flex-col gap-[60px]">
+                <div class="flex flex-col gap-5 ">
+                    <h3 class="text-[#797B8A] text-[20px] font-inter">Remuneração</h3>
+                    <span id="modal_salary" class="font-inter text-[#33AA63]">R$45.000,00</span>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <span class="text-[20px] text-[#777A8A] font-inter ">Data Limite</span>
+                    <span id="modal_deadline" class="text-[#E1595C] font-inter text-[16px]">14/08/2025</span>
+                </div>
+            </div>
+            <button onclick="switchToUploadModal()" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer">Candidatar-se Agora</button>
+        </div>
+    </div>
+</dialog>
+
+<dialog id="upload_cv_modal" class="pt-[60px] pb-[28px] pl-[32px] pr-[20px] bg-white rounded-lg shadow-xl w-full max-w-[1222px] absolute inset-0 m-auto">
+    <form id="application-form">
+        <input type="hidden" id="hidden_job_id" name="jobId">
+        <button type="button" onclick="closeUploadModalAndReset()" class="absolute top-4 right-5 text-2xl font-bold text-gray-500 hover:text-gray-800 size-6 cursor-pointer">&times;</button>
+        <div class="flex flex-col gap-10">
+            <div class="flex flex-col gap-3 ">
+                <h3 class="font-bold text-[40px] text-text-heading">Finalizar Candidatura </h3>
+                <p id="upload_modal_subtitle" class="text-[24px] font-inter text-[#888D97]">
+                    Para a vaga de Desenvolvedor Back-End
+                </p>
+            </div>
+            <div class="flex flex-col gap-3 ">
+                <h3 class="text-[24px] font-inter text-[#3E4053]">Anexe seu currículo (PDF)</h3>
+                <label for="file-upload" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                    <div id="upload-prompt" class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg class="w-10 h-10 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                        </svg>
+                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Clique para enviar</span> ou arraste e solte</p>
+                        <p class="text-xs text-gray-500">APENAS PDF (MAX. 5MB)</p>
+                    </div>
+                    <div id="file-name-display" class="hidden text-center p-4"></div>
+                </label>
+                <input id="file-upload" name="resume" type="file" class="hidden" accept=".pdf" required/>
+            </div>
+            <div class="flex gap-2.5">
+                <button type="button" onclick="closeUploadModalAndReset()" class="px-[10px] py-[16px] w-full bg-[#8383834D] text-[#000000] cursor-pointer">Cancelar</button>
+                <button type="button" id="submit-application-btn" onclick="handleApplicationSubmit()" class="px-[10px] py-[16px] w-full bg-[#16A34A] text-[#FFFFFF] cursor-pointer disabled:bg-gray-400">Enviar Candidatura</button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<script>
+    const detailsModal = document.getElementById('job_details_modal');
+    const uploadModal = document.getElementById('upload_cv_modal');
+
+    const modalJobTitle = document.getElementById('modal_job_title');
+    const modalCompanyLocation = document.getElementById('modal_company_location');
+    const modalJobDescription = document.getElementById('modal_job_description');
+    const modalSalary = document.getElementById('modal_salary');
+    const modalDeadline = document.getElementById('modal_deadline');
+    const modalSkillsList = document.getElementById('modal_skills_list');
+
+    const uploadModalSubtitle = document.getElementById('upload_modal_subtitle');
+    const fileInput = document.getElementById('file-upload');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const hiddenJobIdInput = document.getElementById('hidden_job_id');
+    const submitBtn = document.getElementById('submit-application-btn');
+
+    function openDetailsModal(cardElement) {
+        const jobId = cardElement.getAttribute('data-job-id');
+        const jobTitle = cardElement.getAttribute('data-job-title');
+        const companyName = cardElement.getAttribute('data-company-name');
+        const location = cardElement.getAttribute('data-location');
+        const salary = cardElement.getAttribute('data-salary');
+        const deadline = cardElement.getAttribute('data-deadline');
+        const jobDescription = cardElement.getAttribute('data-job-description');
+        const jobSkillsString = cardElement.getAttribute('data-job-skills');
+
+        hiddenJobIdInput.value = jobId;
+        modalJobTitle.textContent = jobTitle;
+        modalCompanyLocation.textContent = `${companyName} - ${location}`;
+        modalJobDescription.textContent = jobDescription;
+        modalSalary.textContent = salary;
+        modalDeadline.textContent = deadline;
+
+        modalSkillsList.innerHTML = '';
+        if (jobSkillsString && jobSkillsString.length > 0) {
+            const skillsArray = jobSkillsString.split(',');
+            skillsArray.forEach(skill => {
+                const skillElement = document.createElement('span');
+                skillElement.textContent = skill.trim();
+                skillElement.className = 'bg-indigo-100 text-indigo-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded';
+                modalSkillsList.appendChild(skillElement);
+            });
+        }
+
+        if (detailsModal) {
+            detailsModal.showModal();
+        }
+    }
+
+    function switchToUploadModal() {
+        const currentJobTitle = modalJobTitle.textContent;
+        uploadModalSubtitle.textContent = `Para a vaga de ${currentJobTitle}`;
+        if (detailsModal) {
+            detailsModal.close();
+        }
+        if (uploadModal) {
+            uploadModal.showModal();
+        }
+    }
+
+    async function handleApplicationSubmit() {
+        if (fileInput.files.length === 0) {
+            alert('Por favor, anexe seu currículo em PDF.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+
+        const formData = new FormData();
+        formData.append('resume', fileInput.files[0]);
+        formData.append('jobId', hiddenJobIdInput.value);
+
+        try {
+            const response = await fetch('/api/applications/apply', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const resultText = await response.text();
+
+            if (response.ok) {
+                alert(resultText);
+                closeUploadModalAndReset();
+            } else {
+                alert(`Erro: ${resultText}`);
+            }
+        } catch (error) {
+            console.error('Erro de rede ao enviar candidatura:', error);
+            alert('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Candidatura';
+        }
+    }
+
+    function resetFileInput() {
+        fileInput.value = '';
+        uploadPrompt.classList.remove('hidden');
+        fileNameDisplay.classList.add('hidden');
+        fileNameDisplay.textContent = '';
+    }
+
+    function closeUploadModalAndReset() {
+        if (uploadModal) {
+            uploadModal.close();
+        }
+        resetFileInput();
+    }
+
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            const fileName = this.files[0].name;
+            uploadPrompt.classList.add('hidden');
+            fileNameDisplay.textContent = `Arquivo selecionado: ${fileName}`;
+            fileNameDisplay.classList.remove('hidden');
+        } else {
+            resetFileInput();
+        }
+    });
+</script>
+
 </body>
 </html>

@@ -7,14 +7,16 @@ import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.repositories.WorkerRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class WorkerService {
-
+    private BCryptPasswordEncoder encoder;
     private final WorkerRepository workerRepository;
 
     public ReturnWorkerDTO createWorker(CreateWorkerDTO data) {
@@ -28,7 +30,7 @@ public class WorkerService {
 
         Worker newWorker = new Worker();
         newWorker.setEmail(data.email());
-        newWorker.setPassword(data.password());
+        newWorker.setPassword(encoder.encode(data.password()));
         newWorker.setCpf(data.cpf());
         newWorker.setName(data.name());
         newWorker.setGender(data.gender());
@@ -58,6 +60,17 @@ public class WorkerService {
                 worker.getGender(),
                 worker.getBirthDate()
         );
+    }
+    public List<ReturnWorkerDTO> listAllWorkers() {
+        return workerRepository.findAll().stream()
+                .map(worker -> new ReturnWorkerDTO(
+                        worker.getId(),
+                        worker.getEmail(),
+                        worker.getCpf(),
+                        worker.getName(),
+                        worker.getGender(),
+                        worker.getBirthDate()))
+                .toList();
     }
 
     public void deleteWorkerById(UUID id) {

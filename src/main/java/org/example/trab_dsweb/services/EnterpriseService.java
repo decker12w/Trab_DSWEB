@@ -7,27 +7,23 @@ import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.repositories.EnterpriseRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor // Adicionando a injeção de dependência que faltava
+@AllArgsConstructor
 public class EnterpriseService {
-
+    private BCryptPasswordEncoder encoder;
     private final EnterpriseRepository enterpriseRepository;
 
-    //CREATE
     public ReturnEnterpriseDTO createEnterprise(CreateEnterpriseDTO data){
-
-        // FORMA CORRETA DA VERIFICAÇÃO:
-        // Se um Optional com este e-mail estiver presente, lance uma exceção.
         enterpriseRepository.findEnterpriseByEmail(data.email())
                 .ifPresent(enterprise -> {
                     throw new ConflictException("Enterprise with this email already exists");
                 });
 
-        // O mesmo para o CNPJ
         enterpriseRepository.findEnterpriseByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
                     throw new ConflictException("Enterprise with this CNPJ already exists");
@@ -37,15 +33,12 @@ public class EnterpriseService {
         newEnterprise.setName(data.name());
         newEnterprise.setEmail(data.email());
         newEnterprise.setCnpj(data.cnpj());
-        // Adicionando os campos que faltavam no seu DTO
-        newEnterprise.setPassword(data.password());
+        newEnterprise.setPassword(encoder.encode(data.password()));
         newEnterprise.setDescription(data.description());
         newEnterprise.setCity(data.city());
 
-
         Enterprise savedEnterprise = enterpriseRepository.save(newEnterprise);
 
-        // O DTO de retorno já tem todos os campos da entidade.
         return new ReturnEnterpriseDTO(
                 savedEnterprise.getId(),
                 savedEnterprise.getEmail(),
@@ -56,7 +49,6 @@ public class EnterpriseService {
         );
     }
 
-    //READ
     public ReturnEnterpriseDTO getEnterpriseById(UUID id) {
         Enterprise enterprise = enterpriseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Enterprise not found"));
@@ -71,7 +63,6 @@ public class EnterpriseService {
         );
     }
 
-    //DELETE
     public void deleteEnterpriseById(UUID id) {
         if (!enterpriseRepository.existsById(id)) {
             throw new NotFoundException("Enterprise not found");
@@ -79,7 +70,6 @@ public class EnterpriseService {
         enterpriseRepository.deleteById(id);
     }
 
-    //UPDATE (lógica de verificação já estava correta aqui)
     public ReturnEnterpriseDTO updateEnterpriseById(UUID id, CreateEnterpriseDTO data) {
         Enterprise existingEnterprise = enterpriseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Enterprise not found"));

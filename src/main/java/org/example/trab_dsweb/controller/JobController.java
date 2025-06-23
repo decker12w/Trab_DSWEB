@@ -22,13 +22,13 @@ public class JobController {
 
     @PostMapping
     public ResponseEntity<ReturnJobDTO> createJob(@RequestBody @Valid CreateJobDTO data) {
-        ReturnJobDTO response = jobService.createJob(data);
+        ReturnJobDTO createdJob = jobService.createJob(data);
         return ResponseEntity
                 .created(ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("/{id}")
-                        .buildAndExpand(response.id())
+                        .buildAndExpand(createdJob.id())
                         .toUri())
-                .body(response);
+                .body(createdJob);
     }
 
     @GetMapping

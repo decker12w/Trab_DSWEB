@@ -5,6 +5,10 @@
     html {
         font-family: 'Inter', sans-serif;
     }
+
+    body {
+        background: #F9FAFB;
+    }
 }
 
 @layer utilities {
@@ -42,5 +46,10 @@
 
     .bg-white {
         background-color: #ffffff;
+    }
+
+    dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(2px);
     }
 }

@@ -71,6 +71,7 @@ public class JobApplicationService {
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
                 .collect(Collectors.toList());
     }
+<<<<<<< HEAD
 
     @Transactional(readOnly = true)
     public List<ReturnJobApplicationDTO> listWorkersByJob(UUID vagaId) {
@@ -79,4 +80,6 @@ public class JobApplicationService {
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
                 .collect(Collectors.toList());
     }
+=======
+>>>>>>> 477f962c9b4c7d2fab8a7e773aa260168c2cf2da
 }

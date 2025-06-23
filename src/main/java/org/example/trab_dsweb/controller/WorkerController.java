@@ -2,19 +2,20 @@ package org.example.trab_dsweb.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.trab_dsweb.dto.*;
+import org.example.trab_dsweb.dto.CreateWorkerDTO;
+import org.example.trab_dsweb.dto.ReturnWorkerDTO;
 import org.example.trab_dsweb.services.WorkerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("/work")
+@Controller
+@RequestMapping("/api/worker")
 @AllArgsConstructor
-public class WorkController {
+public class WorkerController {
 
     private final WorkerService workerService;
 
@@ -23,12 +24,16 @@ public class WorkController {
         return ResponseEntity.ok(workerService.getWorkerById(id));
     }
 
-    @PostMapping()
-    public ResponseEntity<ReturnWorkerDTO> createWorker(@RequestBody @Valid CreateWorkerDTO data) {
-        ReturnWorkerDTO createdWorker = workerService.createWorker(data);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(createdWorker.id()).toUri();
-        return ResponseEntity.created(uri).body(createdWorker);
+    @GetMapping
+    public ResponseEntity<List<ReturnWorkerDTO>> getAllWorkers() {
+        List<ReturnWorkerDTO> workers = workerService.listAllWorkers();
+        return ResponseEntity.ok(workers);
+    }
+
+    @PostMapping("/register")
+    public String createWorker(@Valid CreateWorkerDTO data) {
+        workerService.createWorker(data);
+        return "redirect:/login";
     }
 
     @PutMapping("/{id}")
