@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/output.css}" rel="stylesheet">
-    <title>Home</title>
+    <title th:text="#{index.accessAccount}">Home</title>
 </head>
 
 <body>
@@ -15,10 +15,12 @@
 <main>
     <div class="flex flex-col items-center gap-10">
         <div class="flex flex-col items-center justify-center mt-[141px] gap-4">
-            <h1 class="text-[4rem] text-text-heading font-semibold font-inter">
+            <h1 class="text-[4rem] text-text-heading font-semibold font-inter"
+                th:text="#{index.title}">
                 Encontre sua Próxima Oportunidade
             </h1>
-            <h2 class="text-[2rem] text-text-subheading font-inter">
+            <h2 class="text-[2rem] text-text-subheading font-inter"
+            th:text="#{index.subtitle}">
                 Milhares de vagas de estágio e emprego esperam por você.
             </h2>
         </div>
@@ -28,12 +30,12 @@
                         name="city"
                         th:value="${param.city}"
                         class="w-full h-full pl-6 pr-[14px] py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple font-inter text-[20px]"
-                        placeholder="Filtre por cidade"
+                        th:placeholder="#{index.placeholder}"
                 />
                 <button
                         type="submit"
                         class="absolute top-1/2 -translate-y-1/2 right-2 text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
-                >
+                        th:text="#{index.button}">
                     Buscar
                 </button>
             </form>
@@ -63,7 +65,7 @@
     <div class="flex justify-between">
         <div class="flex flex-col gap-10">
             <div class="flex flex-col gap-3 ">
-                <h3 id="modal_job_title" class="font-bold text-[40px] text-text-heading">Título da vaga</h3>
+                <h3 id="modal_job_title" class="font-bold text-[40px] text-text-heading" th:text="#{modal.title}">Título da vaga</h3>
                 <p id="modal_company_location" class="text-[24px] font-inter text-[#888D97]">
                     Empresa - Cidade
                 </p>
