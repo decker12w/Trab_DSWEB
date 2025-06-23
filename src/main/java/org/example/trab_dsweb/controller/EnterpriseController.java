@@ -17,24 +17,21 @@ import java.util.UUID;
 public class EnterpriseController {
     private EnterpriseService enterpriseService;
 
-
     @GetMapping("/{id}")
     public ResponseEntity<ReturnEnterpriseDTO> getEnterpriseById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(enterpriseService.getEnterpriseById(id));
     }
 
-
-    @PostMapping
-    public ResponseEntity<ReturnEnterpriseDTO> create(@RequestBody CreateEnterpriseDTO data) {
+    @PostMapping("/register")
+    public ResponseEntity<ReturnEnterpriseDTO> create(@RequestBody @Valid CreateEnterpriseDTO data) {
         ReturnEnterpriseDTO createdEnterprise = enterpriseService.createEnterprise(data);
         return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<ReturnEnterpriseDTO> updateEnterprise(
             @PathVariable("id") UUID id,
-            @RequestBody @Valid CreateEnterpriseDTO data) {
+            @Valid CreateEnterpriseDTO data) {
 
         ReturnEnterpriseDTO updatedEnterprise = enterpriseService.updateEnterpriseById(id, data);
         return ResponseEntity.ok(updatedEnterprise);

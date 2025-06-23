@@ -3,7 +3,6 @@ package org.example.trab_dsweb.repositories;
 import org.example.trab_dsweb.models.Enterprise;
 import org.springframework.data.repository.CrudRepository;
 
-
 import java.util.Optional;
 import java.util.UUID;
 

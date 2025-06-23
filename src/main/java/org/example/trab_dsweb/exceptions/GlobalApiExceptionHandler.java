@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalApiExceptionHandler {
-
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ApiErrorResponse> handleBaseException(BaseException ex, WebRequest request) {
 
@@ -27,7 +25,6 @@ public class GlobalApiExceptionHandler {
         return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
 
-    // Para não dar erro 500 para rotas que nao existem
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex, WebRequest request) {
         ApiErrorResponse errorResponse = new ApiErrorResponse(
@@ -48,7 +45,6 @@ public class GlobalApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
-
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Ocorreu um erro interno inesperado no servidor."
