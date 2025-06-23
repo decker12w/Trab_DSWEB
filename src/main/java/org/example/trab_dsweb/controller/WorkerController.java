@@ -17,25 +17,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/worker")
+@RequestMapping("/workers")
 @AllArgsConstructor
 public class WorkerController {
-
     private final WorkerService workerService;
 
     @GetMapping("/register")
     public String showRegisterWorkerForm(Model model) {
-
         model.addAttribute("workerData", new CreateWorkerDTO(null, null, null, null, null, null));
         model.addAttribute("isEdit", false);
-        model.addAttribute("formAction", "/api/worker/register");
-
-
+        model.addAttribute("formAction", "/workers/register");
         Map<String, String> genderOptions = Arrays.stream(Gender.values())
                 .collect(Collectors.toMap(Enum::name, Gender::getDisplayName));
         model.addAttribute("genderOptions", genderOptions.entrySet());
-
-        return "worker-form";
+        return "worker/form";
     }
 
     @PostMapping("/register")
@@ -46,7 +41,7 @@ public class WorkerController {
             return "redirect:/login";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/api/worker/register";
+            return "redirect:/workers/register";
         }
     }
 }

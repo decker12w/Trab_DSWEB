@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/home")
+@RequestMapping("/home")
 @AllArgsConstructor
 public class HomeController {
     private final JobService jobService;

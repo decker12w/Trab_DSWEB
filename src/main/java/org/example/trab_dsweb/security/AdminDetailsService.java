@@ -1,8 +1,8 @@
 package org.example.trab_dsweb.security;
 
 import lombok.AllArgsConstructor;
-import org.example.trab_dsweb.models.Enterprise;
-import org.example.trab_dsweb.repositories.EnterpriseRepository;
+import org.example.trab_dsweb.models.Admin;
+import org.example.trab_dsweb.repositories.AdminRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class EnterpriseDetailsService implements UserDetailsService {
-    private EnterpriseRepository enterpriseRepository;
+public class AdminDetailsService implements UserDetailsService {
+    private AdminRepository adminRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Enterprise enterprise = enterpriseRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Enterprise not found"));
-        return new EnterpriseDetails(enterprise);
+        Admin admin = adminRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
+        return new AdminDetails(admin);
     }
 }

@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface JobRepository extends CrudRepository<Job, UUID> {
-    List<Job> findByJobActiveTrueAndCityContainingIgnoreCase(String city);
+    List<Job> findAllByJobActiveTrueAndCityContainingIgnoreCase(String city);
+    List<Job> findAllByJobActiveTrue();
     List<Job> findAllByEnterpriseId(UUID enterpriseId);
-    List<Job> findByJobActiveTrue();
-    List<Job> findByEnterprise_Email(String email);
 }

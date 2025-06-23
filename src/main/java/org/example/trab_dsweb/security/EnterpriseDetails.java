@@ -31,6 +31,10 @@ public class EnterpriseDetails implements UserDetails {
         return enterprise.getEmail();
     }
 
+    public Enterprise getEnterprise() {
+        return this.enterprise;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

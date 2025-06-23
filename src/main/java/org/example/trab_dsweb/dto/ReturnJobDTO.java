@@ -9,16 +9,15 @@ import java.util.UUID;
 
 public record ReturnJobDTO(
         UUID id,
+        String title,
         String description,
-        String CNPJ,
         JobType jobType,
-        ReturnEnterpriseInJobDTO enterprise,
         LocalDateTime applicationDeadline,
-        boolean jobActive,
         Double remuneration,
         List<String> skills,
         String city,
-        String title
+        boolean jobActive,
+        ReturnEnterpriseInJobDTO enterprise
 ) {
 
     public String getSkillsAsString() {
@@ -37,15 +36,15 @@ public record ReturnJobDTO(
 
         return new ReturnJobDTO(
                 job.getId(),
+                job.getTitle(),
                 job.getDescription(),
-                job.getCNPJ(),
                 job.getJobType(),
-                enterpriseDTO,
                 job.getApplicationDeadline(),
-                job.isJobActive(),
                 job.getRemuneration(),
                 job.getSkills(),
                 job.getCity(),
-                job.getTitle());
+                job.isJobActive(),
+                enterpriseDTO
+        );
     }
 }
