@@ -7,20 +7,22 @@ import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.services.JobApplicationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
 
-@RestController
+@Controller
 @RequestMapping("/api/job-application")
 @AllArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
 
     @PostMapping
-    public ResponseEntity<ReturnJobApplicationDTO> createJobApplication(@RequestBody @Valid CreateJobApplicationDTO data) {
+    public ResponseEntity<ReturnJobApplicationDTO> createJobApplication(@Valid CreateJobApplicationDTO data) {
         ReturnJobApplicationDTO createdJobApplication = jobApplicationService.createJobApplication(data);
         return ResponseEntity
                 .created(ServletUriComponentsBuilder.fromCurrentRequest()
@@ -30,21 +32,23 @@ public class JobApplicationController {
                 .body(createdJobApplication);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<ReturnJobApplicationDTO> updateJobApplicationStatus(@PathVariable UUID id, @RequestBody @Valid UpdateJobApplicationStatusDTO data) {
-        ReturnJobApplicationDTO updateJobApplication = jobApplicationService.updateJobApplicationStatus(id, data);
-        return ResponseEntity.ok(updateJobApplication);
+    @PostMapping("/{id}/status")
+    public String updateJobApplicationStatus(@PathVariable UUID id, @Valid UpdateJobApplicationStatusDTO data) {
+        jobApplicationService.updateJobApplicationStatus(id, data);
+        return "redirect:/api/job-application/job/" + id;
     }
 
     @GetMapping("/worker/{id}")
-    public ResponseEntity<List<ReturnJobApplicationDTO>> findAllJobApplicationsByWorkerId(@PathVariable("id") UUID id) {
+    public String findAllJobApplicationsByWorkerId(@PathVariable("id") UUID id, ModelMap model) {
         List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerId(id);
-        return ResponseEntity.ok(jobApplications);
+        model.addAttribute("jobApplications", jobApplications);
+        return "worker/job-application/list";
     }
 
     @GetMapping("/job/{id}")
-    public ResponseEntity<List<ReturnJobApplicationDTO>> findAllJobApplicationsByJobId(@PathVariable("id") UUID id) {
+    public String findAllJobApplicationsByJobId(@PathVariable("id") UUID id, ModelMap model) {
         List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByJobId(id);
-        return ResponseEntity.ok(jobApplications);
+        model.addAttribute("jobApplications", jobApplications);
+        return "job/job-application/list";
     }
 }
