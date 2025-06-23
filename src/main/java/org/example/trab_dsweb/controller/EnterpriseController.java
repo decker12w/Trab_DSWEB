@@ -48,23 +48,19 @@ public class EnterpriseController {
         }
     }
 
-    @GetMapping("/enterprise")
+    @GetMapping("/dashboard")
     public String showEnterpriseDashboard(Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
-
         Enterprise enterprise = enterpriseRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada para o e-mail: " + email));
 
-
         List<ReturnJobDTO> jobs = jobService.findAllJobsByEnterpriseEmail(email);
-
 
         model.addAttribute("enterpriseName", enterprise.getName());
         model.addAttribute("jobs", jobs);
-
 
         return "enterprise-dashboard";
     }
