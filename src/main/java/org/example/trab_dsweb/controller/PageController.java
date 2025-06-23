@@ -9,6 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.UUID;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.example.trab_dsweb.enums.JobType;
+import org.example.trab_dsweb.dto.ReturnEnterpriseInJobDTO;
+import java.time.LocalDateTime;
+
+
 
 /**
  * Este Controller é responsável por RENDERIZAR PÁGINAS HTML com Thymeleaf.
@@ -51,4 +59,59 @@ public class PageController {
         // Se seu arquivo se chama index.html, retorne "index".
         return "index";
     }
-}
+
+    @GetMapping("/CadastroEmpresa")
+    public String cadastroEmpresa() {
+        return "CadastroEmpresa";
+    }
+
+    @GetMapping("/PainelEmpresa/{id}")
+    public String dashboard(@PathVariable("id") UUID id, Model model) {
+        List<ReturnJobDTO> jobs = jobService.findAllJobsByEnterpriseId(id);
+        model.addAttribute("nome", "Maria da Silva");
+        model.addAttribute("candidaturas", jobs);
+        return "painelEnterprise";
+    }
+
+    @GetMapping("/PainelEmpresaFake")
+        public String painelEmpresaFake(Model model) {
+            // Crie alguns DTOs fake
+            List<ReturnJobDTO> jobs = List.of(
+                    new ReturnJobDTO(
+                            UUID.randomUUID(),
+                            "Desenvolvedor Frontend",
+                            "12.345.678/0001-99",
+                            JobType.INTERNSHIP,
+                            new ReturnEnterpriseInJobDTO(UUID.randomUUID(), "Empresa Fake", "12.345.678/0001-99"),
+                            LocalDateTime.now().plusDays(10),
+                            true,
+                            4000.0,
+                            List.of("React", "CSS", "Tailwind"),
+                            "São Paulo",                  // city
+                            "Desenvolvedor Frontend",     // title (pode repetir ou variar)
+                            15                            // numOfCandidates (exemplo mock)
+                    ),
+                    new ReturnJobDTO(
+                            UUID.randomUUID(),
+                            "Analista de Dados",
+                            "98.765.432/0001-11",
+                            JobType.FULL_TIME,
+                            new ReturnEnterpriseInJobDTO(UUID.randomUUID(), "Outra Empresa", "98.765.432/0001-11"),
+                            LocalDateTime.now().plusDays(40),
+                            true,
+                            6500.0,
+                            List.of("SQL", "PowerBI", "Excel"),
+                            "Belo Horizonte",             // city
+                            "Analista de Dados",          // title
+                            8                             // numOfCandidates
+                    )
+            );
+
+
+        model.addAttribute("nomeEmpresa", "Empresa Teste");
+            model.addAttribute("vagas", jobs);
+            return "painelEnterprise";
+        }
+
+
+    }

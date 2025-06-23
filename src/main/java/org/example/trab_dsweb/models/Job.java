@@ -46,6 +46,12 @@ public class Job {
     @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private Integer numOfCandidates;
+
     @ElementCollection
     @CollectionTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"))
     @Column(name = "skill", nullable = false)

@@ -10,6 +10,8 @@ import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.example.trab_dsweb.repositories.JobRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +56,7 @@ public class JobService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReturnJobDTO> findAllJobsByEnterpriseId(UUID id) {
+    public List<ReturnJobDTO> findAllJobsByEnterpriseId(@PathVariable("id") UUID id) {
         return jobRepository.findAllByEnterpriseId(id).stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());

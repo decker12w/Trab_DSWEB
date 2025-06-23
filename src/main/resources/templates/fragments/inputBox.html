@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="input(label, type, name, placeholder)" class="md:col-span-2">
+    <label th:for="&{name}" class="block text-sm font-medium" th:text="${label}">Label</label>
+    <input
+            th:type="${type}"
+            th:id="${name}"
+            th:name="${name}"
+            th:placeholder="${placeholder}"
+            class="mt-1 w-full p-2 border-[1px] border-[#e3e3e3] rounded-lg"
+            required
+    />
+</div>
+</body>
+</html>

@@ -46,4 +46,6 @@ public class EnterpriseController {
         enterpriseService.deleteEnterpriseById(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

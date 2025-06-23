@@ -17,7 +17,9 @@ public record ReturnJobDTO(
         boolean jobActive,
         Double remuneration,
         List<String> skills,
-        String city
+        String city,
+        String title,
+        Integer numOfCandidates
 ) {
     public static ReturnJobDTO mapJobToDTO(Job job) {
         ReturnEnterpriseInJobDTO enterpriseDTO = new ReturnEnterpriseInJobDTO(
@@ -36,6 +38,9 @@ public record ReturnJobDTO(
                 job.isJobActive(),
                 job.getRemuneration(),
                 job.getSkills(),
-                job.getCity());
+                job.getCity(),
+                job.getTitle(),
+                job.getNumOfCandidates()
+        );
     }
 }
