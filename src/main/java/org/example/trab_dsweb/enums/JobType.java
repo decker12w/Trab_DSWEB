@@ -1,6 +1,18 @@
 package org.example.trab_dsweb.enums;
 
 public enum JobType {
-    INTERNSHIP,
-    FULL_TIME,
+    FULL_TIME("Tempo Integral"),
+
+    INTERNSHIP("Estágio");
+
+    private final String displayName;
+
+
+    JobType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 }

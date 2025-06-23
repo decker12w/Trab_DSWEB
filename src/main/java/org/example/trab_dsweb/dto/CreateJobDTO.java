@@ -33,6 +33,8 @@ public record CreateJobDTO(
         List<String> skills,
 
         @NotNull
-        Double remuneration
+        Double remuneration,
+
+        String title
 ) {
 }

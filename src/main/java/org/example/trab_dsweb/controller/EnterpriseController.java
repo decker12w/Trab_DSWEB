@@ -1,87 +1,71 @@
 package org.example.trab_dsweb.controller;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
-import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
+import org.example.trab_dsweb.dto.ReturnJobDTO;
+import org.example.trab_dsweb.models.Enterprise;
+import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.example.trab_dsweb.services.EnterpriseService;
-import org.example.trab_dsweb.enums.JobType;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.example.trab_dsweb.services.JobService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/api/enterprise")
 @AllArgsConstructor
 public class EnterpriseController {
-    private EnterpriseService enterpriseService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReturnEnterpriseDTO> getEnterpriseById(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok(enterpriseService.getEnterpriseById(id));
-    }
+    private final EnterpriseService enterpriseService;
+    private final EnterpriseRepository enterpriseRepository;
+    private final JobService jobService;
 
     @GetMapping("/register")
-    public String registerEnterprisePage(ModelMap model) {
+    public String showRegisterEnterpriseForm(Model model) {
         model.addAttribute("enterpriseData", new CreateEnterpriseDTO(null, null, null, null, null, null));
-
-        Map<String, String> jobTypeOptions = new LinkedHashMap<>();
-        jobTypeOptions.put(JobType.INTERNSHIP.name(), "Estágio");
-        jobTypeOptions.put(JobType.FULL_TIME.name(), "Emprego");
-        model.addAttribute("jobTypeOptions", jobTypeOptions);
-
-        return "enterprise/register";
+        model.addAttribute("isEdit", false);
+        model.addAttribute("formAction", "/api/enterprise/register");
+        return "enterprise-form";
     }
 
     @PostMapping("/register")
-    public String registerEnterprise(@ModelAttribute("enterpriseData") @Valid CreateEnterpriseDTO data, BindingResult result, ModelMap model, RedirectAttributes attr) {
-        if (result.hasErrors()) {
-            Map<String, String> jobTypeOptions = new LinkedHashMap<>();
-            jobTypeOptions.put(JobType.INTERNSHIP.name(), "Estágio");
-            jobTypeOptions.put(JobType.FULL_TIME.name(), "Emprego");
-            model.addAttribute("jobTypeOptions", jobTypeOptions);
-            return "enterprise/register";
-        }
-
+    public String processRegisterEnterprise(@ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
         try {
-            enterpriseService.createEnterprise(data);
-        } catch (ConflictException e) {
-            result.reject("global.error", e.getMessage());
-            Map<String, String> jobTypeOptions = new LinkedHashMap<>();
-            jobTypeOptions.put(JobType.INTERNSHIP.name(), "Estágio");
-            jobTypeOptions.put(JobType.FULL_TIME.name(), "Emprego");
-            model.addAttribute("jobTypeOptions", jobTypeOptions);
-            return "enterprise/register";
+            enterpriseService.createEnterprise(enterpriseData);
+            redirectAttributes.addFlashAttribute("successMessage", "Empresa cadastrada com sucesso!");
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/api/enterprise/register";
         }
-
-        attr.addFlashAttribute("successMessage", "Cadastro realizado com sucesso! Faça seu login.");
-
-        return "redirect:/login";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ReturnEnterpriseDTO> updateEnterprise(
-            @PathVariable("id") UUID id,
-            @Valid CreateEnterpriseDTO data) {
+    @GetMapping("/enterprise")
+    public String showEnterpriseDashboard(Model model) {
 
-        ReturnEnterpriseDTO updatedEnterprise = enterpriseService.updateEnterpriseById(id, data);
-        return ResponseEntity.ok(updatedEnterprise);
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEnterprise(@PathVariable("id") UUID id) {
-        enterpriseService.deleteEnterpriseById(id);
-        return ResponseEntity.noContent().build();
+
+        Enterprise enterprise = enterpriseRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Empresa não encontrada para o e-mail: " + email));
+
+
+        List<ReturnJobDTO> jobs = jobService.findAllJobsByEnterpriseEmail(email);
+
+
+        model.addAttribute("enterpriseName", enterprise.getName());
+        model.addAttribute("jobs", jobs);
+
+
+        return "enterprise-dashboard";
     }
 }

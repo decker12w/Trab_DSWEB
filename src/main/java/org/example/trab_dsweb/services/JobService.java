@@ -1,6 +1,7 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class JobService {
@@ -24,6 +26,7 @@ public class JobService {
     public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO) {
         Job job = new Job();
         job.setDescription(createJobRequestDTO.description());
+        job.setTitle(createJobRequestDTO.title());
         job.setJobType(createJobRequestDTO.jobType());
         job.setCNPJ(createJobRequestDTO.CNPJ());
         job.setApplicationDeadline(createJobRequestDTO.applicationDeadline());
@@ -33,13 +36,17 @@ public class JobService {
         job.setCity(createJobRequestDTO.city());
 
         Enterprise enterprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
-                .orElseThrow(() -> new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId()));
+                .orElseThrow(() -> {
+                    log.error("Enterprise not found with ID={}", createJobRequestDTO.enterpriseId());
+                    return new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId());
+                });
 
         job.setEnterprise(enterprise);
         Job savedJob = jobRepository.save(job);
 
         return ReturnJobDTO.mapJobToDTO(savedJob);
     }
+
     public List<ReturnJobDTO> findAllActiveJobs(){
         return jobRepository.findByJobActiveTrue().stream()
                 .map(ReturnJobDTO::mapJobToDTO)
@@ -56,6 +63,13 @@ public class JobService {
     @Transactional(readOnly = true)
     public List<ReturnJobDTO> findAllJobsByEnterpriseId(UUID id) {
         return jobRepository.findAllByEnterpriseId(id).stream()
+                .map(ReturnJobDTO::mapJobToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReturnJobDTO> findAllJobsByEnterpriseEmail(String email) {
+        return jobRepository.findByEnterprise_Email(email).stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }

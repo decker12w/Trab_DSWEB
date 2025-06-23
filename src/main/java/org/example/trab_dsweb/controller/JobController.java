@@ -3,50 +3,72 @@ package org.example.trab_dsweb.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobDTO;
-import org.example.trab_dsweb.dto.ReturnJobDTO;
+import org.example.trab_dsweb.enums.JobType;
 import org.example.trab_dsweb.services.JobService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/job")
+@Controller
+@RequestMapping("/api/jobs")
 @AllArgsConstructor
 public class JobController {
 
     private final JobService jobService;
 
+    @GetMapping("/register")
+    public String showRegisterJobForm(Model model) {
+        if (!model.containsAttribute("jobData")) {
+            model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null, null, null));
+        }
 
-    @PostMapping
-    public ResponseEntity<ReturnJobDTO> createJob(@RequestBody @Valid CreateJobDTO data) {
-        ReturnJobDTO createdJob = jobService.createJob(data);
-        return ResponseEntity
-                .created(ServletUriComponentsBuilder.fromCurrentRequest()
-                        .path("/{id}")
-                        .buildAndExpand(createdJob.id())
-                        .toUri())
-                .body(createdJob);
+        model.addAttribute("formAction", "/api/jobs/register");
+        addJobTypeOptionsToModel(model);
+
+        return "job-form";
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobs() {
-        List<ReturnJobDTO> jobs = jobService.findAllActiveJobs();
-        return ResponseEntity.ok(jobs);
+    @PostMapping("/register")
+    public String processRegisterJob(@Valid @ModelAttribute("jobData") CreateJobDTO jobData,
+                                     BindingResult bindingResult,
+                                     RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.jobData", bindingResult);
+            redirectAttributes.addFlashAttribute("jobData", jobData);
+            return "redirect:/api/jobs/register";
+        }
+
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            jobService.createJob(jobData);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Vaga criada com sucesso!");
+            return "redirect:/dashboard/enterprise";
+        } catch (Exception e) {
+            System.out.println("Error creating job: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("jobData", jobData);
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/api/jobs/register";
+        }
     }
 
-
-    @GetMapping("/by-city")
-    public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobsByCity(@RequestParam String city) {
-        List<ReturnJobDTO> jobs = jobService.findAllActiveJobsByCity(city);
-        return ResponseEntity.ok(jobs);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<List<ReturnJobDTO>> getJobById(@PathVariable("id") UUID id) {
-        List<ReturnJobDTO> job = jobService.findAllJobsByEnterpriseId(id);
-        return ResponseEntity.ok(job);
+    private void addJobTypeOptionsToModel(Model model) {
+        Map<String, String> jobTypeOptions = Arrays.stream(JobType.values())
+                .collect(Collectors.toMap(Enum::name, JobType::getDisplayName));
+        model.addAttribute("jobTypeOptions", jobTypeOptions.entrySet());
     }
 }

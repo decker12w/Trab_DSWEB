@@ -25,6 +25,9 @@ public class Job {
     private UUID id;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
