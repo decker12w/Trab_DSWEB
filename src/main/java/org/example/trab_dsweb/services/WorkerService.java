@@ -19,7 +19,7 @@ public class WorkerService {
     private BCryptPasswordEncoder encoder;
     private final WorkerRepository workerRepository;
 
-    public ReturnWorkerDTO createWorker(CreateWorkerDTO data) {
+    public void createWorker(CreateWorkerDTO data) {
         if (workerRepository.findWorkerByCpf(data.cpf()).isPresent()) {
             throw new ConflictException("Profissional com esse CPF já existe");
         }
@@ -36,16 +36,7 @@ public class WorkerService {
         newWorker.setGender(data.gender());
         newWorker.setBirthDate(data.birthDate());
 
-        Worker savedWorker = workerRepository.save(newWorker);
-
-        return new ReturnWorkerDTO(
-                savedWorker.getId(),
-                savedWorker.getEmail(),
-                savedWorker.getCpf(),
-                savedWorker.getName(),
-                savedWorker.getGender(),
-                savedWorker.getBirthDate()
-        );
+        workerRepository.save(newWorker);
     }
 
     public ReturnWorkerDTO getWorkerById(UUID id) {

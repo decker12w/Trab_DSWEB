@@ -28,8 +28,9 @@ public class JobApplicationService {
     private JobApplicationRepository jobApplicationRepository;
     private JobRepository jobRepository;
     private WorkerRepository workerRepository;
+    private EmailService emailService;
 
-    public ReturnJobApplicationDTO createJobApplication(CreateJobApplicationDTO createJobApplicationRequestDTO) {
+    public void createJobApplication(CreateJobApplicationDTO createJobApplicationRequestDTO) {
         JobApplication jobApplication = new JobApplication();
         jobApplication.setStatus(Status.OPEN);
 
@@ -51,19 +52,23 @@ public class JobApplicationService {
             throw new BadRequestException("Error uploading curriculum");
         }
 
-        JobApplication savedJobApplication = jobApplicationRepository.save(jobApplication);
-
-        return ReturnJobApplicationDTO.mapJobApplicationToDTO(savedJobApplication);
+        jobApplicationRepository.save(jobApplication);
     }
 
-    public ReturnJobApplicationDTO updateJobApplicationStatus(UUID id, UpdateJobApplicationStatusDTO updateJobApplicationStatusRequestDTO) {
+    public void updateJobApplicationStatus(UUID id, UpdateJobApplicationStatusDTO updateJobApplicationStatusRequestDTO) {
         JobApplication jobApplication = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Job application not found with ID: " + id));
         jobApplication.setStatus(updateJobApplicationStatusRequestDTO.status());
 
-        JobApplication savedJobApplication = jobApplicationRepository.save(jobApplication);
+        if (jobApplication.getStatus() == Status.INTERVIEW) {
+            emailService.sendEmail(
+                    jobApplication.getWorker().getEmail(),
+                    "Interview " + jobApplication.getJob().getDescription(),
+                    "Link: " + updateJobApplicationStatusRequestDTO.interviewLink()
+            );
+        }
 
-        return ReturnJobApplicationDTO.mapJobApplicationToDTO(savedJobApplication);
+        jobApplicationRepository.save(jobApplication);
     }
 
     @Transactional(readOnly = true)
