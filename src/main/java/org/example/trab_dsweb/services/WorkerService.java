@@ -1,6 +1,7 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trab_dsweb.dto.CreateWorkerDTO;
 import org.example.trab_dsweb.dto.ReturnWorkerDTO;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class WorkerService {
@@ -21,10 +23,12 @@ public class WorkerService {
 
     public void createWorker(CreateWorkerDTO data) {
         if (workerRepository.findWorkerByCpf(data.cpf()).isPresent()) {
+            log.error("Worker with CPF={} already exists", data.cpf());
             throw new ConflictException("Profissional com esse CPF já existe");
         }
 
         if (workerRepository.findWorkerByEmail(data.email()).isPresent()) {
+            log.error("Worker with email={} already exists", data.email());
             throw new ConflictException("Profissional com esse e-mail já existe");
         }
 
@@ -41,7 +45,10 @@ public class WorkerService {
 
     public ReturnWorkerDTO getWorkerById(UUID id) {
         Worker worker = workerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Worker not found"));
+                .orElseThrow(() -> {
+                    log.error("Worker not found with ID={}", id);
+                    return new NotFoundException("Worker not found");
+                });
 
         return new ReturnWorkerDTO(
                 worker.getId(),
@@ -66,6 +73,7 @@ public class WorkerService {
 
     public void deleteWorkerById(UUID id) {
         if (!workerRepository.existsById(id)) {
+            log.error("Attempt to delete non-existing Worker with ID={}", id);
             throw new NotFoundException("Worker not found");
         }
         workerRepository.deleteById(id);
@@ -73,11 +81,15 @@ public class WorkerService {
 
     public ReturnWorkerDTO updateWorkerById(UUID id, CreateWorkerDTO data) {
         Worker existingWorker = workerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Worker not found"));
+                .orElseThrow(() -> {
+                    log.error("Worker not found with ID={}", id);
+                    return new NotFoundException("Worker not found");
+                });
 
         if (data.cpf() != null && !data.cpf().isEmpty()) {
             workerRepository.findWorkerByCpf(data.cpf()).ifPresent(worker -> {
                 if (!worker.getId().equals(id)) {
+                    log.error("Duplicate CPF={} on update for Worker ID={}", data.cpf(), id);
                     throw new ConflictException("Worker with this CPF already exists");
                 }
             });
@@ -87,6 +99,7 @@ public class WorkerService {
         if (data.email() != null && !data.email().isEmpty()) {
             workerRepository.findWorkerByEmail(data.email()).ifPresent(worker -> {
                 if (!worker.getId().equals(id)) {
+                    log.error("Duplicate email={} on update for Worker ID={}", data.email(), id);
                     throw new ConflictException("Worker with this email already exists");
                 }
             });
