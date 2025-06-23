@@ -97,7 +97,7 @@
 </dialog>
 
 <dialog id="upload_cv_modal" class="pt-[60px] pb-[28px] pl-[32px] pr-[20px] bg-white rounded-lg shadow-xl w-full max-w-[1222px] absolute inset-0 m-auto">
-    <form id="application-form">
+    <form th:action="@{/job-applications}" method="POST"  id="application-form" enctype="multipart/form-data">
         <input type="hidden" id="hidden_job_id" name="jobId">
         <button type="button" onclick="closeUploadModalAndReset()" class="absolute top-4 right-5 text-2xl font-bold text-gray-500 hover:text-gray-800 size-6 cursor-pointer">&times;</button>
         <div class="flex flex-col gap-10">
@@ -123,7 +123,7 @@
             </div>
             <div class="flex gap-2.5">
                 <button type="button" onclick="closeUploadModalAndReset()" class="px-[10px] py-[16px] w-full bg-[#8383834D] text-[#000000] cursor-pointer">Cancelar</button>
-                <button type="button" id="submit-application-btn" onclick="handleApplicationSubmit()" class="px-[10px] py-[16px] w-full bg-[#16A34A] text-[#FFFFFF] cursor-pointer disabled:bg-gray-400">Enviar Candidatura</button>
+                <button type="submit" id="submit-application-btn"  class="px-[10px] py-[16px] w-full bg-[#16A34A] text-[#FFFFFF] cursor-pointer disabled:bg-gray-400">Enviar Candidatura</button>
             </div>
         </div>
     </form>
@@ -191,41 +191,6 @@
         }
     }
 
-    async function handleApplicationSubmit() {
-        if (fileInput.files.length === 0) {
-            alert('Por favor, anexe seu currículo em PDF.');
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
-
-        const formData = new FormData();
-        formData.append('curriculum', fileInput.files[0]);
-        formData.append('jobId', hiddenJobIdInput.value);
-
-        try {
-            const response = await fetch('/job-applications', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const resultText = await response.text();
-
-            if (response.ok) {
-                alert('Candidatura feita com sucesso.');
-                closeUploadModalAndReset();
-            } else {
-                alert(`Erro: ${resultText}`);
-            }
-        } catch (error) {
-            console.error('Erro de rede ao enviar candidatura:', error);
-            alert('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Enviar Candidatura';
-        }
-    }
 
     function resetFileInput() {
         fileInput.value = '';
