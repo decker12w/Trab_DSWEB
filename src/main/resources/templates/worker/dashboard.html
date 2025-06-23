@@ -1,66 +1,67 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link th:href="@{/css/output.css}" rel="stylesheet">
     <title>Minhas Candidaturas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen">
 
 <div th:replace="~{fragments/header :: header-component}"></div>
 
-<main>
-    <div class="flex flex-col items-center gap-10">
-        <div class="flex flex-col items-center justify-center mt-[141px] gap-4">
-            <h1 class="text-[4rem] text-text-heading font-semibold font-inter">
-                Minhas Candidaturas
-            </h1>
-            <h2 class="text-[2rem] text-text-subheading font-inter">
-                Bem vindo(a),
-                <span sec:authentication="name"></span>
-            </h2>
+<main class="px-4 sm:px-8 md:px-20 lg:px-40 py-10">
+    <section class="mb-12 text-center">
+        <h1 class="text-4xl font-bold text-gray-800">Minhas Candidaturas</h1>
+        <h2 class="text-lg text-gray-600 mt-2">
+            Bem-vindo(a), <span class="font-semibold text-gray-800" sec:authentication="name"></span>
+        </h2>
+    </section>
+
+    <section>
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800">Gerenciar Candidaturas</h2>
         </div>
-    </div>
 
-    <div class="flex flex-col max-w-[1588px] mx-auto mt-10">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Gerenciar Profissionais</h2>
-
-        <div class="overflow-x-auto rounded-lg shadow">
-            <table class="min-w-full divide-y divide-gray-200 bg-white">
-                <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                 <tr>
-                    <th class="px-6 py-4">VAGA</th>
-                    <th class="px-6 py-4">EMPRESA</th>
-                    <th class="px-6 py-4">DATA LIMITE</th>
-                    <th class="px-6 py-4">STATUS</th>
-                    <th class="px-6 py-4">AÇÕES</th>
+                    <th class="py-3 px-6 text-left">Vaga</th>
+                    <th class="py-3 px-6 text-left">Empresa</th>
+                    <th class="py-3 px-6 text-left">Data Limite</th>
+                    <th class="py-3 px-6 text-left">Status</th>
+                    <th class="py-3 px-6 text-center">Ações</th>
                 </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                <tr th:each="jobApplication : ${jobApplications}" class="hover:bg-gray-50">
-                    <td class="px-6 py-4" th:text="${jobApplication.description}">Desenvolvedor Back-End</td>
-                    <td class="px-6 py-4" th:text="${jobApplication.enterprise.name}">MiranhaCorp</td>
-                    <td class="px-6 py-4" th:text="${#temporals.format(jobApplication.applicationDeadline, 'dd/MM/yyyy')}">31/02/2026</td>
-                    <td class="px-6 py-4">
-                        <span th:text="${jobApplication.status}"
-                              class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                            Entrevista
-                        </span>
+                <tbody class="text-gray-800 text-sm font-light">
+                <tr th:if="${#lists.isEmpty(jobApplications)}">
+                    <td colspan="5" class="py-4 px-6 text-center text-gray-500">
+                        Você ainda não se candidatou a nenhuma vaga.
                     </td>
-                    <td class="px-6 py-4">
-                        <form th:action="@{'/candidatures/delete/' + ${jobApplication.id}}" method="post"
+                </tr>
+                <tr th:each="jobApplication : ${jobApplications}" class="border-b border-gray-200 hover:bg-gray-100">
+                    <td class="py-3 px-6 text-left" th:text="${jobApplication.title}">Desenvolvedor Back-End</td>
+                    <td class="py-3 px-6 text-left" th:text="${jobApplication.enterprise.name}">MiranhaCorp</td>
+                    <td class="py-3 px-6 text-left" th:text="${#temporals.format(jobApplication.applicationDeadline, 'dd/MM/yyyy')}">31/02/2026</td>
+                    <td class="py-3 px-6 text-left">
+                            <span th:text="${jobApplication.status}"
+                                  class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                Entrevista
+                            </span>
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        <form th:action="@{'/api/job-application/' + ${jobApplication.id} + '/delete'}" method="post"
                               onsubmit="return confirm('Tem certeza que deseja excluir?')">
-                            <button type="submit" class="text-red-600 hover:underline">Excluir</button>
+                            <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">Excluir</button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </main>
+
 </body>
 </html>

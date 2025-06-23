@@ -91,6 +91,14 @@ public class JobApplicationService {
         jobApplicationRepository.save(jobApplication);
     }
 
+    public void deleteJobApplicationById(UUID id) {
+        if (!jobApplicationRepository.existsById(id)) {
+            log.error("Attempt to delete non-existing Job application with ID={}", id);
+            throw new NotFoundException("Job application not found");
+        }
+        jobApplicationRepository.deleteById(id);
+    }
+
     @Transactional(readOnly = true)
     public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerEmail(String email) {
         return jobApplicationRepository.findAllByWorkerEmail(email).stream()
