@@ -3,11 +3,12 @@ package org.example.trab_dsweb.security;
 import org.example.trab_dsweb.models.Worker;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-public class WorkerDetails implements org.springframework.security.core.userdetails.UserDetails {
+public class WorkerDetails implements UserDetails {
     private final Worker worker;
 
     public WorkerDetails(Worker worker) {
@@ -16,7 +17,7 @@ public class WorkerDetails implements org.springframework.security.core.userdeta
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("WORKER");
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_WORKER");
         return List.of(authority);
     }
 

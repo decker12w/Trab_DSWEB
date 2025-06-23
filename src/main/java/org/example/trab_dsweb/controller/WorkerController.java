@@ -64,7 +64,6 @@ public class WorkerController {
 
         try {
             workerService.createWorker(data);
-
         } catch (ConflictException e) {
             result.reject("global.error", e.getMessage());
             Map<String, String> genderOptions = new LinkedHashMap<>();

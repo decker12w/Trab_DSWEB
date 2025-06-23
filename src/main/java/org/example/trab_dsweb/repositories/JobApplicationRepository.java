@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface JobApplicationRepository extends JpaRepository<JobApplication, UUID> {
-    List<JobApplication> findAllByWorkerId(UUID workerId);
+    List<JobApplication> findAllByWorkerEmail(String email);
     List<JobApplication> findAllByJobId(UUID jobId);
     Optional<JobApplication> findByWorkerIdAndJobId(UUID workerId, UUID jobId);
 }
