@@ -1,5 +1,8 @@
 package org.example.trab_dsweb.controller;
 
+import jakarta.persistence.Cacheable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
@@ -8,6 +11,7 @@ import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.services.JobApplicationService;
+import org.example.trab_dsweb.services.JobService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +29,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
+    private final JobService jobService;
 
     @PostMapping
     public String createJobApplication(@RequestParam("jobId") UUID jobId, @RequestParam("curriculum") MultipartFile curriculum, RedirectAttributes attr) {
@@ -61,4 +67,6 @@ public class JobApplicationController {
         }
         return workerDetails.getWorker();
     }
+
+
 }
