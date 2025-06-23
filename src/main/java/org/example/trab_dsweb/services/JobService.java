@@ -21,9 +21,11 @@ public class JobService {
     private JobRepository jobRepository;
     private EnterpriseRepository enterpriseRepository;
 
-    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO) {
+    // MÉTODO createJob MODIFICADO
+    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO, String enterpriseEmail) {
         Job job = new Job();
         job.setDescription(createJobRequestDTO.description());
+        job.setTitle(createJobRequestDTO.title());
         job.setJobType(createJobRequestDTO.jobType());
         job.setCNPJ(createJobRequestDTO.CNPJ());
         job.setApplicationDeadline(createJobRequestDTO.applicationDeadline());
@@ -32,14 +34,16 @@ public class JobService {
         job.setRemuneration(createJobRequestDTO.remuneration());
         job.setCity(createJobRequestDTO.city());
 
-        Enterprise enterprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
-                .orElseThrow(() -> new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId()));
+        // Busca a empresa pelo e-mail do usuário autenticado
+        Enterprise enterprise = enterpriseRepository.findByEmail(enterpriseEmail)
+                .orElseThrow(() -> new NotFoundException("Empresa não encontrada com o e-mail: " + enterpriseEmail));
 
         job.setEnterprise(enterprise);
         Job savedJob = jobRepository.save(job);
 
         return ReturnJobDTO.mapJobToDTO(savedJob);
     }
+
     public List<ReturnJobDTO> findAllActiveJobs(){
         return jobRepository.findByJobActiveTrue().stream()
                 .map(ReturnJobDTO::mapJobToDTO)
