@@ -1,6 +1,7 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class EnterpriseService {
@@ -23,11 +25,13 @@ public class EnterpriseService {
     public ReturnEnterpriseDTO createEnterprise(CreateEnterpriseDTO data){
         enterpriseRepository.findEnterpriseByEmail(data.email())
                 .ifPresent(enterprise -> {
+                    log.error("Enterprise with email={} already exists", data.email());
                     throw new ConflictException("Enterprise with this email already exists");
                 });
 
         enterpriseRepository.findEnterpriseByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
+                    log.error("Enterprise with CNPJ={} already exists", data.cnpj());
                     throw new ConflictException("Enterprise with this CNPJ already exists");
                 });
 
@@ -53,7 +57,10 @@ public class EnterpriseService {
 
     public ReturnEnterpriseDTO getEnterpriseById(UUID id) {
         Enterprise enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Enterprise not found"));
+                .orElseThrow(() -> {
+                    log.error("Enterprise not found with ID={}", id);
+                    return new NotFoundException("Enterprise not found");
+                });
 
         return new ReturnEnterpriseDTO(
                 enterprise.getId(),
@@ -67,6 +74,7 @@ public class EnterpriseService {
 
     public void deleteEnterpriseById(UUID id) {
         if (!enterpriseRepository.existsById(id)) {
+            log.error("Attempt to delete non-existing Enterprise with ID={}", id);
             throw new NotFoundException("Enterprise not found");
         }
         enterpriseRepository.deleteById(id);
@@ -74,11 +82,15 @@ public class EnterpriseService {
 
     public ReturnEnterpriseDTO updateEnterpriseById(UUID id, CreateEnterpriseDTO data) {
         Enterprise existingEnterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Enterprise not found"));
+                .orElseThrow(() -> {
+                    log.error("Enterprise not found with ID={}", id);
+                    return new NotFoundException("Enterprise not found");
+                });
 
         if (data.cnpj() != null && !data.cnpj().isEmpty()) {
-            enterpriseRepository.findEnterpriseByCnpj(data.cnpj()).ifPresent(enterprise -> {
-                if (!enterprise.getId().equals(id)) {
+            enterpriseRepository.findEnterpriseByCnpj(data.cnpj()).ifPresent(ent -> {
+                if (!ent.getId().equals(id)) {
+                    log.error("Duplicate CNPJ={} on update for Enterprise ID={}", data.cnpj(), id);
                     throw new ConflictException("Enterprise with this CNPJ already exists");
                 }
             });
@@ -86,8 +98,9 @@ public class EnterpriseService {
         }
 
         if (data.email() != null && !data.email().isEmpty()) {
-            enterpriseRepository.findEnterpriseByEmail(data.email()).ifPresent(enterprise -> {
-                if (!enterprise.getId().equals(id)) {
+            enterpriseRepository.findEnterpriseByEmail(data.email()).ifPresent(ent -> {
+                if (!ent.getId().equals(id)) {
+                    log.error("Duplicate email={} on update for Enterprise ID={}", data.email(), id);
                     throw new ConflictException("Enterprise with this email already exists");
                 }
             });

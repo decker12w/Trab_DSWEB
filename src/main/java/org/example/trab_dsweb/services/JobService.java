@@ -1,6 +1,7 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
@@ -15,14 +16,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class JobService {
     private JobRepository jobRepository;
     private EnterpriseRepository enterpriseRepository;
 
-    // MÉTODO createJob MODIFICADO
-    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO, String enterpriseEmail) {
+    public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO) {
         Job job = new Job();
         job.setDescription(createJobRequestDTO.description());
         job.setTitle(createJobRequestDTO.title());
@@ -34,9 +35,11 @@ public class JobService {
         job.setRemuneration(createJobRequestDTO.remuneration());
         job.setCity(createJobRequestDTO.city());
 
-        // Busca a empresa pelo e-mail do usuário autenticado
-        Enterprise enterprise = enterpriseRepository.findByEmail(enterpriseEmail)
-                .orElseThrow(() -> new NotFoundException("Empresa não encontrada com o e-mail: " + enterpriseEmail));
+        Enterprise enterprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
+                .orElseThrow(() -> {
+                    log.error("Enterprise not found with ID={}", createJobRequestDTO.enterpriseId());
+                    return new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId());
+                });
 
         job.setEnterprise(enterprise);
         Job savedJob = jobRepository.save(job);
