@@ -40,11 +40,13 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 ).formLogin((form) -> form
                         .loginPage("/login")
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 ).logout((logout) -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
+
 
         return http.build();
     }
