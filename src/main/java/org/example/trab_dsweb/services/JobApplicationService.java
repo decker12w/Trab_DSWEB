@@ -59,8 +59,8 @@ public class JobApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerId(UUID workerId) {
-        return jobApplicationRepository.findAllByWorkerId(workerId).stream()
+    public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerEmail(String email) {
+        return jobApplicationRepository.findAllByWorkerEmail(email).stream()
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
                 .collect(Collectors.toList());
     }
