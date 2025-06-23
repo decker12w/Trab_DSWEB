@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="job-card(jobTitle, companyName, location, salary, deadline, jobType, jobDescription, jobSkills)"
+<div th:fragment="job-card(jobId, jobTitle, companyName, location, salary, deadline, jobType, jobDescription, jobSkills)"
+     th:data-job-id="${jobId}"
      th:data-job-title="${jobTitle}"
      th:data-company-name="${companyName}"
      th:data-location="${location}"
@@ -10,7 +11,6 @@
      th:data-deadline="${#temporals.format(deadline, 'dd/MM/yyyy')}"
      th:data-job-type-name="${jobType.name()}"
      th:data-job-description="${jobDescription}"
-
      th:data-job-skills="${jobSkills}"
 
      onclick="openDetailsModal(this)"

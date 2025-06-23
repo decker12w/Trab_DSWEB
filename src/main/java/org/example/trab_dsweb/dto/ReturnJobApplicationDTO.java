@@ -5,10 +5,13 @@ import org.example.trab_dsweb.models.Job;
 import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ReturnJobApplicationDTO(
         UUID id,
+        String description,
+        LocalDateTime applicationDeadline,
         Status status,
         ReturnWorkerInJobDTO worker,
         ReturnEnterpriseInJobDTO enterprise
@@ -30,6 +33,8 @@ public record ReturnJobApplicationDTO(
 
         return new ReturnJobApplicationDTO(
                 jobApplication.getId(),
+                job.getDescription(),
+                job.getApplicationDeadline(),
                 jobApplication.getStatus(),
                 workerDTO,
                 enterpriseDTO
