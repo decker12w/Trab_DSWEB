@@ -17,7 +17,7 @@ public class EnterpriseDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ENTERPRISE");
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ENTERPRISE");
         return List.of(authority);
     }
 

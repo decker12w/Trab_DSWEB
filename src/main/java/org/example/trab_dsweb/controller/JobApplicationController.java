@@ -47,7 +47,7 @@ public class JobApplicationController {
 
         List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerEmail(email);
         model.addAttribute("jobApplications", jobApplications);
-        return "worker/job-applications";
+        return "worker/dashboard";
     }
 
     @GetMapping("/job/{id}")

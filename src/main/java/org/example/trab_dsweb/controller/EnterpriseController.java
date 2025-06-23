@@ -37,7 +37,6 @@ public class EnterpriseController {
         return ResponseEntity.ok(updatedEnterprise);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEnterprise(@PathVariable("id") UUID id) {
         enterpriseService.deleteEnterpriseById(id);
