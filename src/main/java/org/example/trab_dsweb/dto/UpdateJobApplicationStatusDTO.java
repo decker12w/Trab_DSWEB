@@ -5,5 +5,7 @@ import org.example.trab_dsweb.enums.Status;
 
 public record UpdateJobApplicationStatusDTO(
         @NotNull
-        Status status
+        Status status,
+
+        String interviewLink
 ) {}

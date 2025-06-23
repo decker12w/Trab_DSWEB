@@ -6,13 +6,13 @@ import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.services.JobApplicationService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,14 +24,14 @@ public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
 
     @PostMapping
-    public ResponseEntity<ReturnJobApplicationDTO> createJobApplication(@Valid CreateJobApplicationDTO data) {
-        ReturnJobApplicationDTO createdJobApplication = jobApplicationService.createJobApplication(data);
-        return ResponseEntity
-                .created(ServletUriComponentsBuilder.fromCurrentRequest()
-                        .path("/{id}")
-                        .buildAndExpand(createdJobApplication.id())
-                        .toUri())
-                .body(createdJobApplication);
+    public String createJobApplication(@RequestParam("jobId") UUID jobId, @RequestParam("curriculum") MultipartFile curriculum, RedirectAttributes attr) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        CreateJobApplicationDTO data = new CreateJobApplicationDTO(email, jobId, curriculum);
+
+        jobApplicationService.createJobApplication(data);
+        attr.addFlashAttribute("successMessage", "Candidatura realizada com sucesso!");
+        return "redirect:/api/home";
     }
 
     @PostMapping("/{id}/status")

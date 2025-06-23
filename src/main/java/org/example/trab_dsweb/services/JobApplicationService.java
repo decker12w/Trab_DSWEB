@@ -5,6 +5,7 @@ import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.enums.Status;
+import org.example.trab_dsweb.exceptions.exceptions.BadRequestException;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Job;
@@ -16,6 +17,7 @@ import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,13 +28,14 @@ public class JobApplicationService {
     private JobApplicationRepository jobApplicationRepository;
     private JobRepository jobRepository;
     private WorkerRepository workerRepository;
+    private EmailService emailService;
 
-    public ReturnJobApplicationDTO createJobApplication(CreateJobApplicationDTO createJobApplicationRequestDTO) {
+    public void createJobApplication(CreateJobApplicationDTO createJobApplicationRequestDTO) {
         JobApplication jobApplication = new JobApplication();
         jobApplication.setStatus(Status.OPEN);
 
-        Worker worker = workerRepository.findById(createJobApplicationRequestDTO.workerId())
-                .orElseThrow(() -> new NotFoundException("Worker not found with ID: " + createJobApplicationRequestDTO.workerId()));
+        Worker worker = workerRepository.findWorkerByEmail(createJobApplicationRequestDTO.workerEmail())
+                .orElseThrow(() -> new NotFoundException("Worker not found with email: " + createJobApplicationRequestDTO.workerEmail()));
         jobApplication.setWorker(worker);
 
         Job job = jobRepository.findById(createJobApplicationRequestDTO.jobId())
@@ -43,19 +46,29 @@ public class JobApplicationService {
             throw new ConflictException("Worker have already applied for this vacancy");
         }
 
-        JobApplication savedJobApplication = jobApplicationRepository.save(jobApplication);
+        try {
+            jobApplication.setCurriculum(createJobApplicationRequestDTO.curriculum().getBytes());
+        } catch (IOException e) {
+            throw new BadRequestException("Error uploading curriculum");
+        }
 
-        return ReturnJobApplicationDTO.mapJobApplicationToDTO(savedJobApplication);
+        jobApplicationRepository.save(jobApplication);
     }
 
-    public ReturnJobApplicationDTO updateJobApplicationStatus(UUID id, UpdateJobApplicationStatusDTO updateJobApplicationStatusRequestDTO) {
+    public void updateJobApplicationStatus(UUID id, UpdateJobApplicationStatusDTO updateJobApplicationStatusRequestDTO) {
         JobApplication jobApplication = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Job application not found with ID: " + id));
         jobApplication.setStatus(updateJobApplicationStatusRequestDTO.status());
 
-        JobApplication savedJobApplication = jobApplicationRepository.save(jobApplication);
+        if (jobApplication.getStatus() == Status.INTERVIEW) {
+            emailService.sendEmail(
+                    jobApplication.getWorker().getEmail(),
+                    "Interview " + jobApplication.getJob().getDescription(),
+                    "Link: " + updateJobApplicationStatusRequestDTO.interviewLink()
+            );
+        }
 
-        return ReturnJobApplicationDTO.mapJobApplicationToDTO(savedJobApplication);
+        jobApplicationRepository.save(jobApplication);
     }
 
     @Transactional(readOnly = true)

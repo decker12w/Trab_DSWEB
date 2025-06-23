@@ -21,8 +21,10 @@ public class JobApplication {
     @Column(nullable = false)
     private UUID id;
 
-    // TODO - IMAGEM OU LOCAL OU DE STORAGE
-    private String curriculum;
+    @Lob
+    @Basic
+    @Column(length = 10485760) // 10MB
+    private byte[] curriculum;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
