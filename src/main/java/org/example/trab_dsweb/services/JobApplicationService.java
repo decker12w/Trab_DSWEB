@@ -5,6 +5,7 @@ import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.enums.Status;
+import org.example.trab_dsweb.exceptions.exceptions.BadRequestException;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Job;
@@ -16,6 +17,7 @@ import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,8 +33,8 @@ public class JobApplicationService {
         JobApplication jobApplication = new JobApplication();
         jobApplication.setStatus(Status.OPEN);
 
-        Worker worker = workerRepository.findById(createJobApplicationRequestDTO.workerId())
-                .orElseThrow(() -> new NotFoundException("Worker not found with ID: " + createJobApplicationRequestDTO.workerId()));
+        Worker worker = workerRepository.findWorkerByEmail(createJobApplicationRequestDTO.workerEmail())
+                .orElseThrow(() -> new NotFoundException("Worker not found with email: " + createJobApplicationRequestDTO.workerEmail()));
         jobApplication.setWorker(worker);
 
         Job job = jobRepository.findById(createJobApplicationRequestDTO.jobId())
@@ -41,6 +43,12 @@ public class JobApplicationService {
 
         if (jobApplicationRepository.findByWorkerIdAndJobId(worker.getId(), job.getId()).isPresent()) {
             throw new ConflictException("Worker have already applied for this vacancy");
+        }
+
+        try {
+            jobApplication.setCurriculum(createJobApplicationRequestDTO.curriculum().getBytes());
+        } catch (IOException e) {
+            throw new BadRequestException("Error uploading curriculum");
         }
 
         JobApplication savedJobApplication = jobApplicationRepository.save(jobApplication);
