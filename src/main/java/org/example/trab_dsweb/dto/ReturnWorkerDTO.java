@@ -11,5 +11,5 @@ public record ReturnWorkerDTO(
         String cpf,
         String name,
         Gender gender,
-        LocalDate birthDate){
-}
+        LocalDate birthDate
+) {}
