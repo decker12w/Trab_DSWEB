@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.enums.JobType;
+import org.example.trab_dsweb.models.Enterprise;
+import org.example.trab_dsweb.security.EnterpriseDetails;
 import org.example.trab_dsweb.services.JobService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/jobs")
+@RequestMapping("/jobs")
 @AllArgsConstructor
 public class JobController {
 
@@ -30,13 +32,10 @@ public class JobController {
     @GetMapping("/register")
     public String showRegisterJobForm(Model model) {
         if (!model.containsAttribute("jobData")) {
-            model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null, null, null));
+            model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null));
         }
-
-        model.addAttribute("formAction", "/api/jobs/register");
         addJobTypeOptionsToModel(model);
-
-        return "job-form";
+        return "job/form";
     }
 
     @PostMapping("/register")
@@ -47,22 +46,22 @@ public class JobController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.jobData", bindingResult);
             redirectAttributes.addFlashAttribute("jobData", jobData);
-            return "redirect:/api/jobs/register";
+
+            return "redirect:/jobs/register";
         }
 
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-
-            jobService.createJob(jobData);
+            Enterprise enterprise = getLoggedEnterprise();
+            jobService.createJob(jobData, enterprise.getId());
 
             redirectAttributes.addFlashAttribute("successMessage", "Vaga criada com sucesso!");
-            return "redirect:/dashboard/enterprise";
+            return "redirect:/enterprises/dashboard";
         } catch (Exception e) {
             System.out.println("Error creating job: " + e.getMessage());
             redirectAttributes.addFlashAttribute("jobData", jobData);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/api/jobs/register";
+
+            return "redirect:/jobs/register";
         }
     }
 
@@ -70,5 +69,13 @@ public class JobController {
         Map<String, String> jobTypeOptions = Arrays.stream(JobType.values())
                 .collect(Collectors.toMap(Enum::name, JobType::getDisplayName));
         model.addAttribute("jobTypeOptions", jobTypeOptions.entrySet());
+    }
+
+    private Enterprise getLoggedEnterprise() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {
+            throw new Error("error");
+        }
+        return enterpriseDetails.getEnterprise();
     }
 }

@@ -8,9 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface WorkerRepository extends CrudRepository<Worker, UUID> {
-    Optional<Worker> findWorkerByCpf(String cpf);
-    Optional<Worker> findWorkerByEmail(String email);
-
-    @Override
-    List<Worker> findAll();
+    Optional<Worker> findByCpf(String cpf);
+    Optional<Worker> findByEmail(String email);
 }

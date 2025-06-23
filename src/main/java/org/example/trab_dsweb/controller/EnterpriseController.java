@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.models.Enterprise;
-import org.example.trab_dsweb.repositories.EnterpriseRepository;
+import org.example.trab_dsweb.security.EnterpriseDetails;
 import org.example.trab_dsweb.services.EnterpriseService;
 import org.example.trab_dsweb.services.JobService;
 import org.springframework.security.core.Authentication;
@@ -20,20 +20,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/enterprise")
+@RequestMapping("/enterprises")
 @AllArgsConstructor
 public class EnterpriseController {
-
     private final EnterpriseService enterpriseService;
-    private final EnterpriseRepository enterpriseRepository;
     private final JobService jobService;
 
     @GetMapping("/register")
     public String showRegisterEnterpriseForm(Model model) {
         model.addAttribute("enterpriseData", new CreateEnterpriseDTO(null, null, null, null, null, null));
         model.addAttribute("isEdit", false);
-        model.addAttribute("formAction", "/api/enterprise/register");
-        return "enterprise-form";
+        model.addAttribute("formAction", "/enterprises/register");
+        return "enterprise/form";
     }
 
     @PostMapping("/register")
@@ -44,28 +42,24 @@ public class EnterpriseController {
             return "redirect:/login";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/api/enterprise/register";
+            return "redirect:/enterprises/register";
         }
     }
 
-    @GetMapping("/enterprise")
+    @GetMapping("/dashboard")
     public String showEnterpriseDashboard(Model model) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
-
-        Enterprise enterprise = enterpriseRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Empresa não encontrada para o e-mail: " + email));
-
-
-        List<ReturnJobDTO> jobs = jobService.findAllJobsByEnterpriseEmail(email);
-
-
+        Enterprise enterprise = getLoggedEnterprise();
+        List<ReturnJobDTO> jobs = jobService.findAllJobsByEnterpriseId(enterprise.getId());
         model.addAttribute("enterpriseName", enterprise.getName());
         model.addAttribute("jobs", jobs);
+        return "enterprise/dashboard";
+    }
 
-
-        return "enterprise-dashboard";
+    private Enterprise getLoggedEnterprise() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {
+            throw new Error("error");
+        }
+        return enterpriseDetails.getEnterprise();
     }
 }

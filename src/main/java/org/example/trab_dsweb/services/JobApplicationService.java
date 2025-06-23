@@ -16,7 +16,6 @@ import org.example.trab_dsweb.repositories.JobApplicationRepository;
 import org.example.trab_dsweb.repositories.JobRepository;
 import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,14 +32,20 @@ public class JobApplicationService {
     private WorkerRepository workerRepository;
     private EmailService emailService;
 
+    public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerId(UUID id) {
+        return jobApplicationRepository.findAllByWorkerId(id).stream()
+                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
+                .collect(Collectors.toList());
+    }
+
     public void createJobApplication(CreateJobApplicationDTO createJobApplicationRequestDTO) {
         JobApplication jobApplication = new JobApplication();
         jobApplication.setStatus(Status.OPEN);
 
-        Worker worker = workerRepository.findWorkerByEmail(createJobApplicationRequestDTO.workerEmail())
+        Worker worker = workerRepository.findById(createJobApplicationRequestDTO.workerId())
                 .orElseThrow(() -> {
-                    log.error("Worker not found with email={}", createJobApplicationRequestDTO.workerEmail());
-                    return new NotFoundException("Worker not found with email: " + createJobApplicationRequestDTO.workerEmail());
+                    log.error("Worker not found with email={}", createJobApplicationRequestDTO.workerId());
+                    return new NotFoundException("Worker not found with email: " + createJobApplicationRequestDTO.workerId());
                 });
         jobApplication.setWorker(worker);
 
@@ -78,8 +83,8 @@ public class JobApplicationService {
                     log.error("JobApplication not found with ID={}", id);
                     return new NotFoundException("Job application not found with ID: " + id);
                 });
-        jobApplication.setStatus(updateJobApplicationStatusRequestDTO.status());
 
+        jobApplication.setStatus(updateJobApplicationStatusRequestDTO.status());
         if (jobApplication.getStatus() == Status.INTERVIEW) {
             emailService.sendEmail(
                     jobApplication.getWorker().getEmail(),
@@ -91,17 +96,11 @@ public class JobApplicationService {
         jobApplicationRepository.save(jobApplication);
     }
 
-    @Transactional(readOnly = true)
-    public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerEmail(String email) {
-        return jobApplicationRepository.findAllByWorkerEmail(email).stream()
-                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReturnJobApplicationDTO> findAllJobApplicationsByJobId(UUID jobId) {
-        return jobApplicationRepository.findAllByJobId(jobId).stream()
-                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
-                .collect(Collectors.toList());
+    public void deleteJobApplicationById(UUID id) {
+        if (!jobApplicationRepository.existsById(id)) {
+            log.error("Attempt to delete non-existing Job application with ID={}", id);
+            throw new NotFoundException("Job application not found");
+        }
+        jobApplicationRepository.deleteById(id);
     }
 }

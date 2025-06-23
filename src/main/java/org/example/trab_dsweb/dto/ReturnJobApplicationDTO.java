@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public record ReturnJobApplicationDTO(
         UUID id,
-        String description,
+        String title,
         LocalDateTime applicationDeadline,
         Status status,
         ReturnWorkerInJobDTO worker,
@@ -33,7 +33,7 @@ public record ReturnJobApplicationDTO(
 
         return new ReturnJobApplicationDTO(
                 jobApplication.getId(),
-                job.getDescription(),
+                job.getTitle(),
                 job.getApplicationDeadline(),
                 jobApplication.getStatus(),
                 workerDTO,

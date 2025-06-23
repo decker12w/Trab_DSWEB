@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
+import org.example.trab_dsweb.models.Worker;
+import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.services.JobApplicationService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,42 +20,45 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/api/job-application")
+@RequestMapping("/job-applications")
 @AllArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
 
     @PostMapping
     public String createJobApplication(@RequestParam("jobId") UUID jobId, @RequestParam("curriculum") MultipartFile curriculum, RedirectAttributes attr) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        CreateJobApplicationDTO data = new CreateJobApplicationDTO(email, jobId, curriculum);
-
+        Worker worker = getLoggedWorker();
+        CreateJobApplicationDTO data = new CreateJobApplicationDTO(curriculum, worker.getId(), jobId);
         jobApplicationService.createJobApplication(data);
         attr.addFlashAttribute("successMessage", "Candidatura realizada com sucesso!");
-        return "redirect:/api/home";
+        return "redirect:/home";
     }
 
     @PostMapping("/{id}/status")
     public String updateJobApplicationStatus(@PathVariable UUID id, @Valid UpdateJobApplicationStatusDTO data) {
         jobApplicationService.updateJobApplicationStatus(id, data);
-        return "redirect:/api/job-application/job/" + id;
+        return "redirect:/job-applications/job/" + id;
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteJobApplicationById(@PathVariable UUID id) {
+        jobApplicationService.deleteJobApplicationById(id);
+        return "redirect:/job-applications/worker";
     }
 
     @GetMapping("/worker")
     public String findAllJobApplicationsByWorker(ModelMap model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
-        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerEmail(email);
+        Worker worker = getLoggedWorker();
+        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerId(worker.getId());
         model.addAttribute("jobApplications", jobApplications);
         return "worker/dashboard";
     }
 
-    @GetMapping("/job/{id}")
-    public String findAllJobApplicationsByJobId(@PathVariable("id") UUID id, ModelMap model) {
-        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByJobId(id);
-        model.addAttribute("jobApplications", jobApplications);
-        return "job/job-applications";
+    private Worker getLoggedWorker() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
+            throw new Error("error");
+        }
+        return workerDetails.getWorker();
     }
 }
