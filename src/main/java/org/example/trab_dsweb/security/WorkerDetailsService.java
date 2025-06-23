@@ -15,7 +15,7 @@ public class WorkerDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Worker worker = workerRepository.findWorkerByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Worker not found"));
+        Worker worker = workerRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Worker not found"));
         return new WorkerDetails(worker);
     }
 }

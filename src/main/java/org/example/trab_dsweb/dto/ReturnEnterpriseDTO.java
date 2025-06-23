@@ -9,4 +9,4 @@ public record ReturnEnterpriseDTO(
         String name,
         String description,
         String city
-        ) {}
+) {}

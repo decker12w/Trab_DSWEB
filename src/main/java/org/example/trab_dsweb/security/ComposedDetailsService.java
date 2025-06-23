@@ -15,16 +15,18 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ComposedDetailsService implements UserDetailsService {
-    private final WorkerDetailsService workerDetailsService;
+    private final AdminDetailsService adminDetailsService;
     private final EnterpriseDetailsService enterpriseDetailsService;
+    private final WorkerDetailsService workerDetailsService;
 
     private List<UserDetailsService> serviceList;
 
     @PostConstruct
     public void setServices() {
         List<UserDetailsService> newServices = new ArrayList<>();
-        newServices.add(workerDetailsService);
+        newServices.add(adminDetailsService);
         newServices.add(enterpriseDetailsService);
+        newServices.add(workerDetailsService);
         this.serviceList = newServices;
     }
 

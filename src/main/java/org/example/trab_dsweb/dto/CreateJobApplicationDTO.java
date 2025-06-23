@@ -7,12 +7,11 @@ import java.util.UUID;
 
 public record CreateJobApplicationDTO(
         @NotNull
-        String workerEmail,
+        MultipartFile curriculum,
 
         @NotNull
-        UUID jobId,
+        UUID workerId,
 
         @NotNull
-        MultipartFile curriculum
-) {
-}
+        UUID jobId
+) {}

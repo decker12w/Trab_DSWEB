@@ -8,9 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EnterpriseRepository extends CrudRepository<Enterprise, UUID> {
-    Optional<Enterprise> findEnterpriseByCnpj(String cnpj);
-    Optional<Enterprise> findEnterpriseByEmail(String email);
+    Optional<Enterprise> findByCnpj(String cnpj);
     Optional<Enterprise> findByEmail(String email);
-    @Override
-    List<Enterprise> findAll();
 }

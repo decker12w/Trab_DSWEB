@@ -1,6 +1,6 @@
 package org.example.trab_dsweb.security;
 
-import org.example.trab_dsweb.models.Worker;
+import org.example.trab_dsweb.models.Admin;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,31 +8,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class WorkerDetails implements UserDetails {
-    private final Worker worker;
+public class AdminDetails implements UserDetails {
+    private final Admin admin;
 
-    public WorkerDetails(Worker worker) {
-        this.worker = worker;
+    public AdminDetails(Admin admin) {
+        this.admin = admin;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_WORKER");
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ADMIN");
         return List.of(authority);
     }
 
     @Override
     public String getPassword() {
-        return worker.getPassword();
+        return admin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return worker.getEmail();
+        return admin.getEmail();
     }
 
-    public Worker getWorker() {
-        return this.worker;
+    public Admin getAdmin() {
+        return this.admin;
     }
 
     @Override

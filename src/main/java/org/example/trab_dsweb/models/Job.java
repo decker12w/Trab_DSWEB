@@ -30,9 +30,6 @@ public class Job {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private String CNPJ;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private JobType jobType;
