@@ -43,7 +43,7 @@
     <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10">
         <div th:each="job : ${jobs}">
             <div th:replace="~{fragments/job-card :: job-card(
-                    jobTitle=${job.description},
+                    jobTitle=${job.title()},
                     companyName=${job.enterprise.name()},
                     location=${job.city},
                     salary=${job.remuneration},

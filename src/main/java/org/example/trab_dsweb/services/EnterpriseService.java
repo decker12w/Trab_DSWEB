@@ -11,7 +11,9 @@ import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -132,4 +134,18 @@ public class EnterpriseService {
                 updatedEnterprise.getCity()
         );
     }
+
+    public List<ReturnEnterpriseDTO> listAllEnterprises() {
+        return enterpriseRepository.findAll().stream()
+                .map(enterprise -> new ReturnEnterpriseDTO(
+                        enterprise.getId(),
+                        enterprise.getEmail(),
+                        enterprise.getCnpj(),
+                        enterprise.getName(),
+                        enterprise.getDescription(),
+                        enterprise.getCity()
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

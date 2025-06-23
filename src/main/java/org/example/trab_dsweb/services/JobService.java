@@ -26,6 +26,7 @@ public class JobService {
     public ReturnJobDTO createJob(CreateJobDTO createJobRequestDTO) {
         Job job = new Job();
         job.setDescription(createJobRequestDTO.description());
+        job.setTitle(createJobRequestDTO.title());
         job.setJobType(createJobRequestDTO.jobType());
         job.setCNPJ(createJobRequestDTO.CNPJ());
         job.setApplicationDeadline(createJobRequestDTO.applicationDeadline());
@@ -45,6 +46,7 @@ public class JobService {
 
         return ReturnJobDTO.mapJobToDTO(savedJob);
     }
+
     public List<ReturnJobDTO> findAllActiveJobs(){
         return jobRepository.findByJobActiveTrue().stream()
                 .map(ReturnJobDTO::mapJobToDTO)
@@ -61,6 +63,13 @@ public class JobService {
     @Transactional(readOnly = true)
     public List<ReturnJobDTO> findAllJobsByEnterpriseId(UUID id) {
         return jobRepository.findAllByEnterpriseId(id).stream()
+                .map(ReturnJobDTO::mapJobToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReturnJobDTO> findAllJobsByEnterpriseEmail(String email) {
+        return jobRepository.findByEnterprise_Email(email).stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }

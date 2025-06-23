@@ -1,45 +1,71 @@
 package org.example.trab_dsweb.controller;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
-import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
+import org.example.trab_dsweb.dto.ReturnJobDTO;
+import org.example.trab_dsweb.models.Enterprise;
+import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.example.trab_dsweb.services.EnterpriseService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.example.trab_dsweb.services.JobService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.UUID;
+import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/enterprise")
 @AllArgsConstructor
 public class EnterpriseController {
-    private EnterpriseService enterpriseService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReturnEnterpriseDTO> getEnterpriseById(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok(enterpriseService.getEnterpriseById(id));
+    private final EnterpriseService enterpriseService;
+    private final EnterpriseRepository enterpriseRepository;
+    private final JobService jobService;
+
+    @GetMapping("/register")
+    public String showRegisterEnterpriseForm(Model model) {
+        model.addAttribute("enterpriseData", new CreateEnterpriseDTO(null, null, null, null, null, null));
+        model.addAttribute("isEdit", false);
+        model.addAttribute("formAction", "/api/enterprise/register");
+        return "enterprise-form";
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ReturnEnterpriseDTO> create(@RequestBody @Valid CreateEnterpriseDTO data) {
-        ReturnEnterpriseDTO createdEnterprise = enterpriseService.createEnterprise(data);
-        return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
+    public String processRegisterEnterprise(@ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
+        try {
+            enterpriseService.createEnterprise(enterpriseData);
+            redirectAttributes.addFlashAttribute("successMessage", "Empresa cadastrada com sucesso!");
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/api/enterprise/register";
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ReturnEnterpriseDTO> updateEnterprise(
-            @PathVariable("id") UUID id,
-            @Valid CreateEnterpriseDTO data) {
+    @GetMapping("/enterprise")
+    public String showEnterpriseDashboard(Model model) {
 
-        ReturnEnterpriseDTO updatedEnterprise = enterpriseService.updateEnterpriseById(id, data);
-        return ResponseEntity.ok(updatedEnterprise);
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEnterprise(@PathVariable("id") UUID id) {
-        enterpriseService.deleteEnterpriseById(id);
-        return ResponseEntity.noContent().build();
+
+        Enterprise enterprise = enterpriseRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Empresa não encontrada para o e-mail: " + email));
+
+
+        List<ReturnJobDTO> jobs = jobService.findAllJobsByEnterpriseEmail(email);
+
+
+        model.addAttribute("enterpriseName", enterprise.getName());
+        model.addAttribute("jobs", jobs);
+
+
+        return "enterprise-dashboard";
     }
 }
