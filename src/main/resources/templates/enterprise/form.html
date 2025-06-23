@@ -22,15 +22,15 @@
                 <div class="grid grid-cols-2 gap-x-8 gap-y-6">
                     <div class="col-span-2 sm:col-span-1">
                         <label for="name" class="text-sm font-medium text-gray-700">Nome da Empresa</label>
-                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{name}" id="name">
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{name}" id="name" placeholder="Digite seu nome aqui">
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label for="cnpj" class="text-sm font-medium text-gray-700">CNPJ</label>
-                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{cnpj}" id="cnpj">
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{cnpj}" id="cnpj" placeholder="00.000.000/0000-00">
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label for="email" class="text-sm font-medium text-gray-700">E-mail de Contato</label>
-                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="email" th:field="*{email}" id="email">
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="email" th:field="*{email}" id="email" placeholder="Digite seu e-mail aqui">
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label for="password" class="text-sm font-medium text-gray-700">Senha</label>
@@ -38,11 +38,11 @@
                     </div>
                     <div class="col-span-2">
                         <label for="city" class="text-sm font-medium text-gray-700">Cidade</label>
-                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{city}" id="city">
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{city}" id="city" placeholder="Digite sua cidade aqui">
                     </div>
                     <div class="col-span-2">
                         <label for="description" class="text-sm font-medium text-gray-700">Descrição</label>
-                        <textarea rows="4" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" th:field="*{description}" id="description"></textarea>
+                        <textarea rows="4" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" th:field="*{description}" id="description" placeholder="Digite sua descrição aqui"></textarea>
                     </div>
                 </div>
 
