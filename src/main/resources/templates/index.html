@@ -8,7 +8,7 @@
     <title>Home</title>
 </head>
 
-<body class="bg-[#F9FAFB]">
+<body>
 
 <div th:replace="~{fragments/header :: header-component}"></div>
 
@@ -50,7 +50,8 @@
                     jobType=${job.jobType},
                     deadline=${job.applicationDeadline},
                     jobDescription=${job.description},
-                    jobId=${job.id}
+                    jobId=${job.id},
+                    jobSkills=${job.getSkillsAsString()}
                 )}"></div>
         </div>
     </div>
@@ -68,8 +69,15 @@
             </div>
             <div class="flex flex-col gap-3 ">
                 <h3 class="text-[32px] font-inter text-[#3E4053]">Descrição da Vaga</h3>
-                <h4 id="modal_job_description" class="text-[20px] text-[#828493]">Descrição...</h4>
+                <h4 id="modal_job_description" class="text-[20px] text-[#828493] max-w-prose">Descrição...</h4>
             </div>
+
+            <div class="flex flex-col gap-3">
+                <h3 class="text-[32px] font-inter text-[#3E4053]">Habilidades Necessárias</h3>
+                <div id="modal_skills_list" class="flex flex-wrap gap-2">
+                </div>
+            </div>
+
         </div>
         <div class="bg-[#E1E1E1] px-6 pb-6 pt-3 flex flex-col justify-between items-start rounded-xl gap-[125px]">
             <div class="flex flex-col gap-[60px]">
@@ -120,7 +128,6 @@
     </form>
 </dialog>
 
-
 <script>
     const detailsModal = document.getElementById('job_details_modal');
     const uploadModal = document.getElementById('upload_cv_modal');
@@ -130,6 +137,7 @@
     const modalJobDescription = document.getElementById('modal_job_description');
     const modalSalary = document.getElementById('modal_salary');
     const modalDeadline = document.getElementById('modal_deadline');
+    const modalSkillsList = document.getElementById('modal_skills_list');
 
     const uploadModalSubtitle = document.getElementById('upload_modal_subtitle');
     const fileInput = document.getElementById('file-upload');
@@ -146,6 +154,7 @@
         const salary = cardElement.getAttribute('data-salary');
         const deadline = cardElement.getAttribute('data-deadline');
         const jobDescription = cardElement.getAttribute('data-job-description');
+        const jobSkillsString = cardElement.getAttribute('data-job-skills');
 
         hiddenJobIdInput.value = jobId;
         modalJobTitle.textContent = jobTitle;
@@ -153,6 +162,17 @@
         modalJobDescription.textContent = jobDescription;
         modalSalary.textContent = salary;
         modalDeadline.textContent = deadline;
+
+        modalSkillsList.innerHTML = '';
+        if (jobSkillsString && jobSkillsString.length > 0) {
+            const skillsArray = jobSkillsString.split(',');
+            skillsArray.forEach(skill => {
+                const skillElement = document.createElement('span');
+                skillElement.textContent = skill.trim();
+                skillElement.className = 'bg-indigo-100 text-indigo-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded';
+                modalSkillsList.appendChild(skillElement);
+            });
+        }
 
         if (detailsModal) {
             detailsModal.showModal();
@@ -206,7 +226,6 @@
         }
     }
 
-
     function resetFileInput() {
         fileInput.value = '';
         uploadPrompt.classList.remove('hidden');
@@ -214,14 +233,12 @@
         fileNameDisplay.textContent = '';
     }
 
-
     function closeUploadModalAndReset() {
         if (uploadModal) {
             uploadModal.close();
         }
         resetFileInput();
     }
-
 
     fileInput.addEventListener('change', function() {
         if (this.files && this.files.length > 0) {

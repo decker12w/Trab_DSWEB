@@ -19,6 +19,14 @@ public record ReturnJobDTO(
         List<String> skills,
         String city
 ) {
+
+    public String getSkillsAsString() {
+        if (this.skills == null || this.skills.isEmpty()) {
+            return "";
+        }
+        return String.join(", ", this.skills);
+    }
+
     public static ReturnJobDTO mapJobToDTO(Job job) {
         ReturnEnterpriseInJobDTO enterpriseDTO = new ReturnEnterpriseInJobDTO(
                 job.getEnterprise().getId(),

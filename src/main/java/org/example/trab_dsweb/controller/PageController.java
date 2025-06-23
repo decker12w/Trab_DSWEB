@@ -1,54 +1,90 @@
 package org.example.trab_dsweb.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.example.trab_dsweb.dto.CreateWorkerDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
+import org.example.trab_dsweb.enums.Gender;
+import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.services.JobService;
+import org.example.trab_dsweb.services.WorkerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Este Controller é responsável por RENDERIZAR PÁGINAS HTML com Thymeleaf.
- * Ele não retorna JSON, ele retorna o nome do template.
- */
 @Controller
 @AllArgsConstructor
 public class PageController {
 
     private final JobService jobService;
+    private final WorkerService workerService;
 
-    /**
-     * Este método lida com as requisições para a página inicial do site.
-     * Ele busca os dados das vagas e os adiciona ao Model para que o Thymeleaf possa usá-los.
-     * @param model O objeto "mala" para carregar dados para a view.
-     * @param city  Um parâmetro opcional da URL para filtrar vagas (ex: /?city=Sao%20Paulo)
-     * @return O nome do arquivo HTML a ser renderizado (ex: "index.html")
-     */
     @GetMapping("/")
     public String showHomePage(Model model, @RequestParam(name = "city", required = false) String city) {
-
         List<ReturnJobDTO> jobs;
-
-        // ESTA É A LÓGICA PRINCIPAL:
-        // Se o usuário passou uma cidade na URL...
         if (city != null && !city.isBlank()) {
-            // ...chama o serviço que busca por cidade.
             jobs = jobService.findAllActiveJobsByCity(city);
         } else {
-            // ...senão, chama o serviço que busca todas as vagas ativas.
             jobs = jobService.finAllActiveJobs();
         }
-
-        // Adiciona a lista (filtrada ou não) ao modelo com o nome "jobs".
-        // Este nome "jobs" é o que o th:each="job : ${jobs}" no HTML vai usar.
         model.addAttribute("jobs", jobs);
-
-        // Retorna o nome do arquivo da view que o Thymeleaf deve renderizar.
-        // Se seu arquivo se chama home.html, retorne "home".
-        // Se seu arquivo se chama index.html, retorne "index".
         return "index";
+    }
+
+    @GetMapping("/register/worker")
+    public String registerWorkerPage(Model model) {
+        model.addAttribute("workerData", new CreateWorkerDTO(null, null, null, null, null, null));
+
+        Map<String, String> genderOptions = new LinkedHashMap<>();
+        genderOptions.put(Gender.MALE.name(), "Masculino");
+        genderOptions.put(Gender.FEMALE.name(), "Feminino");
+        genderOptions.put(Gender.OTHER.name(), "Outro");
+        model.addAttribute("genderOptions", genderOptions);
+
+        return "register-worker";
+    }
+
+    @PostMapping("/register/worker")
+    public String processRegistration(
+            @Valid @ModelAttribute("workerData") CreateWorkerDTO workerData,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> genderOptions = new LinkedHashMap<>();
+            genderOptions.put(Gender.MALE.name(), "Masculino");
+            genderOptions.put(Gender.FEMALE.name(), "Feminino");
+            genderOptions.put(Gender.OTHER.name(), "Outro");
+            model.addAttribute("genderOptions", genderOptions);
+            return "register-worker";
+        }
+
+        try {
+            workerService.createWorker(workerData);
+
+        } catch (ConflictException e) {
+            bindingResult.reject("global.error", e.getMessage());
+            Map<String, String> genderOptions = new LinkedHashMap<>();
+            genderOptions.put(Gender.MALE.name(), "Masculino");
+            genderOptions.put(Gender.FEMALE.name(), "Feminino");
+            genderOptions.put(Gender.OTHER.name(), "Outro");
+            model.addAttribute("genderOptions", genderOptions);
+            return "register-worker";
+        }
+
+
+        redirectAttributes.addFlashAttribute("successMessage", "Cadastro realizado com sucesso! Faça seu login.");
+
+        return "redirect:/login";
     }
 }

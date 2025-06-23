@@ -9,18 +9,25 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/work")
+@RequestMapping("/api/worker")
 @AllArgsConstructor
-public class WorkController {
+public class WorkerController {
 
     private final WorkerService workerService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ReturnWorkerDTO> getWorkerById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(workerService.getWorkerById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReturnWorkerDTO>> getAllWorkers() {
+        List<ReturnWorkerDTO> workers = workerService.listAllWorkers();
+        return ResponseEntity.ok(workers);
     }
 
     @PostMapping()

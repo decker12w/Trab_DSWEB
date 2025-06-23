@@ -5,6 +5,10 @@
     html {
         font-family: 'Inter', sans-serif;
     }
+
+    body {
+        background: #F9FAFB;
+    }
 }
 
 @layer utilities {

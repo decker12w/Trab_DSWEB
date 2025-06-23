@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="job-card(jobTitle, companyName, location, salary, deadline, jobType, jobDescription)"
+<div th:fragment="job-card(jobTitle, companyName, location, salary, deadline, jobType, jobDescription, jobSkills)"
      th:data-job-title="${jobTitle}"
      th:data-company-name="${companyName}"
      th:data-location="${location}"
@@ -10,6 +10,9 @@
      th:data-deadline="${#temporals.format(deadline, 'dd/MM/yyyy')}"
      th:data-job-type-name="${jobType.name()}"
      th:data-job-description="${jobDescription}"
+
+     th:data-job-skills="${jobSkills}"
+
      onclick="openDetailsModal(this)"
      class="bg-white px-5 py-4 rounded-lg shadow-md flex flex-col gap-[28px] cursor-pointer hover:shadow-lg transition-shadow duration-200">
 
@@ -30,8 +33,8 @@
         </div>
 
         <div class="flex justify-between items-center">
-            <span class="text-[#55B57D]" th:text="${salary}">R$00.000,00</span>
-            <span class="text-[#8E919D] text-sm" th:text="'Inscrições até: ' + ${deadline}">Inscrições até: DD/MM/AAAA</span>
+            <span class="text-[#55B57D]" th:text="${#numbers.formatCurrency(salary)}">R$00.000,00</span>
+            <span class="text-[#8E919D] text-sm" th:text="'Inscrições até: ' + ${#temporals.format(deadline, 'dd/MM/yyyy')}">Inscrições até: DD/MM/AAAA</span>
         </div>
     </div>
 </div>

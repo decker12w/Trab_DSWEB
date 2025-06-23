@@ -9,6 +9,7 @@ import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -58,6 +59,17 @@ public class WorkerService {
                 worker.getGender(),
                 worker.getBirthDate()
         );
+    }
+    public List<ReturnWorkerDTO> listAllWorkers() {
+        return workerRepository.findAll().stream()
+                .map(worker -> new ReturnWorkerDTO(
+                        worker.getId(),
+                        worker.getEmail(),
+                        worker.getCpf(),
+                        worker.getName(),
+                        worker.getGender(),
+                        worker.getBirthDate()))
+                .toList();
     }
 
     public void deleteWorkerById(UUID id) {
