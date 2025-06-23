@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public record CreateJobDTO(
         @NotBlank
@@ -19,9 +18,6 @@ public record CreateJobDTO(
 
         @NotNull
         JobType jobType,
-
-        @NotNull
-        UUID enterpriseId,
 
         @NotNull
         LocalDateTime applicationDeadline,

@@ -31,7 +31,7 @@ public class AdminController {
     public String showDashboard(Model model) {
         model.addAttribute("workers", workerService.listAllWorkers());
         model.addAttribute("enterprises", enterpriseService.listAllEnterprises());
-        return "admin/admin-dashboard";
+        return "/admin/admin-dashboard";
     }
 
     @GetMapping("/worker/edit/{id}")
