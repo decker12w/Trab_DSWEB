@@ -14,31 +14,37 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/job-application")
+@RequestMapping("/api/job-application")
 @AllArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
 
     @PostMapping
     public ResponseEntity<ReturnJobApplicationDTO> createJobApplication(@RequestBody @Valid CreateJobApplicationDTO data) {
-        ReturnJobApplicationDTO response = jobApplicationService.createJobApplication(data);
+        ReturnJobApplicationDTO createdJobApplication = jobApplicationService.createJobApplication(data);
         return ResponseEntity
                 .created(ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("/{id}")
-                        .buildAndExpand(response.id())
+                        .buildAndExpand(createdJobApplication.id())
                         .toUri())
-                .body(response);
+                .body(createdJobApplication);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ReturnJobApplicationDTO> updateJobApplicationStatus(@PathVariable UUID id, @RequestBody @Valid UpdateJobApplicationStatusDTO data) {
-        ReturnJobApplicationDTO jobApplication = jobApplicationService.updateJobApplicationStatus(id, data);
-        return ResponseEntity.ok(jobApplication);
+        ReturnJobApplicationDTO updateJobApplication = jobApplicationService.updateJobApplicationStatus(id, data);
+        return ResponseEntity.ok(updateJobApplication);
     }
 
     @GetMapping("/worker/{id}")
     public ResponseEntity<List<ReturnJobApplicationDTO>> findAllJobApplicationsByWorkerId(@PathVariable("id") UUID id) {
-        List<ReturnJobApplicationDTO> job = jobApplicationService.findAllJobApplicationsByWorkerId(id);
-        return ResponseEntity.ok(job);
+        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerId(id);
+        return ResponseEntity.ok(jobApplications);
+    }
+
+    @GetMapping("/job/{id}")
+    public ResponseEntity<List<ReturnJobApplicationDTO>> findAllJobApplicationsByJobId(@PathVariable("id") UUID id) {
+        List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByJobId(id);
+        return ResponseEntity.ok(jobApplications);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/enterprise")
+@RequestMapping("/api/enterprise")
 @AllArgsConstructor
 public class EnterpriseController {
     private EnterpriseService enterpriseService;
@@ -26,8 +26,8 @@ public class EnterpriseController {
 
     @PostMapping
     public ResponseEntity<ReturnEnterpriseDTO> create(@RequestBody CreateEnterpriseDTO data) {
-        ReturnEnterpriseDTO newEnterprise = enterpriseService.createEnterprise(data);
-        return new ResponseEntity<>(newEnterprise, HttpStatus.CREATED);
+        ReturnEnterpriseDTO createdEnterprise = enterpriseService.createEnterprise(data);
+        return new ResponseEntity<>(createdEnterprise, HttpStatus.CREATED);
     }
 
 
