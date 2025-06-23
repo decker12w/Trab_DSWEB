@@ -40,6 +40,12 @@ public class JobApplicationController {
         return "redirect:/api/job-application/job/" + id;
     }
 
+    @PostMapping("/{id}/delete")
+    public String deleteJobApplicationById(@PathVariable UUID id) {
+        jobApplicationService.deleteJobApplicationById(id);
+        return "redirect:/api/job-application/worker";
+    }
+
     @GetMapping("/worker")
     public String findAllJobApplicationsByWorker(ModelMap model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

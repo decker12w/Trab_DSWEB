@@ -213,7 +213,7 @@
             const resultText = await response.text();
 
             if (response.ok) {
-                alert(resultText);
+                alert('Candidatura feita com sucesso.');
                 closeUploadModalAndReset();
             } else {
                 alert(`Erro: ${resultText}`);
