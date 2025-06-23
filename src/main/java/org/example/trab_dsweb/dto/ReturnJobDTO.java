@@ -16,7 +16,6 @@ public record ReturnJobDTO(
         Double remuneration,
         List<String> skills,
         String city,
-        boolean jobActive,
         ReturnEnterpriseInJobDTO enterprise
 ) {
 
@@ -43,7 +42,6 @@ public record ReturnJobDTO(
                 job.getRemuneration(),
                 job.getSkills(),
                 job.getCity(),
-                job.isJobActive(),
                 enterpriseDTO
         );
     }
