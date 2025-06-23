@@ -1,6 +1,7 @@
 package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class JobService {
@@ -33,7 +35,10 @@ public class JobService {
         job.setCity(createJobRequestDTO.city());
 
         Enterprise enterprise = enterpriseRepository.findById(createJobRequestDTO.enterpriseId())
-                .orElseThrow(() -> new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId()));
+                .orElseThrow(() -> {
+                    log.error("Enterprise not found with ID={}", createJobRequestDTO.enterpriseId());
+                    return new NotFoundException("Enterprise not found with ID: " + createJobRequestDTO.enterpriseId());
+                });
 
         job.setEnterprise(enterprise);
         Job savedJob = jobRepository.save(job);
