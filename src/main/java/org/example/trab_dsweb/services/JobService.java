@@ -40,7 +40,7 @@ public class JobService {
 
         return ReturnJobDTO.mapJobToDTO(savedJob);
     }
-    public List<ReturnJobDTO> finAllActiveJobs(){
+    public List<ReturnJobDTO> findAllActiveJobs(){
         return jobRepository.findByJobActiveTrue().stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());

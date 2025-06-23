@@ -21,11 +21,11 @@ public class WorkerService {
 
     public ReturnWorkerDTO createWorker(CreateWorkerDTO data) {
         if (workerRepository.findWorkerByCpf(data.cpf()).isPresent()) {
-            throw new ConflictException("Worker with this CPF already exists");
+            throw new ConflictException("Profissional com esse CPF já existe");
         }
 
         if (workerRepository.findWorkerByEmail(data.email()).isPresent()) {
-            throw new ConflictException("Worker with this email already exists");
+            throw new ConflictException("Profissional com esse e-mail já existe");
         }
 
         Worker newWorker = new Worker();
