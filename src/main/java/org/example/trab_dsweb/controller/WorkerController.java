@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/worker")
+@RequestMapping("/api/worker")
 @AllArgsConstructor
 public class WorkerController {
 
@@ -28,7 +28,7 @@ public class WorkerController {
 
         model.addAttribute("workerData", new CreateWorkerDTO(null, null, null, null, null, null));
         model.addAttribute("isEdit", false);
-        model.addAttribute("formAction", "/worker/register");
+        model.addAttribute("formAction", "/api/worker/register");
 
 
         Map<String, String> genderOptions = Arrays.stream(Gender.values())
@@ -46,7 +46,7 @@ public class WorkerController {
             return "redirect:/login";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/worker/register";
+            return "redirect:/api/worker/register";
         }
     }
 }
