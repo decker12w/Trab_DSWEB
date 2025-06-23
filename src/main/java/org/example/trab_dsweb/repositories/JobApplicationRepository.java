@@ -9,6 +9,8 @@ import java.util.UUID;
 
 public interface JobApplicationRepository extends JpaRepository<JobApplication, UUID> {
     List<JobApplication> findAllByWorkerId(UUID workerId);
+    List<JobApplication> findAllByJobId(UUID workerId);
+
 
     Optional<JobApplication> findByWorkerIdAndJobId(UUID workerId, UUID jobId);
 }

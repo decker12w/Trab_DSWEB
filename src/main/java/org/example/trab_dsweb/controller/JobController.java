@@ -33,7 +33,7 @@ public class JobController {
 
     @GetMapping
     public ResponseEntity<List<ReturnJobDTO>> findAllActiveJobs() {
-        List<ReturnJobDTO> jobs = jobService.finAllActiveJobs();
+        List<ReturnJobDTO> jobs = jobService.findAllActiveJobs();
         return ResponseEntity.ok(jobs);
     }
 

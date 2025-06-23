@@ -64,4 +64,19 @@ public class JobApplicationService {
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<ReturnJobApplicationDTO> findAllJobApplicationsByJobId(UUID jobId) {
+        return jobApplicationRepository.findAllByJobId(jobId).stream()
+                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReturnJobApplicationDTO> listWorkersByJob(UUID vagaId) {
+        return jobApplicationRepository.findAllByJobId(vagaId)
+                .stream()
+                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
+                .collect(Collectors.toList());
+    }
 }

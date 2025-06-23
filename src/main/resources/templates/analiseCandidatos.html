@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+  <link th:href="@{/css/output.css}" rel="stylesheet">
+  <title>Painel Trabalhador</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-[#F9FAFB]">
+<header th:replace="~{fragments/header :: header-component}"></header>
+<section id="analise-candidatos" class="py-16">
+  <h1 class="text-3xl font-bold mb-1">Análise de Candidatos</h1>
+  <p id="analise-vaga-titulo" class="text-gray-600 mb-8" th:text="${tituloVaga}">Titulo da Vaga</p>
+  <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50">
+        <tr>
+          <th class="p-3 font-semibold text-sm uppercase">Candidato</th>
+          <th class="p-3 font-semibold text-sm uppercase">Currículo</th>
+          <th class="p-3 font-semibold text-sm uppercase">Status</th>
+          <th class="p-3 font-semibold text-sm uppercase">Ações</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y">
+        <!-- Loop de candidatos com Thymeleaf -->
+        <tr th:each="candidato : ${candidatos}">
+          <td class="p-3" th:text="${candidato.worker.name}">João da Silva</td>
+          <td class="p-3">
+            <a th:href="${candidato.worker.curriculoUrl}" target="_blank" class="text-indigo-600 hover:underline">Ver Currículo</a>
+          </td>//TERMINAR DE ARRUMAR ISSO DE COLOCAR O CURRÍCULO NO JOBAPPLICATION
+          <td class="p-3" th:text="${candidato.status}">Em Análise</td>
+          <td class="p-3">
+            <!-- Exemplo de ação, ajustes conforme sua rota e lógica -->
+            <a th:href="@{/candidatos/{id}/aprovar(id=${candidato.id})}" class="text-green-600 hover:underline mr-2">Aprovar</a>
+            <a th:href="@{/candidatos/{id}/reprovar(id=${candidato.id})}" class="text-red-600 hover:underline">Reprovar</a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(candidatos)}">
+          <td colspan="4" class="p-3 text-center text-gray-400">Nenhum candidato encontrado.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+</body>
+</html>

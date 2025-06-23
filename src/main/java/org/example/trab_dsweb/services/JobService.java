@@ -42,7 +42,7 @@ public class JobService {
 
         return ReturnJobDTO.mapJobToDTO(savedJob);
     }
-    public List<ReturnJobDTO> finAllActiveJobs(){
+    public List<ReturnJobDTO> findAllActiveJobs(){
         return jobRepository.findByJobActiveTrue().stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
@@ -61,4 +61,12 @@ public class JobService {
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public String findTitleById(UUID jobId) {
+        return jobRepository.findById(jobId)
+                .map(Job::getTitle)
+                .orElse("Vaga não encontrada");
+    }
+
 }
