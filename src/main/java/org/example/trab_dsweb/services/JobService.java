@@ -48,7 +48,7 @@ public class JobService {
 
     @Transactional(readOnly = true)
     public List<ReturnJobDTO> findAllActiveJobsByCity(String city) {
-        return jobRepository.findByJobActiveTrueAndCity(city).stream()
+        return jobRepository.findByJobActiveTrueAndCityContainingIgnoreCase(city).stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }

@@ -43,4 +43,9 @@
     .bg-white {
         background-color: #ffffff;
     }
+
+    dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(2px);
+    }
 }
