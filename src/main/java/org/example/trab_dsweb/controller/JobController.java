@@ -33,7 +33,6 @@ public class JobController {
             model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null, null, null));
         }
 
-        // A lógica de edição foi removida, definimos a action diretamente
         model.addAttribute("formAction", "/jobs/register");
         addJobTypeOptionsToModel(model);
 
@@ -60,6 +59,7 @@ public class JobController {
             redirectAttributes.addFlashAttribute("successMessage", "Vaga criada com sucesso!");
             return "redirect:/dashboard/enterprise";
         } catch (Exception e) {
+            System.out.println("Error creating job: " + e.getMessage());
             redirectAttributes.addFlashAttribute("jobData", jobData);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/jobs/register";

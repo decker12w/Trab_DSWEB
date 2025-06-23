@@ -10,4 +10,5 @@ public interface JobRepository extends CrudRepository<Job, UUID> {
     List<Job> findByJobActiveTrueAndCityContainingIgnoreCase(String city);
     List<Job> findAllByEnterpriseId(UUID enterpriseId);
     List<Job> findByJobActiveTrue();
+    List<Job> findByEnterprise_Email(String email);
 }

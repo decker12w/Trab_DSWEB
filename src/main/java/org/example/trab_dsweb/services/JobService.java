@@ -63,4 +63,11 @@ public class JobService {
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<ReturnJobDTO> findAllJobsByEnterpriseEmail(String email) {
+        return jobRepository.findByEnterprise_Email(email).stream()
+                .map(ReturnJobDTO::mapJobToDTO)
+                .collect(Collectors.toList());
+    }
 }
