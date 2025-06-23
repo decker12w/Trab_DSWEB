@@ -1,19 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <body>
-
 <header th:fragment="header-component" class="px-[166px] py-[28px] flex justify-between items-center bg-white">
     <div class="justify-center text-brand-purple text-4xl font-semibold font-inter">MiranhaJob</div>
     <nav>
         <ul class="flex gap-6 items-center">
             <li class="px-6 py-3">
-                <a class="text-text-primary hover:text-gray-900 font-inter" href="/">Vagas</a>
+                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/api/home}">Vagas</a>
             </li>
             <li class="px-6 py-3">
-                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/jobs/create}">PT-BR</a>
+                <a class="text-text-primary hover:text-gray-900 font-inter">PT-BR</a>
             </li>
-            <li>
-                <button class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter">Sair</button>
+            <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_WORKER')">
+                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/api/job-application/worker}">Meu Painel</a>
+            </li>
+            <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_ENTERPRISE')">
+                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/api/enterprise/dashboard}">Painel Empresa</a>
+            </li>
+            <li sec:authorize="isAuthenticated()" style="right: 10px; position: absolute">
+                <form th:action="@{/logout}" method="post">
+                    <button class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter">Sair</button>
+                </form>
             </li>
         </ul>
     </nav>

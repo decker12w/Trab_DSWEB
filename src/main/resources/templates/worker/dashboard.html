@@ -34,24 +34,24 @@
                 <tr>
                     <th class="px-6 py-4">VAGA</th>
                     <th class="px-6 py-4">EMPRESA</th>
-                    <th class="px-6 py-4">DATA</th>
+                    <th class="px-6 py-4">DATA LIMITE</th>
                     <th class="px-6 py-4">STATUS</th>
                     <th class="px-6 py-4">AÇÕES</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                <tr th:each="application : ${applications}" class="hover:bg-gray-50">
-                    <td class="px-6 py-4" th:text="${application.jobTitle}">Desenvolvedor Back-End</td>
-                    <td class="px-6 py-4" th:text="${application.companyName}">MiranhaCorp</td>
-                    <td class="px-6 py-4" th:text="${#temporals.format(application.date, 'dd/MM/yyyy')}">31/02/2026</td>
+                <tr th:each="jobApplication : ${jobApplications}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4" th:text="${jobApplication.description}">Desenvolvedor Back-End</td>
+                    <td class="px-6 py-4" th:text="${jobApplication.enterprise.name}">MiranhaCorp</td>
+                    <td class="px-6 py-4" th:text="${#temporals.format(jobApplication.applicationDeadline, 'dd/MM/yyyy')}">31/02/2026</td>
                     <td class="px-6 py-4">
-                        <span th:text="${application.status}"
+                        <span th:text="${jobApplication.status}"
                               class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                             Entrevista
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        <form th:action="@{'/candidatures/delete/' + ${application.id}}" method="post"
+                        <form th:action="@{'/candidatures/delete/' + ${jobApplication.id}}" method="post"
                               onsubmit="return confirm('Tem certeza que deseja excluir?')">
                             <button type="submit" class="text-red-600 hover:underline">Excluir</button>
                         </form>

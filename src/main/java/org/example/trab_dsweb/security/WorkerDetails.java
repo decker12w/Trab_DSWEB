@@ -17,7 +17,7 @@ public class WorkerDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("WORKER");
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_WORKER");
         return List.of(authority);
     }
 
