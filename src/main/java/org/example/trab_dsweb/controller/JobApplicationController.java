@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
+import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.services.JobApplicationService;
@@ -60,6 +61,23 @@ public class JobApplicationController {
         return "worker/dashboard";
     }
 
+    private byte[] getJobApplication(UUID id) {
+        ReturnJobApplicationDTO jobApplication = jobApplicationService.getJobApplicationById(id);
+        return jobApplication.curriculum();
+    }
+
+    @GetMapping(value = "/download/{id}")
+    public void download(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") UUID id) {
+        response.setContentType("application/pdf");
+
+        try {
+            response.getOutputStream().write(getJobApplication(id));
+
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            System.out.println("Error :- " + e.getMessage());
+        }
+    }
     private Worker getLoggedWorker() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
@@ -67,6 +85,5 @@ public class JobApplicationController {
         }
         return workerDetails.getWorker();
     }
-
 
 }
