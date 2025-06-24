@@ -53,6 +53,11 @@
 
                 </form>
             </li>
+            <li sec:authorize="isAnonymous()" class="ml-auto">
+                <a class="text-white bg-[#4F45E6] hover:bg-blue-700 px-6 py-3 rounded-lg cursor-pointer font-inter"
+                   th:href="@{/login}" th:text="#{fragments.header.login}">Entrar</a>
+            </li>
+
         </ul>
     </nav>
 </header>
