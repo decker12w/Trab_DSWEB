@@ -35,8 +35,11 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/error", "/login/**", "/workers/register", "/enterprises/register", "/worker/register", "/enterprise/register").permitAll()
+                        .requestMatchers("/error", "/login/**", "/workers/register", "/enterprises/register", "/home").permitAll()
                         .requestMatchers("/css/**", "/image/**", "/webjars/**", "/js/**").permitAll()
+                        .requestMatchers("/admins/**").hasRole("ADMIN")
+                        .requestMatchers("/workers/**").hasRole("WORKER")
+                        .requestMatchers("/enterprises/**", "/jobs/**").hasRole("ENTERPRISE")
                         .anyRequest().authenticated()
                 ).formLogin((form) -> form
                         .loginPage("/login")
@@ -46,7 +49,6 @@ public class WebSecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
-
 
         return http.build();
     }

@@ -50,7 +50,6 @@ public class AdminController {
         return "worker/form";
     }
 
-
     @PostMapping("/worker/edit/{id}")
     public String processEditWorkerForm(@PathVariable UUID id, @ModelAttribute("workerData") CreateWorkerDTO workerData, RedirectAttributes redirectAttributes) {
         workerService.updateWorkerById(id, workerData);
@@ -66,7 +65,6 @@ public class AdminController {
         return "redirect:/admins/dashboard";
     }
 
-
     @GetMapping("/enterprise/edit/{id}")
     public String showEditEnterpriseForm(@PathVariable UUID id, Model model) {
         ReturnEnterpriseDTO enterpriseDTO = enterpriseService.findEnterpriseById(id);
@@ -80,14 +78,12 @@ public class AdminController {
         return "enterprise/form";
     }
 
-
     @PostMapping("/enterprise/edit/{id}")
     public String processEditEnterpriseForm(@PathVariable UUID id, @ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
         enterpriseService.updateEnterpriseById(id, enterpriseData);
         redirectAttributes.addFlashAttribute("successMessage", "Empresa atualizada com sucesso!");
         return "redirect:/admins/dashboard";
     }
-
 
     @GetMapping("/enterprise/delete/{id}")
     public String deleteEnterprise(@PathVariable UUID id, RedirectAttributes redirectAttributes) {

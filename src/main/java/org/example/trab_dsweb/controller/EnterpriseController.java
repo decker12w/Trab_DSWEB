@@ -5,6 +5,7 @@ import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.enums.Status;
+import org.example.trab_dsweb.exceptions.exceptions.UnauthorizedException;
 import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.security.EnterpriseDetails;
 import org.example.trab_dsweb.services.EnterpriseService;
@@ -62,7 +63,7 @@ public class EnterpriseController {
     private Enterprise getLoggedEnterprise() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {
-            throw new Error("error");
+            throw new UnauthorizedException("Enterprise is not logged in");
         }
         return enterpriseDetails.getEnterprise();
     }
@@ -82,9 +83,8 @@ public class EnterpriseController {
         model.addAttribute("job", job);
         model.addAttribute("applications", applications);
         model.addAttribute("statusOptions", Status.values());
+        model.addAttribute("link", null);
 
         return "enterprise/analysis";
     }
-
-
 }

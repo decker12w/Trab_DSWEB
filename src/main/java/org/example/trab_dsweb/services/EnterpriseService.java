@@ -7,7 +7,7 @@ import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Enterprise;
-import org.example.trab_dsweb.repositories.EnterpriseRepository;
+import org.example.trab_dsweb.daos.EnterpriseDAO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +21,10 @@ import java.util.stream.StreamSupport;
 @AllArgsConstructor
 public class EnterpriseService {
     private BCryptPasswordEncoder encoder;
-    private final EnterpriseRepository enterpriseRepository;
+    private final EnterpriseDAO enterpriseDAO;
 
     public List<ReturnEnterpriseDTO> findAllEnterprises() {
-        return StreamSupport.stream(enterpriseRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(enterpriseDAO.findAll().spliterator(), false)
                 .map(enterprise -> new ReturnEnterpriseDTO(
                         enterprise.getId(),
                         enterprise.getEmail(),
@@ -37,7 +37,7 @@ public class EnterpriseService {
     }
 
     public ReturnEnterpriseDTO findEnterpriseById(UUID id) {
-        Enterprise enterprise = enterpriseRepository.findById(id)
+        Enterprise enterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("Enterprise not found with ID={}", id);
                     return new NotFoundException("Enterprise not found");
@@ -54,13 +54,13 @@ public class EnterpriseService {
     }
 
     public void createEnterprise(CreateEnterpriseDTO data){
-        enterpriseRepository.findByEmail(data.email())
+        enterpriseDAO.findByEmail(data.email())
                 .ifPresent(enterprise -> {
                     log.error("Enterprise with email={} already exists", data.email());
                     throw new ConflictException("Enterprise with this email already exists");
                 });
 
-        enterpriseRepository.findByCnpj(data.cnpj())
+        enterpriseDAO.findByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
                     log.error("Enterprise with CNPJ={} already exists", data.cnpj());
                     throw new ConflictException("Enterprise with this CNPJ already exists");
@@ -74,18 +74,18 @@ public class EnterpriseService {
         newEnterprise.setDescription(data.description());
         newEnterprise.setCity(data.city());
 
-        enterpriseRepository.save(newEnterprise);
+        enterpriseDAO.save(newEnterprise);
     }
 
     public void updateEnterpriseById(UUID id, CreateEnterpriseDTO data) {
-        Enterprise existingEnterprise = enterpriseRepository.findById(id)
+        Enterprise existingEnterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("Enterprise not found with ID={}", id);
                     return new NotFoundException("Enterprise not found");
                 });
 
         if (data.cnpj() != null && !data.cnpj().isEmpty()) {
-            enterpriseRepository.findByCnpj(data.cnpj()).ifPresent(ent -> {
+            enterpriseDAO.findByCnpj(data.cnpj()).ifPresent(ent -> {
                 if (!ent.getId().equals(id)) {
                     log.error("Duplicate CNPJ={} on update for Enterprise ID={}", data.cnpj(), id);
                     throw new ConflictException("Enterprise with this CNPJ already exists");
@@ -95,7 +95,7 @@ public class EnterpriseService {
         }
 
         if (data.email() != null && !data.email().isEmpty()) {
-            enterpriseRepository.findByEmail(data.email()).ifPresent(ent -> {
+            enterpriseDAO.findByEmail(data.email()).ifPresent(ent -> {
                 if (!ent.getId().equals(id)) {
                     log.error("Duplicate email={} on update for Enterprise ID={}", data.email(), id);
                     throw new ConflictException("Enterprise with this email already exists");
@@ -120,14 +120,14 @@ public class EnterpriseService {
             existingEnterprise.setCity(data.city());
         }
 
-        enterpriseRepository.save(existingEnterprise);
+        enterpriseDAO.save(existingEnterprise);
     }
 
     public void deleteEnterpriseById(UUID id) {
-        if (!enterpriseRepository.existsById(id)) {
+        if (!enterpriseDAO.existsById(id)) {
             log.error("Attempt to delete non-existing Enterprise with ID={}", id);
             throw new NotFoundException("Enterprise not found");
         }
-        enterpriseRepository.deleteById(id);
+        enterpriseDAO.deleteById(id);
     }
 }
