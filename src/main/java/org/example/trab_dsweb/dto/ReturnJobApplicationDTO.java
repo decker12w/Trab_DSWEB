@@ -14,7 +14,8 @@ public record ReturnJobApplicationDTO(
         LocalDateTime applicationDeadline,
         Status status,
         ReturnWorkerInJobDTO worker,
-        ReturnEnterpriseInJobDTO enterprise
+        ReturnEnterpriseInJobDTO enterprise,
+        byte[] curriculum
 ) {
     public static ReturnJobApplicationDTO mapJobApplicationToDTO(JobApplication jobApplication) {
         Worker worker = jobApplication.getWorker();
@@ -37,7 +38,8 @@ public record ReturnJobApplicationDTO(
                 job.getApplicationDeadline(),
                 jobApplication.getStatus(),
                 workerDTO,
-                enterpriseDTO
+                enterpriseDTO,
+                jobApplication.getCurriculum()
         );
     }
 }
