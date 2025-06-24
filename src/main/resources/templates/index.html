@@ -6,16 +6,17 @@
     <meta charset="UTF-8">
     <title>Encontre sua Próxima Oportunidade</title>
     <link th:href="@{/css/output.css}" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col items-end">
-        <div th:if="${successMessage}" id="toast-success" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg opacity-0 transform translate-x-full transition-all duration-500 ease-in-out" role="alert">
-            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            </div>
-            <div class="ml-3 text-sm font-normal" th:text="${successMessage}"></div>
+<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col items-end">
+    <div th:if="${successMessage}" id="toast-success"
+         class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg opacity-0 transform translate-x-full transition-all duration-500 ease-in-out"
+         role="alert">
+        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
         </div>
-
+        <div class="ml-3 text-sm font-normal" th:text="${successMessage}"></div>
+    </div>
         <div th:if="${errorMessage}" id="toast-error" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg opacity-0 transform translate-x-full transition-all duration-500 ease-in-out" role="alert">
             <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.607a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -23,35 +24,33 @@
             <div class="ml-3 text-sm font-normal" th:text="${errorMessage}"></div>
         </div>
     </div>
-    <div th:replace="~{fragments/header :: header-component}"></div>
-    <main>
-
-        <div class="flex flex-col items-center gap-10">
-            <div class="flex flex-col items-center justify-center mt-[141px] gap-4">
-                <h1 class="text-[4rem] text-text-heading font-semibold font-inter">
-                    Encontre sua Próxima Oportunidade
-                </h1>
-                <h2 class="text-[2rem] text-text-subheading font-inter">
-                    Milhares de vagas de estágio e emprego esperam por você.
-                </h2>
-            </div>
-            <div class="w-full max-w-[647px]">
-                <form action="/home" method="GET" class="relative w-full h-[80px]">
-                    <input
-                            name="city"
-                            th:value="${param.city}"
-                            class="w-full h-full pl-6 pr-[14px] py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple font-inter text-[20px]"
-                            placeholder="Filtre por cidade"
-                    />
-                    <button
-                            type="submit"
-                            class="absolute top-1/2 -translate-y-1/2 right-2 text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
-                    >
-                        Buscar
-                    </button>
-                </form>
-            </div>
+<div th:replace="~{fragments/header :: header-component}"></div>
+<main>
+    <div class="flex flex-col items-center gap-10">
+        <div class="flex flex-col items-center justify-center mt-[141px] gap-4">
+            <h1 class="text-[4rem] text-text-heading font-semibold font-inter"
+                th:text="#{index.title}">Encontre sua Próxima Oportunidade</h1>
+            <h2 class="text-[2rem] text-text-subheading font-inter"
+                th:text="#{index.subtitle}">Milhares de vagas de estágio e emprego esperam por você.</h2>
         </div>
+        <div class="w-full max-w-[647px]">
+            <form action="/home" method="GET" class="relative w-full h-[80px]">
+                <input
+                        name="city"
+                        th:value="${param.city}"
+                        class="w-full h-full pl-6 pr-[14px] py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple font-inter text-[20px]"
+                        th:placeholder="#{index.placeholder}"
+                        placeholder="Filtre por cidade"
+                />
+                <button
+                        type="submit"
+                        class="absolute top-1/2 -translate-y-1/2 right-2 text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
+                        th:text="#{index.button}">
+                    Buscar
+                </button>
+            </form>
+        </div>
+    </div>
 
         <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10 mb-10">
             <div th:each="job : ${jobs}">
