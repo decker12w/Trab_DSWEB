@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Análise de Candidatos</title>
+    <link th:href="@{/css/output.css}" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+
+<header th:replace="~{fragments/header :: header-component}"></header>
+
+<main class="px-4 sm:px-8 md:px-20 lg:px-40 py-10">
+    <section class="mb-10">
+        <h1 class="text-3xl font-bold text-gray-800">Análise de Candidatos</h1>
+        <h2 class="text-xl text-gray-600 mt-1" th:text="'Vaga: ' + ${job.title()}">Vaga: Desenvolvedor Back-End</h2>
+    </section>
+
+    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
+        <span class="block sm:inline" th:text="${successMessage}"></span>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-gray-200 px-6 py-3">
+            <h3 class="text-lg font-semibold text-gray-700">Minhas Vagas</h3>
+        </div>
+
+        <div class="p-6">
+            <table class="min-w-full">
+                <thead class="border-b-2 border-gray-200">
+                <tr>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Candidato</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Currículo</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Status Atual</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="app : ${applications}" class="border-b border-gray-200">
+                    <td class="py-4 px-4 text-gray-700 align-middle" th:text="${app.worker().name()}">José Maia de Oliveira</td>
+
+                    <td class="py-4 px-4 align-middle">
+                        <a th:href="@{/job-applications/download/{id}(id=${app.id})}" target="_blank" class="text-blue-600 hover:underline">Ver Currículo</a>
+                    </td>
+
+                    <td class="py-4 px-4 align-middle" th:switch="${app.status?.name()}">
+                        <span th:case="'INTERVIEW'" class="px-3 py-1 text-sm font-semibold text-green-800 bg-green-200 rounded-full">Entrevista</span>
+                        <span th:case="'UNSELECTED'" class="px-3 py-1 text-sm font-semibold text-red-800 bg-red-200 rounded-full">Não Selecionado</span>
+                        <span th:case="*" class="px-3 py-1 text-sm font-semibold text-gray-800 bg-gray-200 rounded-full">Aberto</span>
+                    </td>
+
+                    <td class="py-4 px-4 align-middle">
+                        <form th:action="@{/job-applications/{id}/status(id=${app.id()})}" method="post" class="flex items-center justify-start space-x-4">
+                            <input type="hidden" name="jobId" th:value="${job.id()}" />
+
+                            <div class="relative w-48">
+                                <select name="status" class="appearance-none block w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500">
+                                    <option th:each="s : ${statusOptions}"
+                                            th:value="${s.name()}"
+                                            th:text="${s.getDisplayName()}"
+                                            th:selected="${app.status == s}">
+                                    </option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="px-5 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors">
+                                SALVAR
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(applications)}">
+                    <td colspan="4" class="py-6 px-4 text-center text-gray-500">Nenhum candidato para esta vaga.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

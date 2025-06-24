@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -104,5 +105,30 @@ public class JobApplicationService {
             throw new NotFoundException("Job application not found");
         }
         jobApplicationRepository.deleteById(id);
+    }
+
+    public ReturnJobApplicationDTO getJobApplicationById(UUID id) {
+        if (!jobApplicationRepository.existsById(id)) {
+            log.error("Attempt to delete non-existing Job application with ID={}", id);
+            throw new NotFoundException("Job application not found");
+        }
+        JobApplication jobApplication = jobApplicationRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("JobApplication not found with ID={}", id);
+                    return new NotFoundException("Job application not found with ID: " + id);
+                });
+
+        return  ReturnJobApplicationDTO.mapJobApplicationToDTO(jobApplication);
+    }
+
+    @Transactional
+    public List<ReturnJobApplicationDTO> findByJobId(UUID jobId) {
+        if (!jobRepository.existsById(jobId)) {
+            log.error("Attempt to fetch applications for a non-existing job with ID={}", jobId);
+            throw new NotFoundException("Job not found with ID: " + jobId);
+        }
+        return jobApplicationRepository.findByJobId(jobId).stream()
+                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
+import org.example.trab_dsweb.enums.Status;
+import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.services.JobApplicationService;
@@ -40,12 +42,6 @@ public class JobApplicationController {
         return "redirect:/home";
     }
 
-    @PostMapping("/{id}/status")
-    public String updateJobApplicationStatus(@PathVariable UUID id, @Valid UpdateJobApplicationStatusDTO data) {
-        jobApplicationService.updateJobApplicationStatus(id, data);
-        return "redirect:/job-applications/job/" + id;
-    }
-
     @PostMapping("/{id}/delete")
     public String deleteJobApplicationById(@PathVariable UUID id) {
         jobApplicationService.deleteJobApplicationById(id);
@@ -60,6 +56,29 @@ public class JobApplicationController {
         return "worker/dashboard";
     }
 
+    private byte[] getJobApplication(UUID id) {
+        ReturnJobApplicationDTO jobApplication = jobApplicationService.getJobApplicationById(id);
+        return jobApplication.curriculum();
+    }
+
+    @GetMapping(value = "/download/{id}")
+    public void download(HttpServletResponse response, @PathVariable("id") UUID id) {
+        try {
+            byte[] curriculum = getJobApplication(id);
+
+            response.setContentType("application/pdf");
+
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment; filename=\"curriculo_" + id + ".pdf\"";
+            response.setHeader(headerKey, headerValue);
+
+            response.getOutputStream().write(curriculum);
+            response.getOutputStream().flush();
+
+        } catch (IOException e) {
+            System.out.println("Error :- " + e.getMessage());
+        }
+    }
     private Worker getLoggedWorker() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
@@ -68,5 +87,15 @@ public class JobApplicationController {
         return workerDetails.getWorker();
     }
 
+    @PostMapping("/{id}/status")
+    public String updateJobApplicationStatus(@PathVariable UUID id,
+                                             @RequestParam("status") Status status,
+                                             @RequestParam("jobId") UUID jobId,
+                                             RedirectAttributes redirectAttributes) {
+        UpdateJobApplicationStatusDTO data = new UpdateJobApplicationStatusDTO(status, null);
+        jobApplicationService.updateJobApplicationStatus(id, data);
+        redirectAttributes.addFlashAttribute("successMessage", "Candidate status updated successfully!");
+        return "redirect:/enterprises/jobs/" + jobId + "/analysis";
+    }
 
 }
