@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
+import org.example.trab_dsweb.enums.Status;
 import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
@@ -41,12 +42,6 @@ public class JobApplicationController {
         return "redirect:/home";
     }
 
-    @PostMapping("/{id}/status")
-    public String updateJobApplicationStatus(@PathVariable UUID id, @Valid UpdateJobApplicationStatusDTO data) {
-        jobApplicationService.updateJobApplicationStatus(id, data);
-        return "redirect:/job-applications/job/" + id;
-    }
-
     @PostMapping("/{id}/delete")
     public String deleteJobApplicationById(@PathVariable UUID id) {
         jobApplicationService.deleteJobApplicationById(id);
@@ -67,13 +62,19 @@ public class JobApplicationController {
     }
 
     @GetMapping(value = "/download/{id}")
-    public void download(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") UUID id) {
-        response.setContentType("application/pdf");
-
+    public void download(HttpServletResponse response, @PathVariable("id") UUID id) {
         try {
-            response.getOutputStream().write(getJobApplication(id));
+            byte[] curriculum = getJobApplication(id);
 
+            response.setContentType("application/pdf");
+
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment; filename=\"curriculo_" + id + ".pdf\"";
+            response.setHeader(headerKey, headerValue);
+
+            response.getOutputStream().write(curriculum);
             response.getOutputStream().flush();
+
         } catch (IOException e) {
             System.out.println("Error :- " + e.getMessage());
         }
@@ -84,6 +85,17 @@ public class JobApplicationController {
             throw new Error("error");
         }
         return workerDetails.getWorker();
+    }
+
+    @PostMapping("/{id}/status")
+    public String updateJobApplicationStatus(@PathVariable UUID id,
+                                             @RequestParam("status") Status status,
+                                             @RequestParam("jobId") UUID jobId,
+                                             RedirectAttributes redirectAttributes) {
+        UpdateJobApplicationStatusDTO data = new UpdateJobApplicationStatusDTO(status, null);
+        jobApplicationService.updateJobApplicationStatus(id, data);
+        redirectAttributes.addFlashAttribute("successMessage", "Candidate status updated successfully!");
+        return "redirect:/enterprises/jobs/" + jobId + "/analysis";
     }
 
 }

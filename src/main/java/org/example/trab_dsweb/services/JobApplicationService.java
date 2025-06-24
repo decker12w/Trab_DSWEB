@@ -120,4 +120,15 @@ public class JobApplicationService {
 
         return  ReturnJobApplicationDTO.mapJobApplicationToDTO(jobApplication);
     }
+
+    @Transactional
+    public List<ReturnJobApplicationDTO> findByJobId(UUID jobId) {
+        if (!jobRepository.existsById(jobId)) {
+            log.error("Attempt to fetch applications for a non-existing job with ID={}", jobId);
+            throw new NotFoundException("Job not found with ID: " + jobId);
+        }
+        return jobApplicationRepository.findByJobId(jobId).stream()
+                .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
+                .collect(Collectors.toList());
+    }
 }

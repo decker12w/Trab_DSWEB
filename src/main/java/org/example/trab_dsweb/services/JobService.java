@@ -3,11 +3,14 @@ package org.example.trab_dsweb.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trab_dsweb.dto.CreateJobDTO;
+import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
+import org.example.trab_dsweb.dto.ReturnWorkerInJobDTO;
 import org.example.trab_dsweb.exceptions.exceptions.BadRequestException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.models.Job;
+import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.repositories.EnterpriseRepository;
 import org.example.trab_dsweb.repositories.JobRepository;
 import org.springframework.stereotype.Service;
@@ -66,5 +69,14 @@ public class JobService {
         job.setEnterprise(enterprise);
 
         jobRepository.save(job);
+    }
+
+    public ReturnJobDTO findById(UUID jobId) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> {
+                    log.error("Job not found with ID={}", jobId);
+                    return new NotFoundException("Job not found with ID: " + jobId);
+                });
+        return ReturnJobDTO.mapJobToDTO(job);
     }
 }
