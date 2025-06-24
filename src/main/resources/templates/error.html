@@ -1,23 +1,26 @@
-<!doctype html>
-<html lang="pt" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8" />
-  <title>Erro - Página</title>
-  <link th:href="@{/css/output.css}" rel="stylesheet">
-</head>
-<body>
-  <section id="error-page" class="py-24 text-center">
-    <div class="max-w-xl mx-auto">
-      <h1 class="text-6xl font-extrabold text-indigo-600">Oops!</h1>
-      <h2 id="error-message" class="text-3xl font-bold text-gray-800 mt-4" th:text="${status} + ' - ' + ${error}">Erro</h2>
-      <p class="text-gray-600 mt-2 mb-2" th:text="${message}">Algo deu errado.</p>
-      <a type="button"
-         href="javascript:history.back()"
-         class="inline-block mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700">
-        Voltar para página anterior
-      </a>
+  <!doctype html>
+  <html lang="pt" xmlns:th="http://www.thymeleaf.org">
+  <head>
+     <meta charset="UTF-8" />
+     <title th:text="#{error.page.title}">Erro - Página</title>
+     <link th:href="@{/css/output.css}" rel="stylesheet">
+  </head>
+  <body>
+   <section id="error-page" class="py-24 text-center">
+      <div class="max-w-xl mx-auto">
+       <h1 class="text-6xl font-extrabold text-indigo-600" th:text="#{error.page.oops}">Oops!</h1>
+        <h2 id="error-message"
+            class="text-3xl font-bold text-gray-800 mt-4"
+            th:text="${status} + ' - ' + #{'error.type.' + ${status}}">404 - Página não encontrada.</h2>
 
-    </div>
-  </section>
-</body>
-</html>
+        <p class="text-gray-600 mt-2 mb-2" th:text="${message} != null ? ${message} : #{error.page.defaultMessage}">Algo deu errado.</p>
+       <a type="button"
+                 href="javascript:history.back()"
+                 class="inline-block mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700"
+                 th:text="#{error.page.button.goBack}">
+        Voltar para página anterior
+       </a>
+      </div>
+     </section>
+  </body>
+  </html>
