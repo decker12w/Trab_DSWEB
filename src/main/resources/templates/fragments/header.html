@@ -2,29 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <body>
-    <header th:fragment="header-component" class="px-[166px] py-[28px] flex justify-between items-center bg-white">
-        <div class="justify-center text-brand-purple text-4xl font-semibold font-inter">MiranhaJob</div>
-        <nav>
-            <ul class="flex gap-6 items-center">
-                <li class="px-6 py-3">
-                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/home}">Vagas</a>
-                </li>
-                <li class="px-6 py-3">
-                    <a class="text-text-primary hover:text-gray-900 font-inter">PT-BR</a>
-                </li>
-                <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_WORKER')">
-                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/job-applications/worker}">Meu Painel</a>
-                </li>
-                <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_ENTERPRISE')">
-                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/enterprises/dashboard}">Painel Empresa</a>
-                </li>
-                <li sec:authorize="isAuthenticated()" style="right: 10px; position: absolute">
-                    <form th:action="@{/logout}" method="post">
-                        <button class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter">Sair</button>
-                    </form>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<header th:fragment="header-component" class="px-[166px] py-[28px] flex justify-between items-center bg-white shadow-sm relative z-20"> <!-- Added shadow-sm, relative and z-20 for context -->
+    <div class="justify-center text-brand-purple text-4xl font-semibold font-inter" >MiranhaJob</div>
+    <nav>
+        <ul class="flex gap-6 items-center">
+            <li class="px-6 py-3">
+                <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/home}" th:text="#{fragments.header.nav.jobs}">Vagas</a>
+            </li>
+
+            <!-- Language Dropdown Start -->
+            <li class="relative group px-3 py-3"> <!-- Adjusted padding for button visual balance -->
+                <button class="text-text-primary hover:text-gray-900 font-inter flex items-center focus:outline-none">
+                    <span th:switch="${#locale.language}">
+                        <span th:case="'pt'" th:text="#{fragments.header.language.portuguese}">Português</span>
+                        <span th:case="'en'" th:text="#{fragments.header.language.english}">English</span>
+                        <span th:case="*" th:text="${#locale.language.toUpperCase()}">PT-BR</span> <!-- Fallback to language code -->
+                    </span>
+                    <svg class="w-4 h-4 ml-1 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                </button>
+                <ul class="absolute hidden group-hover:block focus-within:block bg-white shadow-lg rounded mt-2 py-1 w-36 z-30 right-0 sm:right-auto sm:left-0"> <!-- Added z-30, shadow-lg, positioning -->
+                    <li>
+                        <a th:href="@{''(lang='pt_BR')}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white font-inter"
+                           th:text="#{fragments.header.language.portuguese}">Português</a>
+                    </li>
+                    <li>
+                        <a th:href="@{''(lang='en_US')}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white font-inter"
+                           th:text="#{fragments.header.language.english}">English</a>
+                    </li>
+                    <!-- Add more languages as needed -->
+                </ul>
+            </li>
+            <!-- Language Dropdown End -->
+
+            <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_WORKER')">
+                <a class="text-text-primary hover:text-gray-900 font-inter"
+                   th:href="@{/job-applications/worker}" th:text="#{fragments.header.nav.workerDashboard}">Meu Painel</a>
+            </li>
+            <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_ENTERPRISE')">
+                <a class="text-text-primary hover:text-gray-900 font-inter"
+                   th:href="@{/enterprises/dashboard}" th:text="#{fragments.header.nav.enterpriseDashboard}">Painel Empresa</a>
+            </li>
+            <li sec:authorize="isAuthenticated()" class="ml-auto"> <!-- Changed positioning for logout to be part of the flex flow -->
+                <form th:action="@{/logout}" method="post">
+                    <button class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
+                            th:text="#{fragments.header.logout}">Sair</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>
 </body>
 </html>

@@ -1,27 +1,24 @@
 <!doctype html>
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link th:href="@{/css/output.css}" rel="stylesheet" />
-  <title>Erro - Página</title>
+  <title th:text="#{error.page.title}">Erro - Página</title>
 </head>
-
 <body>
 <section id="error-page" class="py-24 text-center">
   <div class="max-w-xl mx-auto">
-    <h1 class="text-6xl font-extrabold text-indigo-600">Oops!</h1>
-    <h2 id="error-message" class="text-3xl font-bold text-gray-800 mt-4" th:text="${status} + ' - ' + ${error}">Erro</h2>
-    <p class="text-gray-600 mt-2 mb-2" th:text="${message}">Algo deu errado.</p>
+    <h1 class="text-6xl font-extrabold text-indigo-600" th:text="#{error.page.oops}">Oops!</h1>
+    <h2 id="error-message" class="text-3xl font-bold text-gray-800 mt-4" th:text="${status} + ' - ' + ${error}">[[#{error.page.defaultHeading}]]</h2>
+    <p class="text-gray-600 mt-2 mb-2" th:text="${message}">[[#{error.page.defaultMessage}]]</p>
     <a type="button"
        href="javascript:history.back()"
-       class="inline-block mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700">
+       class="inline-block mt-6 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700"
+       th:text="#{error.page.button.goBack}">
       Voltar para página anterior
     </a>
-
   </div>
 </section>
 </body>
-
 </html>
