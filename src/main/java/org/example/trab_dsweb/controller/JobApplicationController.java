@@ -10,6 +10,7 @@ import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.enums.Status;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
+import org.example.trab_dsweb.exceptions.exceptions.UnauthorizedException;
 import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
@@ -88,7 +89,7 @@ public class JobApplicationController {
     private Worker getLoggedWorker() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
-            throw new Error("error");
+            throw new UnauthorizedException("Worker is not logged in");
         }
         return workerDetails.getWorker();
     }

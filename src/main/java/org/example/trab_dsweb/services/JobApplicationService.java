@@ -12,16 +12,15 @@ import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Job;
 import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
-import org.example.trab_dsweb.repositories.JobApplicationRepository;
-import org.example.trab_dsweb.repositories.JobRepository;
-import org.example.trab_dsweb.repositories.WorkerRepository;
+import org.example.trab_dsweb.daos.JobApplicationDAO;
+import org.example.trab_dsweb.daos.JobDAO;
+import org.example.trab_dsweb.daos.WorkerDAO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,14 +28,14 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class JobApplicationService {
-    private JobApplicationRepository jobApplicationRepository;
-    private JobRepository jobRepository;
-    private WorkerRepository workerRepository;
+    private JobApplicationDAO jobApplicationDAO;
+    private JobDAO jobDAO;
+    private WorkerDAO workerDAO;
     private EmailService emailService;
 
     @Transactional
     public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerId(UUID id) {
-        return jobApplicationRepository.findAllByWorkerId(id).stream()
+        return jobApplicationDAO.findAllByWorkerId(id).stream()
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
                 .collect(Collectors.toList());
     }
@@ -46,14 +45,14 @@ public class JobApplicationService {
         JobApplication jobApplication = new JobApplication();
         jobApplication.setStatus(Status.OPEN);
 
-        Worker worker = workerRepository.findById(createJobApplicationRequestDTO.workerId())
+        Worker worker = workerDAO.findById(createJobApplicationRequestDTO.workerId())
                 .orElseThrow(() -> {
                     log.error("Worker not found with email={}", createJobApplicationRequestDTO.workerId());
                     return new NotFoundException("Worker not found with email: " + createJobApplicationRequestDTO.workerId());
                 });
         jobApplication.setWorker(worker);
 
-        Job job = jobRepository.findById(createJobApplicationRequestDTO.jobId())
+        Job job = jobDAO.findById(createJobApplicationRequestDTO.jobId())
                 .orElseThrow(() -> {
                     log.error("Job not found with ID={}", createJobApplicationRequestDTO.jobId());
                     return new NotFoundException("Job not found with ID: " + createJobApplicationRequestDTO.jobId());
@@ -66,7 +65,7 @@ public class JobApplicationService {
             throw new BadRequestException("Applications for this job are closed due to the expired deadline");
         }
 
-        if (jobApplicationRepository.findByWorkerIdAndJobId(worker.getId(), job.getId()).isPresent()) {
+        if (jobApplicationDAO.findByWorkerIdAndJobId(worker.getId(), job.getId()).isPresent()) {
             log.error("Worker ID={} has already applied for job ID={}", worker.getId(), job.getId());
             throw new ConflictException("Worker have already applied for this vacancy");
         }
@@ -78,11 +77,11 @@ public class JobApplicationService {
             throw new BadRequestException("Error uploading curriculum");
         }
 
-        jobApplicationRepository.save(jobApplication);
+        jobApplicationDAO.save(jobApplication);
     }
 
     public void updateJobApplicationStatus(UUID id, UpdateJobApplicationStatusDTO updateJobApplicationStatusRequestDTO) {
-        JobApplication jobApplication = jobApplicationRepository.findById(id)
+        JobApplication jobApplication = jobApplicationDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("JobApplication not found with ID={}", id);
                     return new NotFoundException("Job application not found with ID: " + id);
@@ -97,23 +96,19 @@ public class JobApplicationService {
             );
         }
 
-        jobApplicationRepository.save(jobApplication);
+        jobApplicationDAO.save(jobApplication);
     }
 
     public void deleteJobApplicationById(UUID id) {
-        if (!jobApplicationRepository.existsById(id)) {
+        if (!jobApplicationDAO.existsById(id)) {
             log.error("Attempt to delete non-existing Job application with ID={}", id);
             throw new NotFoundException("Job application not found");
         }
-        jobApplicationRepository.deleteById(id);
+        jobApplicationDAO.deleteById(id);
     }
 
     public ReturnJobApplicationDTO getJobApplicationById(UUID id) {
-        if (!jobApplicationRepository.existsById(id)) {
-            log.error("Attempt to delete non-existing Job application with ID={}", id);
-            throw new NotFoundException("Job application not found");
-        }
-        JobApplication jobApplication = jobApplicationRepository.findById(id)
+        JobApplication jobApplication = jobApplicationDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("JobApplication not found with ID={}", id);
                     return new NotFoundException("Job application not found with ID: " + id);
@@ -124,11 +119,11 @@ public class JobApplicationService {
 
     @Transactional
     public List<ReturnJobApplicationDTO> findByJobId(UUID jobId) {
-        if (!jobRepository.existsById(jobId)) {
+        if (!jobDAO.existsById(jobId)) {
             log.error("Attempt to fetch applications for a non-existing job with ID={}", jobId);
             throw new NotFoundException("Job not found with ID: " + jobId);
         }
-        return jobApplicationRepository.findByJobId(jobId).stream()
+        return jobApplicationDAO.findByJobId(jobId).stream()
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)
                 .collect(Collectors.toList());
     }
