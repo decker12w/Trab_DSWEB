@@ -9,6 +9,7 @@ import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.enums.Status;
+import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
@@ -31,15 +32,20 @@ import java.util.UUID;
 @AllArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
-    private final JobService jobService;
 
     @PostMapping
     public String createJobApplication(@RequestParam("jobId") UUID jobId, @RequestParam("curriculum") MultipartFile curriculum, RedirectAttributes attr) {
-        Worker worker = getLoggedWorker();
-        CreateJobApplicationDTO data = new CreateJobApplicationDTO(curriculum, worker.getId(), jobId);
-        jobApplicationService.createJobApplication(data);
-        attr.addFlashAttribute("successMessage", "Candidatura realizada com sucesso!");
-        return "redirect:/home";
+      try {
+          Worker worker = getLoggedWorker();
+          CreateJobApplicationDTO data = new CreateJobApplicationDTO(curriculum, worker.getId(), jobId);
+          jobApplicationService.createJobApplication(data);
+          attr.addFlashAttribute("successMessage", "Candidatura realizada com sucesso!");
+          return "redirect:/home";
+      }
+      catch (ConflictException e) {
+          attr.addFlashAttribute("errorMessage", "Você já se candidatou para esta vaga.");
+      }
+      return "redirect:/home";
     }
 
     @PostMapping("/{id}/delete")

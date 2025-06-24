@@ -41,6 +41,7 @@ public class JobApplicationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void createJobApplication(CreateJobApplicationDTO createJobApplicationRequestDTO) {
         JobApplication jobApplication = new JobApplication();
         jobApplication.setStatus(Status.OPEN);
