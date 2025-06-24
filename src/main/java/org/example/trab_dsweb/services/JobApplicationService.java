@@ -16,6 +16,7 @@ import org.example.trab_dsweb.repositories.JobApplicationRepository;
 import org.example.trab_dsweb.repositories.JobRepository;
 import org.example.trab_dsweb.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class JobApplicationService {
     private WorkerRepository workerRepository;
     private EmailService emailService;
 
+    @Transactional
     public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerId(UUID id) {
         return jobApplicationRepository.findAllByWorkerId(id).stream()
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)

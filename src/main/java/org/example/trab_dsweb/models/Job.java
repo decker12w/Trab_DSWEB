@@ -38,9 +38,6 @@ public class Job {
     private LocalDateTime applicationDeadline;
 
     @Column(nullable = false)
-    private boolean jobActive;
-
-    @Column(nullable = false)
     private Double remuneration;
 
     @Column(nullable = false)
