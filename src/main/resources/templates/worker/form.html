@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="${isEdit} ? #{worker.form.page.title.edit} : #{worker.form.page.title.register}"></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link th:href="@{/css/output.css}" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
 <div th:replace="~{fragments/header :: header-component}"></div>
@@ -43,7 +44,9 @@
                     <label for="gender" class="text-sm font-medium text-gray-700" th:text="#{worker.form.label.gender}">Gênero</label>
                     <select class="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm" th:field="*{gender}" id="gender">
                         <option value="" th:text="#{worker.form.select.defaultOption}">Selecione...</option>
-                        <option th:each="option : ${genderOptions}" th:value="${option.key}" th:text="${option.value}"></option> <!-- Assuming option.value is already localized or a display string -->
+                        <option th:each="option : ${genderOptions}"
+                                th:value="${option.key}"
+                                th:text="#{${option.value}}"></option>
                     </select>
                 </div>
                 <div class="col-span-2 sm:col-span-1">
