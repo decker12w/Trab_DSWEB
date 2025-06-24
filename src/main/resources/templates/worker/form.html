@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Edição de Profissional' : 'Cadastro de Profissional'"></title>
+    <link th:href="@{/css/output.css}" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div th:replace="~{fragments/header :: header-component}"></div>
+    <main class="flex items-center justify-center py-20">
+        <div class="bg-white p-12 rounded-lg shadow-lg max-w-4xl w-full">
+            <div class="text-center mb-10">
+                <h3 class="text-gray-800 text-3xl font-semibold"
+                    th:text="${isEdit} ? 'Edição de Profissional' : 'Cadastro de Profissional'"></h3>
+                <p class="text-gray-500 text-base mt-2"
+                   th:text="${isEdit} ? 'Altere os dados conforme necessário' : 'Crie seu perfil para encontrar as melhores vagas'"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline" th:text="${errorMessage}"></span>
+            </div>
+
+            <form th:action="${formAction}" th:object="${workerData}" method="post">
+                <div th:if="${#fields.hasGlobalErrors()}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-x-8 gap-y-6">
+                    <div class="col-span-2">
+                        <label for="name" class="text-sm font-medium text-gray-700">Nome Completo</label>
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{name}" id="name" placeholder="Digite seu nome aqui">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="email" class="text-sm font-medium text-gray-700">E-mail</label>
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="email" th:field="*{email}" id="email" placeholder="Digite seu e-mail aqui">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="password" class="text-sm font-medium text-gray-700">Senha</label>
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="password" th:field="*{password}" id="password" th:placeholder="${isEdit} ? 'Deixe em branco para não alterar' : 'Digite sua senha aqui'">
+                    </div>
+                    <div class="col-span-2">
+                        <label for="cpf" class="text-sm font-medium text-gray-700">CPF</label>
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{cpf}" id="cpf" placeholder="000.000.000-00">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="gender" class="text-sm font-medium text-gray-700">Gênero</label>
+                        <select class="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm" th:field="*{gender}" id="gender">
+                            <option value="">Selecione...</option>
+                            <option th:each="option : ${genderOptions}" th:value="${option.key}" th:text="${option.value}"></option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="birthDate" class="text-sm font-medium text-gray-700">Data de Nascimento</label>
+                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="date" th:field="*{birthDate}" id="birthDate">
+                    </div>
+                </div>
+
+                <div class="mt-10">
+                    <button class="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg" type="submit"
+                            th:text="${isEdit} ? 'Salvar Alterações' : 'Criar Conta'"></button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

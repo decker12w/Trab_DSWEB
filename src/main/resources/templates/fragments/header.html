@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity"
+>
+<body>
+    <header th:fragment="header-component" class="px-[166px] py-[28px] flex justify-between items-center bg-white">
+        <div class="justify-center text-brand-purple text-4xl font-semibold font-inter">MiranhaJob</div>
+        <nav>
+            <ul class="flex gap-6 items-center">
+                <li class="px-6 py-3">
+                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/home}">Vagas</a>
+                </li>
+                <li class="px-6 py-3">
+                    <a class="text-text-primary hover:text-gray-900 font-inter">PT-BR</a>
+                </li>
+                <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_WORKER')">
+                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/job-applications/worker}">Meu Painel</a>
+                </li>
+                <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_ENTERPRISE')">
+                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/enterprises/dashboard}">Painel Empresa</a>
+                </li>
+                <li class="px-6 py-3" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <a class="text-text-primary hover:text-gray-900 font-inter" th:href="@{/admins/dashboard}">Painel Administrador</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post">
+                        <button class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter">Sair</button>
+                    </form>
+                </li>
+                <li sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter">
+                        Login
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+</body>
+</html>
