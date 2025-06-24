@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.enums.JobType;
+import org.example.trab_dsweb.exceptions.exceptions.UnauthorizedException;
 import org.example.trab_dsweb.models.Enterprise;
 import org.example.trab_dsweb.security.EnterpriseDetails;
 import org.example.trab_dsweb.services.JobService;
@@ -74,7 +75,7 @@ public class JobController {
     private Enterprise getLoggedEnterprise() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {
-            throw new Error("error");
+            throw new UnauthorizedException("Enterprise is not logged in");
         }
         return enterpriseDetails.getEnterprise();
     }

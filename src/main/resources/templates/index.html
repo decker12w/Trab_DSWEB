@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity"
+>
 <head>
     <meta charset="UTF-8">
     <title>Encontre sua Próxima Oportunidade</title>
@@ -50,7 +52,7 @@
         </div>
     </div>
 
-        <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10">
+        <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10 mb-10">
             <div th:each="job : ${jobs}">
                 <div th:replace="~{fragments/job-card :: job-card(
                         jobTitle=${job.title()},
@@ -101,7 +103,8 @@
                         <span id="modalDeadline" class="text-[#E1595C] font-inter text-[16px]">14/08/2025</span>
                     </div>
                 </div>
-                <button onclick="switchToUploadModal()" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer">Candidatar-se Agora</button>
+                <button sec:authorize="hasAuthority('ROLE_WORKER')" onclick="switchToUploadModal()" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer">Candidatar-se Agora</button>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer">Acesse a sua Conta</a>
             </div>
         </div>
     </dialog>
