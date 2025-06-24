@@ -97,12 +97,12 @@ public class JobApplicationController {
     @PostMapping("/{id}/status")
     public String updateJobApplicationStatus(@PathVariable UUID id,
                                              @RequestParam("status") Status status,
+                                             @RequestParam(value = "link", required = false) String link,
                                              @RequestParam("jobId") UUID jobId,
                                              RedirectAttributes redirectAttributes) {
-        UpdateJobApplicationStatusDTO data = new UpdateJobApplicationStatusDTO(status, null);
+        UpdateJobApplicationStatusDTO data = new UpdateJobApplicationStatusDTO(status, link);
         jobApplicationService.updateJobApplicationStatus(id, data);
-        redirectAttributes.addFlashAttribute("successMessage", "Candidate status updated successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Candidatura atualizada com sucesso!");
         return "redirect:/enterprises/jobs/" + jobId + "/analysis";
     }
-
 }
