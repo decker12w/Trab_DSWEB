@@ -4,7 +4,7 @@
 >
 <head>
     <meta charset="UTF-8">
-    <title>Encontre sua Próxima Oportunidade</title>
+    <title th:text="#{index.title}">Encontre sua Próxima Oportunidade</title>
     <link th:href="@{/css/output.css}" rel="stylesheet">
 </head>
 <body>
@@ -15,7 +15,6 @@
             </div>
             <div class="ml-3 text-sm font-normal" th:text="${successMessage}"></div>
         </div>
-
         <div th:if="${errorMessage}" id="toast-error" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg opacity-0 transform translate-x-full transition-all duration-500 ease-in-out" role="alert">
             <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.607a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -25,13 +24,13 @@
     </div>
     <div th:replace="~{fragments/header :: header-component}"></div>
     <main>
-
         <div class="flex flex-col items-center gap-10">
             <div class="flex flex-col items-center justify-center mt-[141px] gap-4">
-                <h1 class="text-[4rem] text-text-heading font-semibold font-inter">
-                    Encontre sua Próxima Oportunidade
+                <h1 class="text-[4rem] text-text-heading font-semibold font-inter"
+                    th:text="#{index.title}">Encontre sua Próxima Oportunidade
                 </h1>
-                <h2 class="text-[2rem] text-text-subheading font-inter">
+                <h2 class="text-[2rem] text-text-subheading font-inter"
+                    th:text="#{index.subtitle}">
                     Milhares de vagas de estágio e emprego esperam por você.
                 </h2>
             </div>
@@ -41,94 +40,103 @@
                             name="city"
                             th:value="${param.city}"
                             class="w-full h-full pl-6 pr-[14px] py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple font-inter text-[20px]"
+                            th:placeholder="#{index.placeholder}"
                             placeholder="Filtre por cidade"
                     />
                     <button
                             type="submit"
                             class="absolute top-1/2 -translate-y-1/2 right-2 text-white bg-brand-dark-purple hover:bg-brand-dark-purple-hover px-6 py-3 rounded-lg cursor-pointer font-inter"
+                            th:text="#{index.button}"
                     >
                         Buscar
                     </button>
                 </form>
             </div>
         </div>
-
         <div class="grid grid-cols-3 gap-5 max-w-[1588px] mx-auto mt-10 mb-10">
             <div th:each="job : ${jobs}">
                 <div th:replace="~{fragments/job-card :: job-card(
-                        jobTitle=${job.title()},
-                        companyName=${job.enterprise.name()},
-                        location=${job.city},
-                        salary=${job.remuneration},
-                        jobType=${job.jobType},
-                        deadline=${job.applicationDeadline},
-                        jobDescription=${job.description},
-                        jobId=${job.id},
-                        jobSkills=${job.getSkillsAsString()},
-                        jobId=${job.id}
-                    )}"></div>
+                            jobTitle=${job.title()},
+                            companyName=${job.enterprise.name()},
+                            location=${job.city},
+                            salary=${job.remuneration},
+                            jobType=${job.jobType},
+                            deadline=${job.applicationDeadline},
+                            jobDescription=${job.description},
+                            jobId=${job.id},
+                            jobSkills=${job.getSkillsAsString()},
+                            jobId=${job.id}
+                        )}">
+                </div>
             </div>
         </div>
     </main>
-
     <dialog id="jobDetailsModal" class="pt-[60px] pb-[28px] pl-[32px] pr-[20px] bg-white rounded-lg shadow-xl w-full max-w-[1222px] absolute inset-0 m-auto">
         <button onclick="jobDetailsModal.close()" class="absolute top-4 right-5 text-2xl font-bold text-gray-500 hover:text-gray-800 size-6 cursor-pointer">&times;</button>
         <div class="flex justify-between">
             <div class="flex flex-col gap-10">
                 <div class="flex flex-col gap-3 ">
-                    <h3 id="modalJobTitle" class="font-bold text-[40px] text-text-heading">Título da vaga</h3>
+                    <h3 id="modalJobTitle" class="font-bold text-[40px] text-text-heading"
+                        th:text="#{job.form.label.title}">Título da vaga</h3>
                     <p id="modalCompanyLocation" class="text-[24px] font-inter text-[#888D97]">
                         Empresa - Cidade
                     </p>
                 </div>
                 <div class="flex flex-col gap-3 ">
-                    <h3 class="text-[32px] font-inter text-[#3E4053]">Descrição da Vaga</h3>
+                    <h3 class="text-[32px] font-inter text-[#3E4053]"
+                        th:text="#{job.form.label.description}">Descrição da Vaga</h3>
                     <h4 id="modalJobDescription" class="text-[20px] text-[#828493] max-w-prose">Descrição...</h4>
                 </div>
-
                 <div class="flex flex-col gap-3">
-                    <h3 class="text-[32px] font-inter text-[#3E4053]">Habilidades Necessárias</h3>
+                    <h3 class="text-[32px] font-inter text-[#3E4053]"
+                        th:text="#{job.form.label.skills}">Habilidades Necessárias</h3>
                     <div id="modalSkillsList" class="flex flex-wrap gap-2">
                     </div>
                 </div>
-
             </div>
             <div class="bg-[#E1E1E1] px-6 pb-6 pt-3 flex flex-col justify-between items-start rounded-xl gap-[125px]">
                 <div class="flex flex-col gap-[60px]">
                     <div class="flex flex-col gap-5 ">
-                        <h3 class="text-[#797B8A] text-[20px] font-inter">Remuneração</h3>
+                        <h3 class="text-[#797B8A] text-[20px] font-inter"
+                            th:text="#{job.form.label.remuneration}">Remuneração</h3>
                         <span id="modalSalary" class="font-inter text-[#33AA63]">R$45.000,00</span>
                     </div>
                     <div class="flex flex-col gap-3">
-                        <span class="text-[20px] text-[#777A8A] font-inter ">Data Limite</span>
+                            <span class="text-[20px] text-[#777A8A] font-inter "
+                                  th:text="#{job.form.label.applicationDeadline}">Data Limite</span>
                         <span id="modalDeadline" class="text-[#E1595C] font-inter text-[16px]">14/08/2025</span>
                     </div>
                 </div>
-                <button sec:authorize="hasAuthority('ROLE_WORKER')" onclick="switchToUploadModal()" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer">Candidatar-se Agora</button>
-                <a sec:authorize="!isAuthenticated()" href="/login" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer">Acesse a sua Conta</a>
+                <button sec:authorize="hasAuthority('ROLE_WORKER')" onclick="switchToUploadModal()" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer"
+                        th:text="#{enterprise.dashboard.analyse}">Candidatar-se Agora</button>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer"
+                   th:text="#{login.accessAccount}">Acesse a sua Conta</a>
             </div>
         </div>
     </dialog>
-
     <dialog id="uploadCvModal" class="pt-[60px] pb-[28px] pl-[32px] pr-[20px] bg-white rounded-lg shadow-xl w-full max-w-[1222px] absolute inset-0 m-auto">
-        <form th:action="@{/job-applications}" method="POST"  id="application-form" enctype="multipart/form-data">
+        <form th:action="@{/job-applications}" method="POST" id="application-form" enctype="multipart/form-data">
             <input type="hidden" id="hiddenJobId" name="jobId">
             <button type="button" onclick="closeUploadModalAndReset()" class="absolute top-4 right-5 text-2xl font-bold text-gray-500 hover:text-gray-800 size-6 cursor-pointer">&times;</button>
             <div class="flex flex-col gap-10">
                 <div class="flex flex-col gap-3 ">
-                    <h3 class="font-bold text-[40px] text-text-heading">Finalizar Candidatura </h3>
+                    <h3 class="font-bold text-[40px] text-text-heading"
+                        th:text="#{worker.dashboard.applicationStatus.APPLIED}">Finalizar Candidatura</h3>
                     <p id="uploadModalSubtitle" class="text-[24px] font-inter text-[#888D97]">
                         Para a vaga de Desenvolvedor Back-End
                     </p>
                 </div>
                 <div class="flex flex-col gap-3 ">
-                    <h3 class="text-[24px] font-inter text-[#3E4053]">Anexe seu currículo (PDF)</h3>
+                    <h3 class="text-[24px] font-inter text-[#3E4053]"
+                        th:text="#{worker.dashboard.table.header.actions}">
+                        Anexe seu currículo (PDF)
+                    </h3>
                     <label for="curriculum" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                         <div id="uploadPrompt" class="flex flex-col items-center justify-center pt-5 pb-6">
                             <svg class="w-10 h-10 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                             </svg>
-                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Clique para enviar</span> ou arraste e solte</p>
+                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold" th:text="#{job.form.button.submit}">Clique para enviar</span> <span th:text="#{login.or}">ou</span> arraste e solte</p>
                             <p class="text-xs text-gray-500">APENAS PDF (MAX. 5MB)</p>
                         </div>
                         <div id="fileNameDisplay" class="hidden text-center p-4"></div>
@@ -136,8 +144,14 @@
                     <input id="curriculum" name="curriculum" type="file" class="hidden" accept=".pdf" required/>
                 </div>
                 <div class="flex gap-2.5">
-                    <button type="button" onclick="closeUploadModalAndReset()" class="px-[10px] py-[16px] w-full bg-[#8383834D] text-[#000000] cursor-pointer">Cancelar</button>
-                    <button type="submit" id="submitApplicationBtn"  class="px-[10px] py-[16px] w-full bg-[#16A34A] text-[#FFFFFF] cursor-pointer disabled:bg-gray-400">Enviar Candidatura</button>
+                    <button type="button" onclick="closeUploadModalAndReset()" class="px-[10px] py-[16px] w-full bg-[#8383834D] text-[#000000] cursor-pointer"
+                            th:text="#{worker.dashboard.button.delete}">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="submitApplicationBtn" class="px-[10px] py-[16px] w-full bg-[#16A34A] text-[#FFFFFF] cursor-pointer disabled:bg-gray-400"
+                            th:text="#{job.form.button.submit}">
+                        Enviar Candidatura
+                    </button>
                 </div>
             </div>
         </form>

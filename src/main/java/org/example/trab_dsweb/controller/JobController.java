@@ -35,9 +35,16 @@ public class JobController {
         if (!model.containsAttribute("jobData")) {
             model.addAttribute("jobData", new CreateJobDTO(null, null, null, null, null, null, null));
         }
-        addJobTypeOptionsToModel(model);
+        Map<String, String> jobTypeMessageKeys = Arrays.stream(JobType.values())
+                .collect(Collectors.toMap(
+                        Enum::name,
+                        jobTypeEnum -> "fragments.jobCard.job.type." + jobTypeEnum.name().toLowerCase()
+                ));
+        model.addAttribute("jobTypeOptions", jobTypeMessageKeys.entrySet());
+
         return "job/form";
     }
+
 
     @PostMapping("/register")
     public String processRegisterJob(@Valid @ModelAttribute("jobData") CreateJobDTO jobData,

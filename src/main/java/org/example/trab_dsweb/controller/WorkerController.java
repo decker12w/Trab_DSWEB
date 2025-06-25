@@ -27,9 +27,12 @@ public class WorkerController {
         model.addAttribute("workerData", new CreateWorkerDTO(null, null, null, null, null, null));
         model.addAttribute("isEdit", false);
         model.addAttribute("formAction", "/workers/register");
-        Map<String, String> genderOptions = Arrays.stream(Gender.values())
-                .collect(Collectors.toMap(Enum::name, Gender::getDisplayName));
-        model.addAttribute("genderOptions", genderOptions.entrySet());
+        Map<String, String> genderMessageKeys = Arrays.stream(Gender.values())
+                .collect(Collectors.toMap(
+                        Enum::name,
+                        genderEnum -> "gender." + genderEnum.name().toLowerCase()
+                ));
+        model.addAttribute("genderOptions", genderMessageKeys.entrySet());
         return "worker/form";
     }
 
