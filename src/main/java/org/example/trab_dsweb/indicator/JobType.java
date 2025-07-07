@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.enums;
+package org.example.trab_dsweb.indicator;
 
 public enum JobType {
     FULL_TIME("Tempo Integral"),

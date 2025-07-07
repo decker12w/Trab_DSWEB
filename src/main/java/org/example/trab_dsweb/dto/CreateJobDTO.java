@@ -2,7 +2,7 @@ package org.example.trab_dsweb.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.example.trab_dsweb.enums.JobType;
+import org.example.trab_dsweb.indicator.JobType;
 
 import java.time.LocalDateTime;
 import java.util.List;

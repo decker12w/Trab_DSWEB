@@ -1,11 +1,11 @@
-package org.example.trab_dsweb.models;
+package org.example.trab_dsweb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.trab_dsweb.enums.JobType;
+import org.example.trab_dsweb.indicator.JobType;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,19 +1,25 @@
 package org.example.trab_dsweb;
 
-import org.example.trab_dsweb.daos.AdminDAO;
-import org.example.trab_dsweb.daos.EnterpriseDAO;
-import org.example.trab_dsweb.daos.JobDAO;
-import org.example.trab_dsweb.enums.JobType;
-import org.example.trab_dsweb.models.Admin;
-import org.example.trab_dsweb.models.Enterprise;
-import org.example.trab_dsweb.models.Job;
+import org.example.trab_dsweb.dao.AdminDAO;
+import org.example.trab_dsweb.dao.EnterpriseDAO;
+import org.example.trab_dsweb.dao.JobDAO;
+import org.example.trab_dsweb.dao.WorkerDAO;
+import org.example.trab_dsweb.indicator.Gender;
+import org.example.trab_dsweb.indicator.JobType;
+import org.example.trab_dsweb.model.Admin;
+import org.example.trab_dsweb.model.Enterprise;
+import org.example.trab_dsweb.model.Job;
+import org.example.trab_dsweb.model.Worker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +30,7 @@ public class TrabDswebApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(AdminDAO adminDAO, EnterpriseDAO enterpriseDAO, JobDAO jobDAO, BCryptPasswordEncoder passwordEncoder) {
+    public CommandLineRunner demo(AdminDAO adminDAO, EnterpriseDAO enterpriseDAO, JobDAO jobDAO, WorkerDAO workerDAO, BCryptPasswordEncoder passwordEncoder) {
         return (args) -> {
             String password = passwordEncoder.encode("123456");
 
@@ -52,6 +58,25 @@ public class TrabDswebApplication {
 
             enterprise1 = enterpriseDAO.save(enterprise1);
             enterprise2 = enterpriseDAO.save(enterprise2);
+
+            Worker worker1 = new Worker();
+            worker1.setCpf("120.845.456-74");
+            worker1.setEmail("joao@gmail.com");
+            worker1.setPassword(password);
+            worker1.setName("João Vitor");
+            worker1.setBirthDate(LocalDate.now().minus(20, ChronoUnit.YEARS));
+            worker1.setGender(Gender.MALE);
+
+            Worker worker2 = new Worker();
+            worker2.setCpf("432.123.543-41");
+            worker2.setEmail("ana@email.com");
+            worker2.setPassword(password);
+            worker2.setName("Ana Clara");
+            worker2.setBirthDate(LocalDate.now().minus(24, ChronoUnit.YEARS));
+            worker2.setGender(Gender.FEMALE);
+
+            workerDAO.save(worker1);
+            workerDAO.save(worker2);
 
             Job job1 = new Job();
             job1.setTitle("Desenvolvedor Backend Java");

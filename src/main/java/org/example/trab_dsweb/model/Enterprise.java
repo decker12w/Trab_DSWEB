@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.models;
+package org.example.trab_dsweb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

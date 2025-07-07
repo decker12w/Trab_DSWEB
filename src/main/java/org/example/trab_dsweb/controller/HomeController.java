@@ -2,7 +2,7 @@ package org.example.trab_dsweb.controller;
 
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
-import org.example.trab_dsweb.services.JobService;
+import org.example.trab_dsweb.service.JobService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

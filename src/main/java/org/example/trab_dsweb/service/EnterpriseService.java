@@ -1,13 +1,13 @@
-package org.example.trab_dsweb.services;
+package org.example.trab_dsweb.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.trab_dsweb.daos.EnterpriseDAO;
+import org.example.trab_dsweb.dao.EnterpriseDAO;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
-import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
-import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
-import org.example.trab_dsweb.models.Enterprise;
+import org.example.trab_dsweb.exception.exceptions.ConflictException;
+import org.example.trab_dsweb.exception.exceptions.NotFoundException;
+import org.example.trab_dsweb.model.Enterprise;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package org.example.trab_dsweb.daos;
+package org.example.trab_dsweb.dao;
 
-import org.example.trab_dsweb.models.Job;
+import org.example.trab_dsweb.model.Job;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDateTime;

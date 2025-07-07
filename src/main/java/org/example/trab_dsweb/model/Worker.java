@@ -1,11 +1,11 @@
-package org.example.trab_dsweb.models;
+package org.example.trab_dsweb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.trab_dsweb.enums.Gender;
+import org.example.trab_dsweb.indicator.Gender;
 
 import java.time.LocalDate;
 import java.util.Set;

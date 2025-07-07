@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.services;
+package org.example.trab_dsweb.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
