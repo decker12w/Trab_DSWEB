@@ -56,7 +56,7 @@ public class TrabDswebApplication {
 
             Job job1 = new Job();
             job1.setTitle("Desenvolvedor Backend Java");
-            job1.setDescription("Você gosta de resolver problemas complexos e trabalhar com APIs, bancos de dados e serviços em nuvem? Junte-se a uma equipe ágil e colaborativa que valoriza boas práticas e qualidade de código.");
+            job1.setDescription("Junte-se a uma equipe ágil e colaborativa que valoriza boas práticas e qualidade de código.");
             job1.setJobType(JobType.FULL_TIME);
             job1.setApplicationDeadline(LocalDateTime.now().plusWeeks(2));
             job1.setRemuneration(6000.0);
@@ -78,7 +78,7 @@ public class TrabDswebApplication {
 
             Job job2 = new Job();
             job2.setTitle("Desenvolvedor Full Stack");
-            job2.setDescription("Está começando na programação e quer colocar a mão na massa de verdade? Aqui você vai aprender com profissionais experientes, participar de projetos reais e desenvolver tanto no frontend quanto no backend. Venha evoluir com a gente em um ambiente leve, ágil e colaborativo!");
+            job2.setDescription("Venha evoluir com a gente em um ambiente leve, ágil e colaborativo!");
             job2.setJobType(JobType.INTERNSHIP);
             job2.setApplicationDeadline(LocalDateTime.now().plusWeeks(3));
             job2.setRemuneration(1800.0);
