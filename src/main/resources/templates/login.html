@@ -2,61 +2,48 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Acesse a sua conta</title>
+    <title th:text="#{login.accessAccount}"></title>
     <link th:href="@{/css/output.css}" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
-    <div th:replace="~{fragments/header :: header-component}"></div>
-    <main class="flex items-center justify-center py-20">
-        <div class="bg-white p-12 rounded-lg shadow-lg max-w-4xl w-full">
-            <div class="text-center mb-10">
-                <h3 class="text-gray-800 text-3xl font-semibold">
-                    Acesse a sua conta
-                </h3>
-                <p class="text-gray-500 text-base mt-2">
-                    Bem-vindo de volta!
-                </p>
-            </div>
-
-            <div th:if="${param.error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                E-mail ou senha inválidos. Tente novamente.
-            </div>
-
-
-            <form th:action="@{/login}" method="post">
-                <div class="flex flex-col gap-y-6 mb-6">
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="username" class="text-sm font-medium text-gray-700">E-mail</label>
-                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="email" id="username" name="username" placeholder="Digite seu e-mail aqui">
-                    </div>
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="password" class="text-sm font-medium text-gray-700">Senha</label>
-                        <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="password" id="password" name="password"  placeholder="Digite sua senha aqui">
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <button class="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg" type="submit">
-                        Entrar
-                    </button>
-                </div>
-
-                <div class="mt-10 flex flex-col justify-center items-center">
-                    <span>
-                        Não tem conta?
-                    </span>
-                    <div>
-                        <a href="/workers/register" class="text-blue-600">
-                            Cadastre-se como Profissional
-                        </a>
-                        ou
-                        <a href="/enterprises/register" class="text-blue-600">
-                            Empresa
-                        </a>
-                    </div>
-                </div>
-            </form>
+<div th:replace="~{fragments/header :: header-component}"></div>
+<main class="flex items-center justify-center py-20">
+    <div class="bg-white p-12 rounded-lg shadow-lg max-w-4xl w-full">
+        <div class="text-center mb-10">
+            <h3 class="text-gray-800 text-3xl font-semibold" th:text="#{login.accessAccount}"></h3>
+            <p class="text-gray-500 text-base mt-2" th:text="#{login.welcomeBack}"></p>
         </div>
-    </main>
+
+        <div th:if="${param.error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" th:text="#{login.error}">
+        </div>
+
+
+        <form th:action="@{/login}" method="post">
+            <div class="flex flex-col gap-y-6 mb-6">
+                <div class="col-span-2 sm:col-span-1">
+                    <label for="username" class="text-sm font-medium text-gray-700" th:text="#{login.label.email}"></label>
+                    <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="email" id="username" name="username" th:placeholder="#{login.placeholder.email}">
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <label for="password" class="text-sm font-medium text-gray-700" th:text="#{login.label.password}"></label>
+                    <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="password" id="password" name="password"  th:placeholder="#{login.placeholder.password}">
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <button class="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg" type="submit" th:text="#{login.button.enter}"></button>
+            </div>
+
+            <div class="mt-10 flex flex-col justify-center items-center">
+                <span th:text="#{login.dontHave}"></span>
+                <div>
+                    <a href="/workers/register" class="text-blue-600" th:text="#{login.link.signinWorker}"></a>
+                    <span th:text="#{login.link.or}"></span>
+                    <a href="/enterprises/register" class="text-blue-600" th:text="#{login.link.signinEnterprise}"></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
 </body>
 </html>
