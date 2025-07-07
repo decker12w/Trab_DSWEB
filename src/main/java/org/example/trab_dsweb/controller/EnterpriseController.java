@@ -1,7 +1,6 @@
 package org.example.trab_dsweb.controller;
 
 import lombok.AllArgsConstructor;
-import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.enums.Status;
@@ -13,12 +12,12 @@ import org.example.trab_dsweb.services.JobApplicationService;
 import org.example.trab_dsweb.services.JobService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,26 +30,6 @@ public class EnterpriseController {
     private final JobService jobService;
     private final JobApplicationService jobApplicationService;
 
-    @GetMapping("/register")
-    public String showRegisterEnterpriseForm(Model model) {
-        model.addAttribute("enterpriseData", new CreateEnterpriseDTO(null, null, null, null, null, null));
-        model.addAttribute("isEdit", false);
-        model.addAttribute("formAction", "/enterprises/register");
-        return "enterprise/form";
-    }
-
-    @PostMapping("/register")
-    public String processRegisterEnterprise(@ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
-        try {
-            enterpriseService.createEnterprise(enterpriseData);
-            redirectAttributes.addFlashAttribute("successMessage", "Entreprise registered successfully!");
-            return "redirect:/login";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/enterprises/register";
-        }
-    }
-
     @GetMapping("/dashboard")
     public String showEnterpriseDashboard(Model model) {
         Enterprise enterprise = getLoggedEnterprise();
@@ -58,14 +37,6 @@ public class EnterpriseController {
         model.addAttribute("enterpriseName", enterprise.getName());
         model.addAttribute("jobs", jobs);
         return "enterprise/dashboard";
-    }
-
-    private Enterprise getLoggedEnterprise() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {
-            throw new UnauthorizedException("Enterprise is not logged in");
-        }
-        return enterpriseDetails.getEnterprise();
     }
 
     @GetMapping("/jobs/{jobId}/analysis")
@@ -86,5 +57,13 @@ public class EnterpriseController {
         model.addAttribute("link", null);
 
         return "enterprise/analysis";
+    }
+
+    private Enterprise getLoggedEnterprise() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {
+            throw new UnauthorizedException("Enterprise is not logged in");
+        }
+        return enterpriseDetails.getEnterprise();
     }
 }

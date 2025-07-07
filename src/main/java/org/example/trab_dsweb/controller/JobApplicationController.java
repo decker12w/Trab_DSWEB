@@ -1,9 +1,6 @@
 package org.example.trab_dsweb.controller;
 
-import jakarta.persistence.Cacheable;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
@@ -11,11 +8,9 @@ import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
 import org.example.trab_dsweb.enums.Status;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.UnauthorizedException;
-import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.services.JobApplicationService;
-import org.example.trab_dsweb.services.JobService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;

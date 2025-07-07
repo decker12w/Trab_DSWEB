@@ -31,8 +31,8 @@
                         <td class="p-3" th:text="${worker.email}">email@profissional.com</td>
                         <td class="p-3" th:text="${worker.cpf}">123.456.789-00</td>
                         <td class="p-3 space-x-4">
-                            <a th:href="@{/admins/worker/edit/{id}(id=${worker.id})}" class="text-blue-600 hover:underline font-semibold" th:text="#{admin.dashboard.link.edit}">Editar</a>
-                            <a th:href="@{/admins/worker/delete/{id}(id=${worker.id})}" class="text-red-600 hover:underline font-semibold" th:text="#{admin.dashboard.link.delete}">Excluir</a>
+                            <a th:href="@{/admins/workers/edit/{id}(id=${worker.id})}" class="text-blue-600 hover:underline font-semibold" th:text="#{admin.dashboard.link.edit}">Editar</a>
+                            <a th:href="@{/admins/workers/delete/{id}(id=${worker.id})}" class="text-red-600 hover:underline font-semibold" th:text="#{admin.dashboard.link.delete}">Excluir</a>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(workers)}">

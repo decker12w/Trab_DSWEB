@@ -73,12 +73,6 @@ public class JobController {
         }
     }
 
-    private void addJobTypeOptionsToModel(Model model) {
-        Map<String, String> jobTypeOptions = Arrays.stream(JobType.values())
-                .collect(Collectors.toMap(Enum::name, JobType::getDisplayName));
-        model.addAttribute("jobTypeOptions", jobTypeOptions.entrySet());
-    }
-
     private Enterprise getLoggedEnterprise() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof EnterpriseDetails enterpriseDetails)) {

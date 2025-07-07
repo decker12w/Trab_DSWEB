@@ -2,6 +2,9 @@ package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.trab_dsweb.daos.JobApplicationDAO;
+import org.example.trab_dsweb.daos.JobDAO;
+import org.example.trab_dsweb.daos.WorkerDAO;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
@@ -12,9 +15,6 @@ import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Job;
 import org.example.trab_dsweb.models.JobApplication;
 import org.example.trab_dsweb.models.Worker;
-import org.example.trab_dsweb.daos.JobApplicationDAO;
-import org.example.trab_dsweb.daos.JobDAO;
-import org.example.trab_dsweb.daos.WorkerDAO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
