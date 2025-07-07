@@ -27,11 +27,23 @@ public class ErrorViewController implements ErrorViewResolver {
     model.addObject("status", status.value());
 
     switch (status.value()) {
+      case 400:
+        String error400 = messageSource.getMessage("error.type.400", null, locale);
+        String message400 = messageSource.getMessage("error.type.400.detail", new Object[]{map.get("path")}, locale);
+        model.addObject("error", error400);
+        model.addObject("message", message400);
+        break;
       case 404:
         String error404 = messageSource.getMessage("error.type.404", null, locale);
         String message404 = messageSource.getMessage("error.type.404.detail", new Object[]{map.get("path")}, locale);
         model.addObject("error", error404);
         model.addObject("message", message404);
+        break;
+      case 409:
+        String error409 = messageSource.getMessage("error.type.409", null, locale);
+        String message409 = messageSource.getMessage("error.type.409.detail", new Object[]{map.get("path")}, locale);
+        model.addObject("error", error409);
+        model.addObject("message", message409);
         break;
       case 500:
         String error500 = messageSource.getMessage("error.type.500", null, locale);

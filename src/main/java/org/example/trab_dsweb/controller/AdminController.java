@@ -58,26 +58,6 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/enterprises/register")
-    public String showRegisterEnterpriseForm(Model model) {
-        model.addAttribute("enterpriseData", new CreateEnterpriseDTO(null, null, null, null, null, null));
-        model.addAttribute("isEdit", false);
-        model.addAttribute("formAction", "/admins/enterprises/register");
-        return "enterprise/form";
-    }
-
-    @PostMapping("/enterprises/register")
-    public String processRegisterEnterprise(@ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
-        try {
-            enterpriseService.createEnterprise(enterpriseData);
-            redirectAttributes.addFlashAttribute("successMessage", "Entreprise registered successfully!");
-            return "redirect:/login";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/admins/enterprises/register";
-        }
-    }
-
     @GetMapping("/workers/edit/{id}")
     public String showEditWorkerForm(@PathVariable UUID id, Model model) {
         ReturnWorkerDTO workerDTO = workerService.findWorkerById(id);
@@ -109,6 +89,26 @@ public class AdminController {
         workerService.deleteWorkerById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Profissional excluído com sucesso!");
         return "redirect:/admins/dashboard";
+    }
+
+    @GetMapping("/enterprises/register")
+    public String showRegisterEnterpriseForm(Model model) {
+        model.addAttribute("enterpriseData", new CreateEnterpriseDTO(null, null, null, null, null, null));
+        model.addAttribute("isEdit", false);
+        model.addAttribute("formAction", "/admins/enterprises/register");
+        return "enterprise/form";
+    }
+
+    @PostMapping("/enterprises/register")
+    public String processRegisterEnterprise(@ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
+        try {
+            enterpriseService.createEnterprise(enterpriseData);
+            redirectAttributes.addFlashAttribute("successMessage", "Entreprise registered successfully!");
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admins/enterprises/register";
+        }
     }
 
     @GetMapping("/enterprises/edit/{id}")

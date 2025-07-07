@@ -50,7 +50,7 @@ public class TrabDswebApplication {
 
             Enterprise enterprise2 = new Enterprise();
             enterprise2.setCnpj("34.567.890/0001-33");
-            enterprise2.setEmail("edusol@email.com");
+            enterprise2.setEmail("edusol@gmail.com");
             enterprise2.setPassword(password);
             enterprise2.setName("Edu Solutions");
             enterprise2.setDescription("Plataforma de ensino online");
@@ -69,7 +69,7 @@ public class TrabDswebApplication {
 
             Worker worker2 = new Worker();
             worker2.setCpf("432.123.543-41");
-            worker2.setEmail("ana@email.com");
+            worker2.setEmail("ana@gmail.com");
             worker2.setPassword(password);
             worker2.setName("Ana Clara");
             worker2.setBirthDate(LocalDate.now().minus(24, ChronoUnit.YEARS));
