@@ -39,6 +39,6 @@ public class Enterprise {
     @Column(nullable = false)
     private String city;
 
-    @OneToMany(mappedBy = "enterprise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "enterprise", orphanRemoval = true)
     private List<Job> jobs;
 }

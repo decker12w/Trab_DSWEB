@@ -52,6 +52,6 @@ public class Job {
     @JoinColumn(name = "enterprise_id", nullable = false)
     private Enterprise enterprise;
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "job", orphanRemoval = true)
     private Set<JobApplication> jobApplications;
 }

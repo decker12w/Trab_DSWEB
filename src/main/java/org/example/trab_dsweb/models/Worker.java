@@ -42,6 +42,6 @@ public class Worker {
     @Column(nullable = false)
     private Gender gender;
 
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "worker", orphanRemoval = true)
     private Set<JobApplication> jobApplications;
 }
