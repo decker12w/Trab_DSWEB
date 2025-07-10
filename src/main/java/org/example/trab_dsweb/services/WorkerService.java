@@ -8,6 +8,7 @@ import org.example.trab_dsweb.dto.ReturnWorkerDTO;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
 import org.example.trab_dsweb.models.Worker;
+import org.hibernate.jdbc.Work;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +52,7 @@ public class WorkerService {
                 .toList();
     }
 
-    public void createWorker(CreateWorkerDTO data) {
+    public Worker createWorker(CreateWorkerDTO data) {
         if (workerDAO.findByCpf(data.cpf()).isPresent()) {
             log.error("Worker with CPF={} already exists", data.cpf());
             throw new ConflictException("Profissional com esse CPF já existe");
@@ -70,7 +71,7 @@ public class WorkerService {
         newWorker.setGender(data.gender());
         newWorker.setBirthDate(data.birthDate());
 
-        workerDAO.save(newWorker);
+        return workerDAO.save(newWorker);
     }
 
     public void updateWorkerById(UUID id, CreateWorkerDTO data) {

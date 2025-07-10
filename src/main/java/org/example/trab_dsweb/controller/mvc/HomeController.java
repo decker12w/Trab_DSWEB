@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.controller;
+package org.example.trab_dsweb.controller.mvc;
 
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.ReturnJobDTO;

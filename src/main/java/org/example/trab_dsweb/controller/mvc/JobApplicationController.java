@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.controller;
+package org.example.trab_dsweb.controller.mvc;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;

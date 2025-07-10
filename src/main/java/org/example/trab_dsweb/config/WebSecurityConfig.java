@@ -40,6 +40,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/css/**", "/image/**", "/webjars/**", "/js/**").permitAll()
                         .requestMatchers("/admins/**").hasRole("ADMIN")
                         .requestMatchers("/workers/**").hasRole("WORKER")
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/enterprises/**", "/jobs/**").hasRole("ENTERPRISE")
                         .anyRequest().authenticated()
                 ).formLogin((form) -> form
