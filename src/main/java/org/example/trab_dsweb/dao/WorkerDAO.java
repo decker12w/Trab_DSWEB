@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.daos;
+package org.example.trab_dsweb.dao;
 
 import org.example.trab_dsweb.models.Worker;
 import org.springframework.data.repository.CrudRepository;

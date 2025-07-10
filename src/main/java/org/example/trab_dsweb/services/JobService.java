@@ -2,8 +2,8 @@ package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.trab_dsweb.daos.EnterpriseDAO;
-import org.example.trab_dsweb.daos.JobDAO;
+import org.example.trab_dsweb.dao.EnterpriseDAO;
+import org.example.trab_dsweb.dao.JobDAO;
 import org.example.trab_dsweb.dto.CreateJobDTO;
 import org.example.trab_dsweb.dto.ReturnJobDTO;
 import org.example.trab_dsweb.exceptions.exceptions.BadRequestException;

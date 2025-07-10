@@ -1,5 +1,6 @@
 package org.example.trab_dsweb.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.CreateWorkerDTO;
@@ -10,6 +11,7 @@ import org.example.trab_dsweb.services.EnterpriseService;
 import org.example.trab_dsweb.services.WorkerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -47,13 +49,26 @@ public class AdminController {
     }
 
     @PostMapping("/workers/register")
-    public String processRegisterWorker(@ModelAttribute("workerData") CreateWorkerDTO workerData, RedirectAttributes redirectAttributes) {
+    public String processRegisterWorker(@Valid @ModelAttribute("workerData") CreateWorkerDTO workerData, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEdit", false);
+            model.addAttribute("formAction", "/admins/workers/register");
+
+            Map<String, String> genderMessageKeys = Arrays.stream(Gender.values())
+                    .collect(Collectors.toMap(
+                            Enum::name,
+                            genderEnum -> "gender." + genderEnum.name().toLowerCase()
+                    ));
+            model.addAttribute("genderOptions", genderMessageKeys.entrySet());
+
+            return "worker/form";
+        }
         try {
             workerService.createWorker(workerData);
             redirectAttributes.addFlashAttribute("successMessage", "Cadastro realizado com sucesso!");
             return "redirect:/login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Ocorreu um erro inesperado: " + e.getMessage());
             return "redirect:/admins/workers/register";
         }
     }

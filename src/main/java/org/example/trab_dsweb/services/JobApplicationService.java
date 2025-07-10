@@ -2,9 +2,9 @@ package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.trab_dsweb.daos.JobApplicationDAO;
-import org.example.trab_dsweb.daos.JobDAO;
-import org.example.trab_dsweb.daos.WorkerDAO;
+import org.example.trab_dsweb.dao.JobApplicationDAO;
+import org.example.trab_dsweb.dao.JobDAO;
+import org.example.trab_dsweb.dao.WorkerDAO;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;

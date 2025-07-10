@@ -38,7 +38,18 @@
               </div>
               <div class="col-span-2">
                 <label for="cpf" class="text-sm font-medium text-gray-700" th:text="#{worker.form.label.cpf}">CPF</label>
-                <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm" type="text" th:field="*{cpf}" id="cpf" th:placeholder="#{worker.form.placeholder.cpf}">
+                <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm"
+                       th:field="*{cpf}"
+                       type="text"
+                       placeholder="000.000.000-00"
+                       id="cpf"
+                       data-mask="000.000.000-00"
+                       data-mask-reverse="true"
+                       th:classappend="${#fields.hasErrors('cpf')} ? 'border-red-500' : ''">
+
+                <div th:if="${#fields.hasErrors('cpf')}" class="text-red-600 text-sm mt-1">
+                  <p th:errors="*{cpf}"></p>
+                </div>
               </div>
               <div class="col-span-2 sm:col-span-1">
                 <label for="gender" class="text-sm font-medium text-gray-700" th:text="#{worker.form.label.gender}">Gênero</label>
@@ -61,5 +72,8 @@
           </form>
         </div>
       </main>
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/jquery-mask-plugin/dist/jquery.mask.min.js}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trab_dsweb.enums.Gender;
+import org.example.trab_dsweb.validator.UniqueCPF;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -18,11 +19,13 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Worker {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
 
+    @UniqueCPF(message = "{Unique.worker.CPF}")
     @Column(nullable = false, unique = true)
     private String cpf;
 

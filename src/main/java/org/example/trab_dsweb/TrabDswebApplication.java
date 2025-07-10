@@ -1,8 +1,8 @@
 package org.example.trab_dsweb;
 
-import org.example.trab_dsweb.daos.AdminDAO;
-import org.example.trab_dsweb.daos.EnterpriseDAO;
-import org.example.trab_dsweb.daos.JobDAO;
+import org.example.trab_dsweb.dao.AdminDAO;
+import org.example.trab_dsweb.dao.EnterpriseDAO;
+import org.example.trab_dsweb.dao.JobDAO;
 import org.example.trab_dsweb.enums.JobType;
 import org.example.trab_dsweb.models.Admin;
 import org.example.trab_dsweb.models.Enterprise;

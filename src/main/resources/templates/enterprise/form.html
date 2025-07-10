@@ -27,12 +27,18 @@
                            th:placeholder="#{enterprise.form.placeholder.name}">
                 </div>
                 <div class="col-span-2 sm:col-span-1">
-                    <label for="cnpj" class="text-sm font-medium text-gray-700" th:text="#{enterprise.form.label.cnpj}">CNPJ</label>
                     <input class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm"
                            type="text"
                            th:field="*{cnpj}"
                            id="cnpj"
-                           th:placeholder="#{enterprise.form.placeholder.cnpj}">
+                           placeholder="00.000.000/0000-00"
+                           data-mask="00.000.000/0000-00"
+                           data-mask-reverse="true"
+                           th:classappend="${#fields.hasErrors('cnpj')} ? 'border-red-500' : ''">
+
+                    <div th:if="${#fields.hasErrors('cnpj')}" class="text-red-600 text-sm mt-1">
+                        <p th:errors="*{cnpj}"></p>
+                    </div>
                 </div>
                 <div class="col-span-2 sm:col-span-1">
                     <label for="email" class="text-sm font-medium text-gray-700" th:text="#{enterprise.form.label.email}">E-mail de Contato</label>
@@ -76,5 +82,8 @@
         </form>
     </div>
 </main>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/jquery-mask-plugin/dist/jquery.mask.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 </body>
 </html>

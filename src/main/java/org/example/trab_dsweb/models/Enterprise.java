@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.trab_dsweb.validator.UniqueCNPJ;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class Enterprise {
     @Column(nullable = false)
     private UUID id;
 
+    @UniqueCNPJ(message = "{Unique.enterprise.CNPJ}")
     @Column(nullable = false, unique = true)
     private String cnpj;
 

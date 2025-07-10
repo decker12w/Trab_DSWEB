@@ -2,7 +2,7 @@ package org.example.trab_dsweb.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.trab_dsweb.daos.WorkerDAO;
+import org.example.trab_dsweb.dao.WorkerDAO;
 import org.example.trab_dsweb.dto.CreateWorkerDTO;
 import org.example.trab_dsweb.dto.ReturnWorkerDTO;
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
