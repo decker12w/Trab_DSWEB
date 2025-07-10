@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trab_dsweb.validator.UniqueCNPJ;
 
+
 import java.util.List;
 import java.util.UUID;
 

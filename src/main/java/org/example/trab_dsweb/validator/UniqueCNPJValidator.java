@@ -1,32 +1,29 @@
-package org.example.trab_dsweb.validator;// org/example/trab_dsweb/validator/UniqueCNPJValidator.java
+package org.example.trab_dsweb.validator;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import org.example.trab_dsweb.dao.EnterpriseDAO;
 import org.example.trab_dsweb.models.Enterprise;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.beans.factory.annotation.Autowired; // <-- IMPORT THIS
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
-public class UniqueCNPJValidator implements ConstraintValidator<UniqueCNPJ, Enterprise> { // <<< Altere para Enterprise
-
+public class UniqueCNPJValidator implements ConstraintValidator<UniqueCNPJ, String> {
     @Autowired
     private EnterpriseDAO dao;
 
+    public UniqueCNPJValidator() {
+    }
+
     @Override
-    public boolean isValid(Enterprise enterprise, ConstraintValidatorContext context) {
-        if (enterprise == null || enterprise.getCnpj() == null) {
-            return false;
-        }
-
-        Optional<Enterprise> existingEnterprise = dao.findByCnpj(enterprise.getCnpj());
-
-        if (existingEnterprise.isEmpty()) {
+    public boolean isValid(String cnpj, ConstraintValidatorContext context) {
+        if (cnpj == null || dao == null) {
             return true;
         }
 
-        return enterprise.getId() != null && enterprise.getId().equals(existingEnterprise.get().getId());
+        Optional<Enterprise> enterprise = dao.findByCnpj(cnpj);
+        return enterprise.isEmpty();
     }
 }

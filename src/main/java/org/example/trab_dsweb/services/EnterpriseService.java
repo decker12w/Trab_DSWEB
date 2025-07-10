@@ -11,6 +11,7 @@ import org.example.trab_dsweb.models.Enterprise;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -128,6 +129,20 @@ public class EnterpriseService {
             log.error("Attempt to delete non-existing Enterprise with ID={}", id);
             throw new NotFoundException("Enterprise not found");
         }
+
+        if( hasActiveJobs(id)) {
+            log.error("Cannot delete Enterprise with ID={} because it has active jobs", id);
+            throw new ConflictException("Cannot delete enterprise with active jobs");
+        }
+
         enterpriseDAO.deleteById(id);
+    }
+
+    private boolean hasActiveJobs(UUID enterpriseId) {
+        Enterprise enterprise = enterpriseDAO.findById(enterpriseId)
+                .orElseThrow(() -> new NotFoundException("Enterprise not found"));
+
+        return enterprise.getJobs().stream()
+                .anyMatch(job -> job.getApplicationDeadline().isAfter(LocalDateTime.now()));
     }
 }
