@@ -1,7 +1,7 @@
 package org.example.trab_dsweb.exception;
 
-import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
-import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
+import org.example.trab_dsweb.exception.exceptions.ConflictException;
+import org.example.trab_dsweb.exception.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -170,8 +170,15 @@ public class AdminController {
             enterpriseService.deleteEnterpriseById(id);
             String successMessage = messageSource.getMessage("success.enterprise.delete", null, LocaleContextHolder.getLocale());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        } catch (ConflictException e) {
-            String errorMessage = messageSource.getMessage("error.enterprise.delete.conflict", null, LocaleContextHolder.getLocale());
+        } catch (Exception e) { // Captura qualquer exceção genérica
+            String errorMessage;
+
+            if (e instanceof ConflictException) {
+                errorMessage = messageSource.getMessage("error.enterprise.delete.conflict", null, LocaleContextHolder.getLocale());
+            } else {
+                errorMessage = e.getMessage();
+            }
+
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         }
         return "redirect:/admins/dashboard";

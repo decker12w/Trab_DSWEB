@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trab_dsweb.dto.CreateWorkerDTO;
 import org.example.trab_dsweb.dto.ReturnWorkerDTO;
-import org.example.trab_dsweb.models.Worker;
-import org.example.trab_dsweb.services.WorkerService;
+import org.example.trab_dsweb.model.Worker;
+import org.example.trab_dsweb.service.WorkerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

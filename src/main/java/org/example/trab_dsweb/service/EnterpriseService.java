@@ -139,7 +139,7 @@ public class EnterpriseService {
         }
         if (!jobDAO.findAllByEnterpriseId(id).isEmpty()) {
             log.error("Cannot delete Enterprise with ID={} because it has jobs", id);
-            throw new BadRequestException(messageSource.getMessage("error.enterprise.delete.conflict", null, locale));
+            throw new ConflictException(messageSource.getMessage("error.enterprise.delete.conflict", null, locale));
         }
         enterpriseDAO.deleteById(id);
     }
