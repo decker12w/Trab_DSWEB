@@ -3,7 +3,7 @@ package org.example.trab_dsweb.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.example.trab_dsweb.enums.Gender;
+import org.example.trab_dsweb.indicator.Gender;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 

@@ -2,7 +2,7 @@ package org.example.trab_dsweb.security;
 
 import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dao.EnterpriseDAO;
-import org.example.trab_dsweb.models.Enterprise;
+import org.example.trab_dsweb.model.Enterprise;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

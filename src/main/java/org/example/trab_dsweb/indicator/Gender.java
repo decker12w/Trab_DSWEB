@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.enums;
+package org.example.trab_dsweb.indicator;
 
 public enum Gender {
     // Para cada valor, passamos o nome de exibição para o construtor

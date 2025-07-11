@@ -1,6 +1,6 @@
 package org.example.trab_dsweb.security;
 
-import org.example.trab_dsweb.models.Enterprise;
+import org.example.trab_dsweb.model.Enterprise;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

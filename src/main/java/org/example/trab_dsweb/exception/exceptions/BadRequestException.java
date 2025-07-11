@@ -1,6 +1,6 @@
-package org.example.trab_dsweb.exceptions.exceptions;
+package org.example.trab_dsweb.exception.exceptions;
 
-import org.example.trab_dsweb.exceptions.BaseException;
+import org.example.trab_dsweb.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class BadRequestException extends BaseException {

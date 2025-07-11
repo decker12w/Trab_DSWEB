@@ -1,7 +1,7 @@
 package org.example.trab_dsweb.dto;
 
-import org.example.trab_dsweb.enums.JobType;
-import org.example.trab_dsweb.models.Job;
+import org.example.trab_dsweb.indicator.JobType;
+import org.example.trab_dsweb.model.Job;
 
 import java.time.LocalDateTime;
 import java.util.List;

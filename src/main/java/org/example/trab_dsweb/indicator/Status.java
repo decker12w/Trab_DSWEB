@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.enums;
+package org.example.trab_dsweb.indicator;
 
 public enum Status {
     OPEN("Aberto"),

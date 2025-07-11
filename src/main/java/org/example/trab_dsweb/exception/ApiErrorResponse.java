@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.exceptions;
+package org.example.trab_dsweb.exception;
 
 import lombok.Getter;
 import lombok.Setter;

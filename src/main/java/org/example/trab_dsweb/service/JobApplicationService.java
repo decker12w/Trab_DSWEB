@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.services;
+package org.example.trab_dsweb.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,13 +8,13 @@ import org.example.trab_dsweb.dao.WorkerDAO;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
-import org.example.trab_dsweb.enums.Status;
-import org.example.trab_dsweb.exceptions.exceptions.BadRequestException;
-import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
-import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;
-import org.example.trab_dsweb.models.Job;
-import org.example.trab_dsweb.models.JobApplication;
-import org.example.trab_dsweb.models.Worker;
+import org.example.trab_dsweb.indicator.Status;
+import org.example.trab_dsweb.exception.exceptions.BadRequestException;
+import org.example.trab_dsweb.exception.exceptions.ConflictException;
+import org.example.trab_dsweb.exception.exceptions.NotFoundException;
+import org.example.trab_dsweb.model.Job;
+import org.example.trab_dsweb.model.JobApplication;
+import org.example.trab_dsweb.model.Worker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

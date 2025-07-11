@@ -1,9 +1,9 @@
 package org.example.trab_dsweb.dto;
 
-import org.example.trab_dsweb.enums.Status;
-import org.example.trab_dsweb.models.Job;
-import org.example.trab_dsweb.models.JobApplication;
-import org.example.trab_dsweb.models.Worker;
+import org.example.trab_dsweb.indicator.Status;
+import org.example.trab_dsweb.model.Job;
+import org.example.trab_dsweb.model.JobApplication;
+import org.example.trab_dsweb.model.Worker;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

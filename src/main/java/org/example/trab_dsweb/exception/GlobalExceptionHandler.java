@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.exceptions.handlers;
+package org.example.trab_dsweb.exception;
 
 import org.example.trab_dsweb.exceptions.exceptions.ConflictException;
 import org.example.trab_dsweb.exceptions.exceptions.NotFoundException;

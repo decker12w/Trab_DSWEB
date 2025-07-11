@@ -1,7 +1,7 @@
 package org.example.trab_dsweb.dto;
 
-import org.example.trab_dsweb.enums.Gender;
-import org.example.trab_dsweb.models.Worker;
+import org.example.trab_dsweb.indicator.Gender;
+import org.example.trab_dsweb.model.Worker;
 
 import java.time.LocalDate;
 import java.util.UUID;

@@ -1,31 +1,32 @@
-package org.example.trab_dsweb.models;
+package org.example.trab_dsweb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.trab_dsweb.validator.UniqueCNPJ;
+import org.example.trab_dsweb.indicator.Gender;
+import org.example.trab_dsweb.validator.UniqueCPF;
 
-
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "enterprises")
+@Table(name = "workers")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Enterprise {
+public class Worker {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
 
-    @UniqueCNPJ(message = "{Unique.enterprise.CNPJ}")
+    @UniqueCPF(message = "{Unique.worker.CPF}")
     @Column(nullable = false, unique = true)
-    private String cnpj;
+    private String cpf;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -37,11 +38,12 @@ public class Enterprise {
     private String name;
 
     @Column(nullable = false)
-    private String description;
+    private LocalDate birthDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String city;
+    private Gender gender;
 
-    @OneToMany(mappedBy = "enterprise", orphanRemoval = true)
-    private List<Job> jobs;
+    @OneToMany(mappedBy = "worker", orphanRemoval = true)
+    private Set<JobApplication> jobApplications;
 }
