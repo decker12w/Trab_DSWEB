@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <button sec:authorize="hasAuthority('ROLE_WORKER')" onclick="switchToUploadModal()" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer"
-                        th:text="#{enterprise.dashboard.analyse}">Candidatar-se Agora</button>
+                        th:text="#{index.apply}">Candidatar-se Agora</button>
                 <a sec:authorize="!isAuthenticated()" href="/login" class="px-6 py-[10px] bg-[#4F45E6] rounded-xl text-[#D8D6F8] cursor-pointer"
                    th:text="#{login.accessAccount}">Acesse a sua Conta</a>
             </div>
@@ -121,14 +121,14 @@
             <div class="flex flex-col gap-10">
                 <div class="flex flex-col gap-3 ">
                     <h3 class="font-bold text-[40px] text-text-heading"
-                        th:text="#{worker.dashboard.applicationStatus.APPLIED}">Finalizar Candidatura</h3>
-                    <p id="uploadModalSubtitle" class="text-[24px] font-inter text-[#888D97]">
+                        th:text="#{index.finalize.application}">Finalizar Candidatura</h3>
+                    <p id="uploadModalSubtitle" class="text-[24px] font-inter text-[#888D97]" th:text="#{index.job}">
                         Para a vaga de Desenvolvedor Back-End
                     </p>
                 </div>
                 <div class="flex flex-col gap-3 ">
                     <h3 class="text-[24px] font-inter text-[#3E4053]"
-                        th:text="#{worker.dashboard.table.header.actions}">
+                        th:text="#{index.attach.resume}">
                         Anexe seu currículo (PDF)
                     </h3>
                     <label for="curriculum" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
@@ -136,8 +136,7 @@
                             <svg class="w-10 h-10 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                             </svg>
-                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold" th:text="#{job.form.button.submit}">Clique para enviar</span> <span th:text="#{login.or}">ou</span> arraste e solte</p>
-                            <p class="text-xs text-gray-500">APENAS PDF (MAX. 5MB)</p>
+                            <p class="mb-2 text-sm text-gray-500" th:text="#{index.pdf}">Arquivo PDF</p>
                         </div>
                         <div id="fileNameDisplay" class="hidden text-center p-4"></div>
                     </label>
@@ -145,11 +144,11 @@
                 </div>
                 <div class="flex gap-2.5">
                     <button type="button" onclick="closeUploadModalAndReset()" class="px-[10px] py-[16px] w-full bg-[#8383834D] text-[#000000] cursor-pointer"
-                            th:text="#{worker.dashboard.button.delete}">
+                            th:text="#{index.cancel}">
                         Cancelar
                     </button>
                     <button type="submit" id="submitApplicationBtn" class="px-[10px] py-[16px] w-full bg-[#16A34A] text-[#FFFFFF] cursor-pointer disabled:bg-gray-400"
-                            th:text="#{job.form.button.submit}">
+                            th:text="#{index.send.application}">
                         Enviar Candidatura
                     </button>
                 </div>
@@ -209,7 +208,7 @@
 
         function switchToUploadModal() {
             const currentJobTitle = modalJobTitle.textContent;
-            uploadModalSubtitle.textContent = `Para a vaga de ${currentJobTitle}`;
+            uploadModalSubtitle.textContent += ` ${currentJobTitle}`;
             if (detailsModal) {
                 detailsModal.close();
             }

@@ -33,7 +33,7 @@
 
             <div class="flex justify-between items-center">
                 <span class="text-[#55B57D]" th:text="${'R$ %.2f'.formatted(salary)}">R$00.000,00</span>
-                <span class="text-[#8E919D] text-sm" th:text="#{fragments.jobCard.job.deadline.prefix} + ${#temporals.format(deadline, 'dd/MM/yyyy')}">Inscrições até: DD/MM/AAAA</span>
+                <span class="text-[#8E919D] text-sm" th:text="#{fragments.jobCard.job.deadline.prefix} + ' ' + ${#temporals.format(deadline, 'dd/MM/yyyy')}">Inscrições até: DD/MM/AAAA</span>
             </div>
         </div>
     </div>
