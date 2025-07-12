@@ -1,4 +1,4 @@
-package org.example.trab_dsweb.controller;
+package org.example.trab_dsweb.controller.mvc;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

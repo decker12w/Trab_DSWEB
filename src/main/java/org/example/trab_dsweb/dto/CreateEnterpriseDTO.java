@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.br.CNPJ;
 
 public record CreateEnterpriseDTO(
         @Email
+        @NotBlank
         String email,
 
         @NotBlank

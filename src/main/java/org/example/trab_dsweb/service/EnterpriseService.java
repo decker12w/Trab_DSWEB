@@ -15,6 +15,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -138,7 +139,7 @@ public class EnterpriseService {
         }
         if (!jobDAO.findAllByEnterpriseId(id).isEmpty()) {
             log.error("Cannot delete Enterprise with ID={} because it has jobs", id);
-            throw new BadRequestException(messageSource.getMessage("error.enterprise.delete.conflict", null, locale));
+            throw new ConflictException(messageSource.getMessage("error.enterprise.delete.conflict", null, locale));
         }
         enterpriseDAO.deleteById(id);
     }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trab_dsweb.indicator.Gender;
+import org.example.trab_dsweb.validator.UniqueCPF;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class Worker {
     @Column(nullable = false)
     private UUID id;
 
+    @UniqueCPF(message = "{Unique.worker.CPF}")
     @Column(nullable = false, unique = true)
     private String cpf;
 

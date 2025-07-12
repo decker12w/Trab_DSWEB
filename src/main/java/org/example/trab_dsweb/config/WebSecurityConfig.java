@@ -35,14 +35,17 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) -> authz
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/error", "/login/**", "/home").permitAll()
                         .requestMatchers("/css/**", "/image/**", "/webjars/**", "/js/**").permitAll()
                         .requestMatchers("/admins/**").hasRole("ADMIN")
                         .requestMatchers("/workers/**").hasRole("WORKER")
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/enterprises/**", "/jobs/**").hasRole("ENTERPRISE")
                         .anyRequest().authenticated()
                 ).formLogin((form) -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
                 ).logout((logout) -> logout

@@ -59,7 +59,7 @@ public class WorkerService {
                 .toList();
     }
 
-    public void createWorker(CreateWorkerDTO data) {
+    public Worker createWorker(CreateWorkerDTO data) {
         if (workerDAO.findByCpf(data.cpf()).isPresent()) {
             log.error("Worker with CPF={} already exists", data.cpf());
             throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, locale));
@@ -78,7 +78,7 @@ public class WorkerService {
         newWorker.setGender(data.gender());
         newWorker.setBirthDate(data.birthDate());
 
-        workerDAO.save(newWorker);
+        return workerDAO.save(newWorker);
     }
 
     public void updateWorkerById(UUID id, CreateWorkerDTO data) {
