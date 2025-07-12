@@ -15,12 +15,15 @@ import org.example.trab_dsweb.exception.exceptions.NotFoundException;
 import org.example.trab_dsweb.model.Job;
 import org.example.trab_dsweb.model.JobApplication;
 import org.example.trab_dsweb.model.Worker;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,8 @@ public class JobApplicationService {
     private JobDAO jobDAO;
     private WorkerDAO workerDAO;
     private EmailService emailService;
+    private final MessageSource messageSource;
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Transactional
     public List<ReturnJobApplicationDTO> findAllJobApplicationsByWorkerId(UUID id) {
@@ -47,34 +52,34 @@ public class JobApplicationService {
 
         Worker worker = workerDAO.findById(createJobApplicationRequestDTO.workerId())
                 .orElseThrow(() -> {
-                    log.error("Worker not found with email={}", createJobApplicationRequestDTO.workerId());
-                    return new NotFoundException("Worker not found with email: " + createJobApplicationRequestDTO.workerId());
+                    log.error("Worker not found with ID={}", createJobApplicationRequestDTO.workerId());
+                    return new NotFoundException(messageSource.getMessage("error.worker.notfound", null, locale));
                 });
         jobApplication.setWorker(worker);
 
         Job job = jobDAO.findById(createJobApplicationRequestDTO.jobId())
                 .orElseThrow(() -> {
                     log.error("Job not found with ID={}", createJobApplicationRequestDTO.jobId());
-                    return new NotFoundException("Job not found with ID: " + createJobApplicationRequestDTO.jobId());
+                    return new NotFoundException(messageSource.getMessage("error.job.notfound", null, locale));
                 });
         jobApplication.setJob(job);
 
         if (job.getApplicationDeadline().isBefore(LocalDateTime.now())) {
             log.error("Application deadline has expired for job ID={}. Deadline={}, now={}",
                     job.getId(), job.getApplicationDeadline(), LocalDateTime.now());
-            throw new BadRequestException("Applications for this job are closed due to the expired deadline");
+            throw new BadRequestException(messageSource.getMessage("error.jobApplication.badRequest.applicationDeadline", null, locale));
         }
 
         if (jobApplicationDAO.findByWorkerIdAndJobId(worker.getId(), job.getId()).isPresent()) {
-            log.error("Worker ID={} has already applied for job ID={}", worker.getId(), job.getId());
-            throw new ConflictException("Worker have already applied for this vacancy");
+            log.error("Worker ID={} already applied for job ID={}", worker.getId(), job.getId());
+            throw new ConflictException(messageSource.getMessage("error.jobApplication.conflict.applied", null, locale));
         }
 
         try {
             jobApplication.setCurriculum(createJobApplicationRequestDTO.curriculum().getBytes());
         } catch (IOException e) {
             log.error("Failed to process curriculum file: {}", e.getMessage(), e);
-            throw new BadRequestException("Error uploading curriculum");
+            throw new BadRequestException(messageSource.getMessage("error.jobApplication.badRequest.curriculum", null, locale));
         }
 
         jobApplicationDAO.save(jobApplication);
@@ -84,7 +89,7 @@ public class JobApplicationService {
         JobApplication jobApplication = jobApplicationDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("JobApplication not found with ID={}", id);
-                    return new NotFoundException("Job application not found with ID: " + id);
+                    return new NotFoundException(messageSource.getMessage("error.jobApplication.notfound", null, locale));
                 });
 
         jobApplication.setStatus(updateJobApplicationStatusRequestDTO.status());
@@ -102,7 +107,7 @@ public class JobApplicationService {
     public void deleteJobApplicationById(UUID id) {
         if (!jobApplicationDAO.existsById(id)) {
             log.error("Attempt to delete non-existing Job application with ID={}", id);
-            throw new NotFoundException("Job application not found");
+            throw new NotFoundException(messageSource.getMessage("error.jobApplication.notfound", null, locale));
         }
         jobApplicationDAO.deleteById(id);
     }
@@ -111,7 +116,7 @@ public class JobApplicationService {
         JobApplication jobApplication = jobApplicationDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("JobApplication not found with ID={}", id);
-                    return new NotFoundException("Job application not found with ID: " + id);
+                    return new NotFoundException(messageSource.getMessage("error.jobApplication.notfound", null, locale));
                 });
 
         return  ReturnJobApplicationDTO.mapJobApplicationToDTO(jobApplication);
@@ -121,7 +126,7 @@ public class JobApplicationService {
     public List<ReturnJobApplicationDTO> findByJobId(UUID jobId) {
         if (!jobDAO.existsById(jobId)) {
             log.error("Attempt to fetch applications for a non-existing job with ID={}", jobId);
-            throw new NotFoundException("Job not found with ID: " + jobId);
+            throw new NotFoundException(messageSource.getMessage("error.job.notfound", null, locale));
         }
         return jobApplicationDAO.findByJobId(jobId).stream()
                 .map(ReturnJobApplicationDTO::mapJobApplicationToDTO)

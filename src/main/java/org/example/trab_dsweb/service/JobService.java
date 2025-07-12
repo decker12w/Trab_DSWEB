@@ -10,10 +10,13 @@ import org.example.trab_dsweb.exception.exceptions.BadRequestException;
 import org.example.trab_dsweb.exception.exceptions.NotFoundException;
 import org.example.trab_dsweb.model.Enterprise;
 import org.example.trab_dsweb.model.Job;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 public class JobService {
     private JobDAO jobDAO;
     private EnterpriseDAO enterpriseDAO;
+    private final MessageSource messageSource;
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     public List<ReturnJobDTO> findAllActiveJobs() {
         return jobDAO.findAllByApplicationDeadlineAfter(LocalDateTime.now()).stream()
@@ -55,13 +60,13 @@ public class JobService {
         if (job.getApplicationDeadline().isBefore(LocalDateTime.now())) {
             log.error("Cannot create job: application deadline is in the past. Deadline={}, now={}",
                     createJobRequestDTO.applicationDeadline(), LocalDateTime.now());
-            throw new BadRequestException("Application deadline must be a future date");
+            throw new BadRequestException(messageSource.getMessage("error.job.badRequest.applicationDeadline", null, locale));
         }
 
         Enterprise enterprise = enterpriseDAO.findById(enterpriseId)
                 .orElseThrow(() -> {
                     log.error("Enterprise not found with ID={}", enterpriseId);
-                    return new NotFoundException("Enterprise not found");
+                    return new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, locale));
                 });
         job.setEnterprise(enterprise);
 
@@ -72,7 +77,7 @@ public class JobService {
         Job job = jobDAO.findById(jobId)
                 .orElseThrow(() -> {
                     log.error("Job not found with ID={}", jobId);
-                    return new NotFoundException("Job not found with ID: " + jobId);
+                    return new NotFoundException(messageSource.getMessage("error.job.notfound", null, locale));
                 });
         return ReturnJobDTO.mapJobToDTO(job);
     }

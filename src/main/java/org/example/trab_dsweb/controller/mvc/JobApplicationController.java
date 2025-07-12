@@ -11,6 +11,8 @@ import org.example.trab_dsweb.exception.exceptions.UnauthorizedException;
 import org.example.trab_dsweb.model.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.service.JobApplicationService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,18 +30,20 @@ import java.util.UUID;
 @AllArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
+    private final MessageSource messageSource;
 
     @PostMapping
-    public String createJobApplication(@RequestParam("jobId") UUID jobId, @RequestParam("curriculum") MultipartFile curriculum, RedirectAttributes attr) {
+    public String createJobApplication(@RequestParam("jobId") UUID jobId, @RequestParam("curriculum") MultipartFile curriculum, RedirectAttributes redirectAttributes) {
       try {
           Worker worker = getLoggedWorker();
           CreateJobApplicationDTO data = new CreateJobApplicationDTO(curriculum, worker.getId(), jobId);
           jobApplicationService.createJobApplication(data);
-          attr.addFlashAttribute("successMessage", "Candidatura realizada com sucesso!");
+          String successMessage = messageSource.getMessage("success.jobApplication.register", null, LocaleContextHolder.getLocale());
+          redirectAttributes.addFlashAttribute("successMessage", successMessage);
           return "redirect:/home";
       }
-      catch (ConflictException e) {
-          attr.addFlashAttribute("errorMessage", "Você já se candidatou para esta vaga.");
+      catch (Exception e) {
+          redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
       }
       return "redirect:/home";
     }
@@ -56,11 +60,6 @@ public class JobApplicationController {
         List<ReturnJobApplicationDTO> jobApplications = jobApplicationService.findAllJobApplicationsByWorkerId(worker.getId());
         model.addAttribute("jobApplications", jobApplications);
         return "worker/dashboard";
-    }
-
-    private byte[] getJobApplication(UUID id) {
-        ReturnJobApplicationDTO jobApplication = jobApplicationService.getJobApplicationById(id);
-        return jobApplication.curriculum();
     }
 
     @GetMapping(value = "/download/{id}")
@@ -81,13 +80,6 @@ public class JobApplicationController {
             System.out.println("Error :- " + e.getMessage());
         }
     }
-    private Worker getLoggedWorker() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
-            throw new UnauthorizedException("Worker is not logged in");
-        }
-        return workerDetails.getWorker();
-    }
 
     @PostMapping("/{id}/status")
     public String updateJobApplicationStatus(@PathVariable UUID id,
@@ -97,7 +89,21 @@ public class JobApplicationController {
                                              RedirectAttributes redirectAttributes) {
         UpdateJobApplicationStatusDTO data = new UpdateJobApplicationStatusDTO(status, link);
         jobApplicationService.updateJobApplicationStatus(id, data);
-        redirectAttributes.addFlashAttribute("successMessage", "Candidatura atualizada com sucesso!");
+        String successMessage = messageSource.getMessage("success.jobApplication.edit", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
         return "redirect:/enterprises/jobs/" + jobId + "/analysis";
+    }
+
+    private Worker getLoggedWorker() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
+            throw new UnauthorizedException("Worker is not logged in");
+        }
+        return workerDetails.getWorker();
+    }
+
+    private byte[] getJobApplication(UUID id) {
+        ReturnJobApplicationDTO jobApplication = jobApplicationService.getJobApplicationById(id);
+        return jobApplication.curriculum();
     }
 }

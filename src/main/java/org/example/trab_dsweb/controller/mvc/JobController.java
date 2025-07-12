@@ -8,6 +8,8 @@ import org.example.trab_dsweb.exception.exceptions.UnauthorizedException;
 import org.example.trab_dsweb.model.Enterprise;
 import org.example.trab_dsweb.security.EnterpriseDetails;
 import org.example.trab_dsweb.service.JobService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,8 +29,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/jobs")
 @AllArgsConstructor
 public class JobController {
-
     private final JobService jobService;
+    private final MessageSource messageSource;
 
     @GetMapping("/register")
     public String showRegisterJobForm(Model model) {
@@ -62,13 +64,12 @@ public class JobController {
             Enterprise enterprise = getLoggedEnterprise();
             jobService.createJob(jobData, enterprise.getId());
 
-            redirectAttributes.addFlashAttribute("successMessage", "Vaga criada com sucesso!");
+            String successMessage = messageSource.getMessage("success.job.register", null, LocaleContextHolder.getLocale());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/enterprises/dashboard";
         } catch (Exception e) {
-            System.out.println("Error creating job: " + e.getMessage());
             redirectAttributes.addFlashAttribute("jobData", jobData);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-
             return "redirect:/jobs/register";
         }
     }

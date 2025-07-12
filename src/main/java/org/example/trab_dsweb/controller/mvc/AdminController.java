@@ -73,7 +73,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/admins/dashboard";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Ocorreu um erro inesperado: " + e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/admins/workers/register";
         }
     }
@@ -170,16 +170,8 @@ public class AdminController {
             enterpriseService.deleteEnterpriseById(id);
             String successMessage = messageSource.getMessage("success.enterprise.delete", null, LocaleContextHolder.getLocale());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        } catch (Exception e) { // Captura qualquer exceção genérica
-            String errorMessage;
-
-            if (e instanceof ConflictException) {
-                errorMessage = messageSource.getMessage("error.enterprise.delete.conflict", null, LocaleContextHolder.getLocale());
-            } else {
-                errorMessage = e.getMessage();
-            }
-
-            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/admins/dashboard";
     }
