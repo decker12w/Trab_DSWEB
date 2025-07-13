@@ -36,7 +36,26 @@ Implementamos todos os requisitos listados no PDF
    6. REST API -- Retorna a lista de vagas (em aberto) da empresa de id = {id} [Read - CRUD]
       GET http://localhost:8080/api/vagas/empresas/{id}
 2. José Maia
-   
+    1. CRUD 1 de profissionais (requer login de administrador 2 )
+    2. Cadastro de vagas de estágio/trabalho (requer login da empresa via e-mail + senha).
+       Depois de fazer login, a empresa pode cadastrar uma vaga de estágio/trabalho. O cadastro de
+       vagas deve possuir os seguintes dados: CNPJ da empresa, descrição (perfil profissional,
+       habilidades desejadas etc), remuneração e data limite de inscrição. O período de
+       candidaturas (processo seletivo) para essa vaga encerra-se na data limite de inscrição.
+    3. Listagem de todas as vagas (em aberto) em uma única página (não requer login).
+       O sistema deve prover a funcionalidade de filtrar as vagas (em aberto) por cidade
+    4. Listagem de todas as vagas de uma empresa (requer login da empresa via e-mail +
+       senha). Depois de fazer login, a empresa pode visualizar todas suas vagas cadastradas.
+    5. Cria um novo profissional [Create - CRUD]
+       POST http://localhost:8080/api/profissionais
+    6. Retorna a lista de profissionais 2 [Read - CRUD]
+       GET http://localhost:8080/api/profissionais
+    7. Retorna o profissional de id = {id} [Read - CRUD]
+       GET http://localhost:8080/api/profissionais/{id}
+    8. Atualiza o profissional de id = {id} [Update - CRUD]
+       PUT http://localhost:8080/api/profissionais/{id}
+    9. Remove o profissional de id = {id} [Delete - CRUD]
+       DELETE http://localhost:8080/api/profissionais/{id}
 3. Enzo Hirotani
    1. Empresas (requer login de administrador).
    2. O sistema deve ser internacionalizado em pelo menos dois idiomas: português + outro de
@@ -58,3 +77,4 @@ formulários) cadastradas e/ou editadas.
             Body: raw/JSON (application/json)
         6.Remove a empresa de id = {id} [Delete - CRUD]
             DELETE http://localhost:8080/api/empresas/{id}
+
