@@ -84,7 +84,6 @@ public class WorkerService {
         return workerDAO.save(newWorker);
     }
 
-    @Transactional
     public void updateWorkerById(UUID id, CreateWorkerDTO data) {
         Worker existingWorker = workerDAO.findById(id)
                 .orElseThrow(() -> {
@@ -92,41 +91,26 @@ public class WorkerService {
                     return new NotFoundException(messageSource.getMessage("error.worker.notfound", null, LocaleContextHolder.getLocale()));
                 });
 
-        if (data.cpf() != null && !data.cpf().isEmpty()) {
-            workerDAO.findByCpf(data.cpf()).ifPresent(worker -> {
-                if (!worker.getId().equals(id)) {
-                    log.error("Duplicate CPF={} on update for Worker ID={}", data.cpf(), id);
-                    throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, LocaleContextHolder.getLocale()));
-                }
-            });
-            existingWorker.setCpf(data.cpf());
-        }
+        workerDAO.findByCpf(data.cpf()).ifPresent(worker -> {
+            if (!worker.getId().equals(id)) {
+                log.error("Duplicate CPF={} on update for Worker ID={}", data.cpf(), id);
+                throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, LocaleContextHolder.getLocale()));
+            }
+        });
 
-        if (data.email() != null && !data.email().isEmpty()) {
-            workerDAO.findByEmail(data.email()).ifPresent(worker -> {
-                if (!worker.getId().equals(id)) {
-                    log.error("Duplicate email={} on update for Worker ID={}", data.email(), id);
-                    throw new ConflictException(messageSource.getMessage("error.worker.conflict.email", null, LocaleContextHolder.getLocale()));
-                }
-            });
-            existingWorker.setEmail(data.email());
-        }
+        workerDAO.findByEmail(data.email()).ifPresent(worker -> {
+            if (!worker.getId().equals(id)) {
+                log.error("Duplicate email={} on update for Worker ID={}", data.email(), id);
+                throw new ConflictException(messageSource.getMessage("error.worker.conflict.email", null, LocaleContextHolder.getLocale()));
+            }
+        });
 
-        if (data.password() != null && !data.password().isEmpty()) {
-            existingWorker.setPassword(data.password());
-        }
-
-        if (data.name() != null && !data.name().isEmpty()) {
-            existingWorker.setName(data.name());
-        }
-
-        if (data.birthDate() != null) {
-            existingWorker.setBirthDate(data.birthDate());
-        }
-
-        if (data.gender() != null) {
-            existingWorker.setGender(data.gender());
-        }
+        existingWorker.setEmail(data.email());
+        existingWorker.setPassword(encoder.encode(data.password()));
+        existingWorker.setCpf(data.cpf());
+        existingWorker.setName(data.name());
+        existingWorker.setGender(data.gender());
+        existingWorker.setBirthDate(data.birthDate());
 
         workerDAO.save(existingWorker);
     }
