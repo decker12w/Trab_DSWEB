@@ -36,4 +36,25 @@ Implementamos todos os requisitos listados no PDF
    6. REST API -- Retorna a lista de vagas (em aberto) da empresa de id = {id} [Read - CRUD]
       GET http://localhost:8080/api/vagas/empresas/{id}
 2. José Maia
+   
 3. Enzo Hirotani
+   1. Empresas (requer login de administrador).
+   2. O sistema deve ser internacionalizado em pelo menos dois idiomas: português + outro de
+sua escolha
+   3.  O sistema deve validar (tamanho, formato, etc) todas as informações (campos nos
+formulários) cadastradas e/ou editadas.
+   4. REST API -- CRUD de empresas
+        1. Cria uma nova empresa [Create - CRUD]
+            POST http://localhost:8080/api/empresas
+            Body: raw/JSON (application/json)
+        2. Retorna a lista de empresas [Read - CRUD]
+            GET http://localhost:8080/api/empresas
+        3.Retorna a empresa de id = {id} [Read - CRUD]
+            GET http://localhost:8080/api/empresas/{id}
+        4.Retorna a lista de todas as empresas da cidade de nome = {nome}
+            GET http://localhost:8080/api/empresas/cidades/{nome}
+        5.Atualiza a empresa de id = {id} [Update - CRUD]
+            PUT http://localhost:8080/api/empresas/{id}
+            Body: raw/JSON (application/json)
+        6.Remove a empresa de id = {id} [Delete - CRUD]
+            DELETE http://localhost:8080/api/empresas/{id}
