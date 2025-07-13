@@ -29,6 +29,7 @@ public class EnterpriseService {
     private BCryptPasswordEncoder encoder;
     private final EnterpriseDAO enterpriseDAO;
     private final MessageSource messageSource;
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Transactional(readOnly = true)
     public List<ReturnEnterpriseDTO> findAllEnterprises() {
@@ -44,7 +45,18 @@ public class EnterpriseService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    public List<ReturnEnterpriseDTO> listAllEnterprises() {
+        return StreamSupport.stream(enterpriseDAO.findAll().spliterator(), false)
+                .map(enterprise -> new ReturnEnterpriseDTO(
+                        enterprise.getId(),
+                        enterprise.getCnpj(),
+                        enterprise.getEmail(),
+                        enterprise.getName(),
+                        enterprise.getDescription(),
+                        enterprise.getCity()))
+                .toList();
+    }
+
     public ReturnEnterpriseDTO findEnterpriseById(UUID id) {
         Enterprise enterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
@@ -62,8 +74,14 @@ public class EnterpriseService {
         );
     }
 
-    @Transactional
-    public void createEnterprise(CreateEnterpriseDTO data){
+    public List<ReturnEnterpriseDTO> findEnterprisesByCity(String cityName) {
+        List<Enterprise> enterprises = enterpriseDAO.findAllByCity(cityName);
+        return enterprises.stream()
+                .map(ReturnEnterpriseDTO::new)
+                .toList();
+    }
+
+    public Enterprise createEnterprise(CreateEnterpriseDTO data){
         enterpriseDAO.findByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
                     log.error("Enterprise with CNPJ={} already exists", data.cnpj());
@@ -85,6 +103,7 @@ public class EnterpriseService {
         newEnterprise.setCity(data.city());
 
         enterpriseDAO.save(newEnterprise);
+        return newEnterprise;
     }
 
     @Transactional
@@ -92,14 +111,14 @@ public class EnterpriseService {
         Enterprise existingEnterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("Enterprise not found with ID={}", id);
-                    return new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, LocaleContextHolder.getLocale()));
+                    return new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, locale));
                 });
 
         if (data.cnpj() != null && !data.cnpj().isEmpty()) {
             enterpriseDAO.findByCnpj(data.cnpj()).ifPresent(ent -> {
                 if (!ent.getId().equals(id)) {
                     log.error("Duplicate CNPJ={} on update for Enterprise ID={}", data.cnpj(), id);
-                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.cnpj", null, LocaleContextHolder.getLocale()));
+                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.cnpj", null, locale));
                 }
             });
             existingEnterprise.setCnpj(data.cnpj());
@@ -109,7 +128,7 @@ public class EnterpriseService {
             enterpriseDAO.findByEmail(data.email()).ifPresent(ent -> {
                 if (!ent.getId().equals(id)) {
                     log.error("Duplicate email={} on update for Enterprise ID={}", data.email(), id);
-                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.email", null, LocaleContextHolder.getLocale()));
+                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.email", null, locale));
                 }
             });
             existingEnterprise.setEmail(data.email());
@@ -134,15 +153,14 @@ public class EnterpriseService {
         enterpriseDAO.save(existingEnterprise);
     }
 
-    @Transactional
     public void deleteEnterpriseById(UUID id) {
         if (!enterpriseDAO.existsById(id)) {
             log.error("Attempt to delete non-existing Enterprise with ID={}", id);
-            throw new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, LocaleContextHolder.getLocale()));
+            throw new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, locale));
         }
         if (!jobDAO.findAllByEnterpriseId(id).isEmpty()) {
             log.error("Cannot delete Enterprise with ID={} because it has jobs", id);
-            throw new ConflictException(messageSource.getMessage("error.enterprise.delete.conflict", null, LocaleContextHolder.getLocale()));
+            throw new ConflictException(messageSource.getMessage("error.enterprise.delete.conflict", null, locale));
         }
         enterpriseDAO.deleteById(id);
     }
