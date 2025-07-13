@@ -15,7 +15,6 @@ import java.util.Locale;
 @Configuration
 @ComponentScan(basePackages = "org.example.trab_dsweb.config")
 public class MvcConfig implements WebMvcConfigurer {
-
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/home");
         registry.addViewController("/home").setViewName("index");

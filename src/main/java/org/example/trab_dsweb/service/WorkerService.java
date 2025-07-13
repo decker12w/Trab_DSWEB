@@ -14,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
@@ -28,13 +29,13 @@ public class WorkerService {
     private BCryptPasswordEncoder encoder;
     private final WorkerDAO workerDAO;
     private final MessageSource messageSource;
-    private final Locale locale = LocaleContextHolder.getLocale();
 
+    @Transactional(readOnly = true)
     public ReturnWorkerDTO findWorkerById(UUID id) {
         Worker worker = workerDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("Worker not found with ID={}", id);
-                    return new NotFoundException(messageSource.getMessage("error.worker.notfound", null, locale));
+                    return new NotFoundException(messageSource.getMessage("error.worker.notfound", null, LocaleContextHolder.getLocale()));
                 });
 
         return new ReturnWorkerDTO(
@@ -47,6 +48,7 @@ public class WorkerService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<ReturnWorkerDTO> listAllWorkers() {
         return StreamSupport.stream(workerDAO.findAll().spliterator(), false)
                 .map(worker -> new ReturnWorkerDTO(
@@ -59,15 +61,16 @@ public class WorkerService {
                 .toList();
     }
 
+    @Transactional
     public Worker createWorker(CreateWorkerDTO data) {
         if (workerDAO.findByCpf(data.cpf()).isPresent()) {
             log.error("Worker with CPF={} already exists", data.cpf());
-            throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, locale));
+            throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, LocaleContextHolder.getLocale()));
         }
 
         if (workerDAO.findByEmail(data.email()).isPresent()) {
             log.error("Worker with email={} already exists", data.email());
-            throw new ConflictException(messageSource.getMessage("error.worker.conflict.email", null, locale));
+            throw new ConflictException(messageSource.getMessage("error.worker.conflict.email", null, LocaleContextHolder.getLocale()));
         }
 
         Worker newWorker = new Worker();
@@ -81,18 +84,19 @@ public class WorkerService {
         return workerDAO.save(newWorker);
     }
 
+    @Transactional
     public void updateWorkerById(UUID id, CreateWorkerDTO data) {
         Worker existingWorker = workerDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("Worker not found with ID={}", id);
-                    return new NotFoundException(messageSource.getMessage("error.worker.notfound", null, locale));
+                    return new NotFoundException(messageSource.getMessage("error.worker.notfound", null, LocaleContextHolder.getLocale()));
                 });
 
         if (data.cpf() != null && !data.cpf().isEmpty()) {
             workerDAO.findByCpf(data.cpf()).ifPresent(worker -> {
                 if (!worker.getId().equals(id)) {
                     log.error("Duplicate CPF={} on update for Worker ID={}", data.cpf(), id);
-                    throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, locale));
+                    throw new ConflictException(messageSource.getMessage("error.worker.conflict.cpf", null, LocaleContextHolder.getLocale()));
                 }
             });
             existingWorker.setCpf(data.cpf());
@@ -102,7 +106,7 @@ public class WorkerService {
             workerDAO.findByEmail(data.email()).ifPresent(worker -> {
                 if (!worker.getId().equals(id)) {
                     log.error("Duplicate email={} on update for Worker ID={}", data.email(), id);
-                    throw new ConflictException(messageSource.getMessage("error.worker.conflict.email", null, locale));
+                    throw new ConflictException(messageSource.getMessage("error.worker.conflict.email", null, LocaleContextHolder.getLocale()));
                 }
             });
             existingWorker.setEmail(data.email());
@@ -127,14 +131,15 @@ public class WorkerService {
         workerDAO.save(existingWorker);
     }
 
+    @Transactional
     public void deleteWorkerById(UUID id) {
         if (!workerDAO.existsById(id)) {
             log.error("Attempt to delete non-existing Worker with ID={}", id);
-            throw new NotFoundException(messageSource.getMessage("error.worker.notfound", null, locale));
+            throw new NotFoundException(messageSource.getMessage("error.worker.notfound", null, LocaleContextHolder.getLocale()));
         }
         if (!jobApplicationDAO.findAllByWorkerId(id).isEmpty()) {
             log.error("Cannot delete Worker with ID={} because it has job applications", id);
-            throw new BadRequestException(messageSource.getMessage("error.worker.delete.conflict", null, locale));
+            throw new BadRequestException(messageSource.getMessage("error.worker.delete.conflict", null, LocaleContextHolder.getLocale()));
         }
         workerDAO.deleteById(id);
     }

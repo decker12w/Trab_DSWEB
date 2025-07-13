@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +31,7 @@ public class EnterpriseService {
     private final MessageSource messageSource;
     private final Locale locale = LocaleContextHolder.getLocale();
 
+    @Transactional(readOnly = true)
     public List<ReturnEnterpriseDTO> findAllEnterprises() {
         return StreamSupport.stream(enterpriseDAO.findAll().spliterator(), false)
                 .map(enterprise -> new ReturnEnterpriseDTO(
@@ -59,7 +61,7 @@ public class EnterpriseService {
         Enterprise enterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
                     log.error("Enterprise not found with ID={}", id);
-                    return new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, locale));
+                    return new NotFoundException(messageSource.getMessage("error.enterprise.notfound", null, LocaleContextHolder.getLocale()));
                 });
 
         return new ReturnEnterpriseDTO(
@@ -83,13 +85,13 @@ public class EnterpriseService {
         enterpriseDAO.findByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
                     log.error("Enterprise with CNPJ={} already exists", data.cnpj());
-                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.cnpj", null, locale));
+                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.cnpj", null, LocaleContextHolder.getLocale()));
                 });
 
         enterpriseDAO.findByEmail(data.email())
                 .ifPresent(enterprise -> {
                     log.error("Enterprise with email={} already exists", data.email());
-                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.email", null, locale));
+                    throw new ConflictException(messageSource.getMessage("error.enterprise.conflict.email", null, LocaleContextHolder.getLocale()));
                 });
 
         Enterprise newEnterprise = new Enterprise();
@@ -104,6 +106,7 @@ public class EnterpriseService {
         return newEnterprise;
     }
 
+    @Transactional
     public void updateEnterpriseById(UUID id, CreateEnterpriseDTO data) {
         Enterprise existingEnterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
