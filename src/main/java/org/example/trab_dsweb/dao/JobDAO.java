@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface JobDAO extends CrudRepository<Job, UUID> {
     List<Job> findAllByApplicationDeadlineAfter(LocalDateTime now);
+    List<Job> findAllByApplicationDeadlineAfterAndEnterpriseId(LocalDateTime now,  UUID enterpriseId);
     List<Job> findAllByApplicationDeadlineAfterAndCityContainingIgnoreCase(LocalDateTime now, String city);
     List<Job> findAllByEnterpriseId(UUID enterpriseId);
 }

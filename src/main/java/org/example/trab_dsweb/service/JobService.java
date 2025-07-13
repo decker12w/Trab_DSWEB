@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -30,8 +31,22 @@ public class JobService {
     private final MessageSource messageSource;
 
     @Transactional(readOnly = true)
+    public List<ReturnJobDTO> findAllJobs() {
+        return StreamSupport.stream(jobDAO.findAll().spliterator(), false)
+                .map(ReturnJobDTO::mapJobToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<ReturnJobDTO> findAllActiveJobs() {
         return jobDAO.findAllByApplicationDeadlineAfter(LocalDateTime.now()).stream()
+                .map(ReturnJobDTO::mapJobToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReturnJobDTO> findAllActiveJobsByEnterpriseId(UUID enterpriseId) {
+        return jobDAO.findAllByApplicationDeadlineAfterAndEnterpriseId(LocalDateTime.now(), enterpriseId).stream()
                 .map(ReturnJobDTO::mapJobToDTO)
                 .collect(Collectors.toList());
     }

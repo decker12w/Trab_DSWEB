@@ -45,18 +45,7 @@ public class EnterpriseService {
                 .collect(Collectors.toList());
     }
 
-    public List<ReturnEnterpriseDTO> listAllEnterprises() {
-        return StreamSupport.stream(enterpriseDAO.findAll().spliterator(), false)
-                .map(enterprise -> new ReturnEnterpriseDTO(
-                        enterprise.getId(),
-                        enterprise.getCnpj(),
-                        enterprise.getEmail(),
-                        enterprise.getName(),
-                        enterprise.getDescription(),
-                        enterprise.getCity()))
-                .toList();
-    }
-
+    @Transactional(readOnly = true)
     public ReturnEnterpriseDTO findEnterpriseById(UUID id) {
         Enterprise enterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
@@ -74,6 +63,7 @@ public class EnterpriseService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<ReturnEnterpriseDTO> findEnterprisesByCity(String cityName) {
         List<Enterprise> enterprises = enterpriseDAO.findAllByCity(cityName);
         return enterprises.stream()
@@ -81,6 +71,7 @@ public class EnterpriseService {
                 .toList();
     }
 
+    @Transactional
     public Enterprise createEnterprise(CreateEnterpriseDTO data){
         enterpriseDAO.findByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
@@ -153,6 +144,7 @@ public class EnterpriseService {
         enterpriseDAO.save(existingEnterprise);
     }
 
+    @Transactional
     public void deleteEnterpriseById(UUID id) {
         if (!enterpriseDAO.existsById(id)) {
             log.error("Attempt to delete non-existing Enterprise with ID={}", id);

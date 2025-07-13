@@ -11,5 +11,4 @@ public interface EnterpriseDAO extends CrudRepository<Enterprise, UUID> {
     Optional<Enterprise> findByCnpj(String cnpj);
     Optional<Enterprise> findByEmail(String email);
     List<Enterprise> findAllByCity(String city);
-
 }

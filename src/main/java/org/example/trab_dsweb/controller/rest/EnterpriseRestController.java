@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/empresas")
 public class EnterpriseRestController {
     private final EnterpriseService enterpriseService;
-
-    public EnterpriseRestController(EnterpriseService enterpriseService) {
-        this.enterpriseService = enterpriseService;
-    }
 
     @PostMapping
     public ResponseEntity<ReturnEnterpriseDTO> createEnterprise(@Valid @RequestBody CreateEnterpriseDTO data) {
@@ -29,7 +26,7 @@ public class EnterpriseRestController {
 
     @GetMapping
     public ResponseEntity<List<ReturnEnterpriseDTO>> getAllEnterprises() {
-        List<ReturnEnterpriseDTO> enterprises = enterpriseService.listAllEnterprises();
+        List<ReturnEnterpriseDTO> enterprises = enterpriseService.findAllEnterprises();
         return ResponseEntity.ok(enterprises);
     }
 
