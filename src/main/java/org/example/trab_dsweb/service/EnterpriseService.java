@@ -6,7 +6,6 @@ import org.example.trab_dsweb.dao.EnterpriseDAO;
 import org.example.trab_dsweb.dao.JobDAO;
 import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
-import org.example.trab_dsweb.exception.exceptions.BadRequestException;
 import org.example.trab_dsweb.exception.exceptions.ConflictException;
 import org.example.trab_dsweb.exception.exceptions.NotFoundException;
 import org.example.trab_dsweb.model.Enterprise;
@@ -15,7 +14,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -45,6 +43,18 @@ public class EnterpriseService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReturnEnterpriseDTO> listAllEnterprises() {
+        return StreamSupport.stream(enterpriseDAO.findAll().spliterator(), false)
+                .map(enterprise -> new ReturnEnterpriseDTO(
+                        enterprise.getId(),
+                        enterprise.getCnpj(),
+                        enterprise.getEmail(),
+                        enterprise.getName(),
+                        enterprise.getDescription(),
+                        enterprise.getCity()))
+                .toList();
+    }
+
     public ReturnEnterpriseDTO findEnterpriseById(UUID id) {
         Enterprise enterprise = enterpriseDAO.findById(id)
                 .orElseThrow(() -> {
@@ -62,7 +72,14 @@ public class EnterpriseService {
         );
     }
 
-    public void createEnterprise(CreateEnterpriseDTO data){
+    public List<ReturnEnterpriseDTO> findEnterprisesByCity(String cityName) {
+        List<Enterprise> enterprises = enterpriseDAO.findAllByCity(cityName);
+        return enterprises.stream()
+                .map(ReturnEnterpriseDTO::new)
+                .toList();
+    }
+
+    public Enterprise createEnterprise(CreateEnterpriseDTO data){
         enterpriseDAO.findByCnpj(data.cnpj())
                 .ifPresent(enterprise -> {
                     log.error("Enterprise with CNPJ={} already exists", data.cnpj());
@@ -84,6 +101,7 @@ public class EnterpriseService {
         newEnterprise.setCity(data.city());
 
         enterpriseDAO.save(newEnterprise);
+        return newEnterprise;
     }
 
     public void updateEnterpriseById(UUID id, CreateEnterpriseDTO data) {
