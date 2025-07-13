@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import org.example.trab_dsweb.dto.CreateJobApplicationDTO;
 import org.example.trab_dsweb.dto.ReturnJobApplicationDTO;
 import org.example.trab_dsweb.dto.UpdateJobApplicationStatusDTO;
-import org.example.trab_dsweb.indicator.Status;
+import org.example.trab_dsweb.exception.exceptions.BadRequestException;
 import org.example.trab_dsweb.exception.exceptions.ConflictException;
+import org.example.trab_dsweb.exception.exceptions.InternalServerErrorException;
 import org.example.trab_dsweb.exception.exceptions.UnauthorizedException;
+import org.example.trab_dsweb.indicator.Status;
 import org.example.trab_dsweb.model.Worker;
 import org.example.trab_dsweb.security.WorkerDetails;
 import org.example.trab_dsweb.service.JobApplicationService;
@@ -41,11 +43,10 @@ public class JobApplicationController {
           String successMessage = messageSource.getMessage("success.jobApplication.register", null, LocaleContextHolder.getLocale());
           redirectAttributes.addFlashAttribute("successMessage", successMessage);
           return "redirect:/home";
-      }
-      catch (Exception e) {
+      } catch (BadRequestException | ConflictException e) {
           redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+          return "redirect:/home";
       }
-      return "redirect:/home";
     }
 
     @PostMapping("/{id}/delete")
@@ -66,18 +67,14 @@ public class JobApplicationController {
     public void download(HttpServletResponse response, @PathVariable("id") UUID id) {
         try {
             byte[] curriculum = getJobApplication(id);
-
             response.setContentType("application/pdf");
-
             String headerKey = "Content-Disposition";
             String headerValue = "attachment; filename=\"curriculo_" + id + ".pdf\"";
             response.setHeader(headerKey, headerValue);
-
             response.getOutputStream().write(curriculum);
             response.getOutputStream().flush();
-
         } catch (IOException e) {
-            System.out.println("Error :- " + e.getMessage());
+            throw new InternalServerErrorException(messageSource.getMessage("error.jobApplication.internal.download", null, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -97,7 +94,7 @@ public class JobApplicationController {
     private Worker getLoggedWorker() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof WorkerDetails workerDetails)) {
-            throw new UnauthorizedException("Worker is not logged in");
+            throw new UnauthorizedException(messageSource.getMessage("error.jobApplicaiton.unauthorized.worker", null, LocaleContextHolder.getLocale()));
         }
         return workerDetails.getWorker();
     }

@@ -1,10 +1,10 @@
 package org.example.trab_dsweb.validator;
 
-import org.example.trab_dsweb.dao.EnterpriseDAO;
-import org.example.trab_dsweb.model.Enterprise;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired; // <-- IMPORT THIS
+import org.example.trab_dsweb.dao.EnterpriseDAO;
+import org.example.trab_dsweb.model.Enterprise;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

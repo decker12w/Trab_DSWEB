@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class TrabDswebApplication {
             adminDAO.save(admin);
 
             Enterprise enterprise1 = new Enterprise();
-            enterprise1.setCnpj("12.345.678/0001-1");
+            enterprise1.setCnpj("12.345.678/0001-15");
             enterprise1.setEmail("techcorp@gmail.com");
             enterprise1.setPassword(password);
             enterprise1.setName("Tech Corp");

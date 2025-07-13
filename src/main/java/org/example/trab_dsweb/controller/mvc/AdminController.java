@@ -6,10 +6,11 @@ import org.example.trab_dsweb.dto.CreateEnterpriseDTO;
 import org.example.trab_dsweb.dto.CreateWorkerDTO;
 import org.example.trab_dsweb.dto.ReturnEnterpriseDTO;
 import org.example.trab_dsweb.dto.ReturnWorkerDTO;
+import org.example.trab_dsweb.exception.exceptions.BadRequestException;
+import org.example.trab_dsweb.exception.exceptions.ConflictException;
 import org.example.trab_dsweb.indicator.Gender;
 import org.example.trab_dsweb.service.EnterpriseService;
 import org.example.trab_dsweb.service.WorkerService;
-import org.example.trab_dsweb.exception.exceptions.ConflictException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -43,38 +44,26 @@ public class AdminController {
         model.addAttribute("workerData", new CreateWorkerDTO(null, null, null, null, null, null));
         model.addAttribute("isEdit", false);
         model.addAttribute("formAction", "/admins/workers/register");
-        Map<String, String> genderMessageKeys = Arrays.stream(Gender.values())
-                .collect(Collectors.toMap(
-                        Enum::name,
-                        genderEnum -> "gender." + genderEnum.name().toLowerCase()
-                ));
-        model.addAttribute("genderOptions", genderMessageKeys.entrySet());
+        model.addAttribute("genderOptions", getGenderKeys().entrySet());
         return "admin/work-form";
     }
 
     @PostMapping("/workers/register")
     public String processRegisterWorker(@Valid @ModelAttribute("workerData") CreateWorkerDTO workerData, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", false);
-            model.addAttribute("formAction", "/admins/workers/register");
-
-            Map<String, String> genderMessageKeys = Arrays.stream(Gender.values())
-                    .collect(Collectors.toMap(
-                            Enum::name,
-                            genderEnum -> "gender." + genderEnum.name().toLowerCase()
-                    ));
-            model.addAttribute("genderOptions", genderMessageKeys.entrySet());
-
-            return "admin/work-form";
-        }
         try {
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("isEdit", false);
+                model.addAttribute("formAction", "/admins/workers/register");
+                model.addAttribute("genderOptions", getGenderKeys().entrySet());
+                return "admin/work-form";
+            }
             workerService.createWorker(workerData);
             String successMessage = messageSource.getMessage("success.worker.register", null, LocaleContextHolder.getLocale());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/admins/dashboard";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "redirect:/admins/workers/register";
+        } catch (BadRequestException | ConflictException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admins/dashboard";
         }
     }
 
@@ -88,20 +77,19 @@ public class AdminController {
 
     @PostMapping("/enterprises/register")
     public String processRegisterEnterprise(@Valid @ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", false);
-            model.addAttribute("formAction", "/admins/enterprises/register");
-            return "admin/entreprise-form";
-        }
-
         try {
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("isEdit", false);
+                model.addAttribute("formAction", "/admins/enterprises/register");
+                return "admin/entreprise-form";
+            }
             enterpriseService.createEnterprise(enterpriseData);
             String successMessage = messageSource.getMessage("success.enterprise.register", null, LocaleContextHolder.getLocale());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
             return "redirect:/admins/dashboard";
-        } catch (Exception e) {
+        } catch (BadRequestException | ConflictException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/admins/enterprises/register";
+            return "redirect:/admins/dashboard";
         }
     }
 
@@ -111,36 +99,38 @@ public class AdminController {
         CreateWorkerDTO workerData = new CreateWorkerDTO(
                 workerDTO.email(), null, workerDTO.cpf(), workerDTO.name(), workerDTO.gender(), workerDTO.birthDate()
         );
-
         model.addAttribute("workerData", workerData);
         model.addAttribute("isEdit", true);
         model.addAttribute("formAction", "/admins/workers/edit/" + id);
-
-        Map<String, String> genderMessageKeys = Arrays.stream(Gender.values())
-                .collect(Collectors.toMap(
-                        Enum::name,
-                        genderEnum -> "gender." + genderEnum.name().toLowerCase()
-                ));
-        model.addAttribute("genderOptions", genderMessageKeys.entrySet());
-
+        model.addAttribute("genderOptions", getGenderKeys().entrySet());
         return "admin/work-form";
     }
 
     @PostMapping("/workers/edit/{id}")
     public String processEditWorkerForm(@PathVariable UUID id, @ModelAttribute("workerData") CreateWorkerDTO workerData, RedirectAttributes redirectAttributes) {
-        workerService.updateWorkerById(id, workerData);
-        String successMessage = messageSource.getMessage("success.worker.edit", null, LocaleContextHolder.getLocale());
-        redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        return "redirect:/admins/dashboard";
+        try {
+            workerService.updateWorkerById(id, workerData);
+            String successMessage = messageSource.getMessage("success.worker.edit", null, LocaleContextHolder.getLocale());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            return "redirect:/admins/dashboard";
+        } catch (BadRequestException | ConflictException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admins/dashboard";
+        }
     }
 
 
     @GetMapping("/workers/delete/{id}")
     public String deleteWorker(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
-        workerService.deleteWorkerById(id);
-        String successMessage = messageSource.getMessage("success.worker.delete", null, LocaleContextHolder.getLocale());
-        redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        return "redirect:/admins/dashboard";
+        try {
+            workerService.deleteWorkerById(id);
+            String successMessage = messageSource.getMessage("success.worker.delete", null, LocaleContextHolder.getLocale());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            return "redirect:/admins/dashboard";
+        } catch (BadRequestException | ConflictException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admins/dashboard";
+        }
     }
 
     @GetMapping("/enterprises/edit/{id}")
@@ -149,7 +139,6 @@ public class AdminController {
         CreateEnterpriseDTO enterpriseData = new CreateEnterpriseDTO(
                 enterpriseDTO.email(), null, enterpriseDTO.cnpj(), enterpriseDTO.name(), enterpriseDTO.description(), enterpriseDTO.city()
         );
-
         model.addAttribute("enterpriseData", enterpriseData);
         model.addAttribute("isEdit", true);
         model.addAttribute("formAction", "/admins/enterprises/edit/" + id);
@@ -158,10 +147,15 @@ public class AdminController {
 
     @PostMapping("/enterprises/edit/{id}")
     public String processEditEnterpriseForm(@PathVariable UUID id, @ModelAttribute("enterpriseData") CreateEnterpriseDTO enterpriseData, RedirectAttributes redirectAttributes) {
-        enterpriseService.updateEnterpriseById(id, enterpriseData);
-        String successMessage = messageSource.getMessage("success.enterprise.edit", null, LocaleContextHolder.getLocale());
-        redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        return "redirect:/admins/dashboard";
+        try {
+            enterpriseService.updateEnterpriseById(id, enterpriseData);
+            String successMessage = messageSource.getMessage("success.enterprise.edit", null, LocaleContextHolder.getLocale());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            return "redirect:/admins/dashboard";
+        } catch (BadRequestException | ConflictException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admins/dashboard";
+        }
     }
 
     @GetMapping("/enterprises/delete/{id}")
@@ -170,9 +164,18 @@ public class AdminController {
             enterpriseService.deleteEnterpriseById(id);
             String successMessage = messageSource.getMessage("success.enterprise.delete", null, LocaleContextHolder.getLocale());
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
-        } catch (Exception e) {
+            return "redirect:/admins/dashboard";
+        } catch (BadRequestException | ConflictException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admins/dashboard";
         }
-        return "redirect:/admins/dashboard";
+    }
+
+    private Map<String, String> getGenderKeys() {
+        return Arrays.stream(Gender.values())
+                .collect(Collectors.toMap(
+                        Enum::name,
+                        genderEnum -> genderEnum.getDisplayName()
+                ));
     }
 }
